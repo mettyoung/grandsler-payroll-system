@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "121586",
+    "database": "grandsler_development",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "121586",
+    "database": "grandsler_development",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "grandsler_12345",
+    "database": "grandsler",
+    "host": "192.168.1.2",
+    "dialect": "mysql"
+  }
+}
