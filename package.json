@@ -1,0 +1,34 @@
+{
+  "name": "grandsler_payroll_system",
+  "productName": "Grandsler Payroll System",
+  "description": "A customized payroll system",
+  "version": "1.0.0",
+  "author": "Emmett Young",
+  "private": true,
+  "repository": "https://bitbucket.org/Xegara/c3_grandsler_payroll",
+  "main": "app/main.js",
+  "dependencies": {
+    "electron-simple-updater": "^1.2.0"
+  },
+  "devDependencies": {
+    "electron": "^1.6.2",
+    "electron-builder": "^17.0.1",
+    "electron-simple-publisher": "^0.4.4",
+    "electron-builder-squirrel-windows": "^17.0.1"
+  },
+  "scripts": {
+    "postinstall": "install-app-deps",
+    "start": "electron .",
+    "dist": "build",
+    "publish": "publish",
+    "release": "npm run dist && npm run publish"
+  },
+  "build": {
+    "win": {
+      "target": "squirrel"
+    }
+  },
+  "updater": {
+    "url": "http://192.168.1.2/C3 - Grandsler/Payroll System/updates.json"
+  }
+}

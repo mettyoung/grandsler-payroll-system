@@ -1,0 +1,14 @@
+{
+	"transport": {
+		"module": "ftp",
+	    "host": "192.168.1.2",
+	    "port": 21,
+	    "user": "web",
+	    "password": "xsoftware",
+	    "remotePath": "/C3 - Grandsler/Payroll System",
+	    "remoteUrl": "http://192.168.1.2/C3 - Grandsler/Payroll System"
+	},
+	"fields": {
+  		"readme": "First Release"
+  	}
+}
