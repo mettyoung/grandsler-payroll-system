@@ -4,20 +4,23 @@
     "password": "121586",
     "database": "grandsler_development",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "+08.00"
   },
   "test": {
     "username": "root",
     "password": "121586",
     "database": "grandsler_development",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "+08.00"
   },
   "production": {
     "username": "root",
     "password": "grandsler_12345",
     "database": "grandsler",
     "host": "192.168.1.2",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "+08.00"
   }
 }
