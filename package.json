@@ -14,17 +14,20 @@
     "sequelize-cli": "^2.7.0"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "electron": "^1.6.2",
     "electron-builder": "^17.0.1",
+    "electron-builder-squirrel-windows": "^17.0.1",
     "electron-simple-publisher": "^0.4.4",
-    "electron-builder-squirrel-windows": "^17.0.1"
+    "mocha": "^3.3.0"
   },
   "scripts": {
     "postinstall": "install-app-deps",
     "start": "electron .",
     "dist": "build",
     "publish": "publish",
-    "release": "npm run dist && npm run publish"
+    "release": "npm run dist && npm run publish",
+    "test": "mocha"
   },
   "build": {
     "win": {
