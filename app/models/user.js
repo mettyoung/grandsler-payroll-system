@@ -1,27 +1,30 @@
 'use strict';
 
-module.exports = (sequelize, DataTypes) => sequelize.define('User', {  
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false
-    }
-    // employee_id: {
-    //   type: Sequelize.INTEGER,
-    //   references: {
-    //     model: Employee,
-    //     key: 'id'
-    // }
+module.exports = function(sequelize, DataTypes) {
+  var User = sequelize.define('User', {
+    username: DataTypes.STRING,
+    password: DataTypes.STRING,
+    is_enabled: DataTypes.BOOLEAN,
+    updated_by: DataTypes.INTEGER
   }, {
     classMethods: {
       associate: function(models) {
-        // associations can be defined here
+
+        User.hasOne(models.Employee, {
+          foreignKey: "user_id",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
+
+        User.belongsTo(models.User, {
+          as: "UpdatedBy",
+          foreignKey: "updated_by",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
       }
     },
-    underscored: true,
     tableName: "users"
-});
+  });
+  return User;
+};

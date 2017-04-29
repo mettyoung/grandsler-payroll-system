@@ -5,7 +5,10 @@
     "database": "grandsler_development",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "timezone": "+08.00"
+    "timezone": "+08.00",
+    "define": {
+      "underscored": true
+    }
   },
   "test": {
     "username": "root",
@@ -13,7 +16,10 @@
     "database": "grandsler_development",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "timezone": "+08.00"
+    "timezone": "+08.00",
+    "define": {
+      "underscored": true
+    }
   },
   "production": {
     "username": "root",
@@ -21,6 +27,9 @@
     "database": "grandsler",
     "host": "192.168.1.2",
     "dialect": "mysql",
-    "timezone": "+08.00"
+    "timezone": "+08.00",
+    "define": {
+      "underscored": true
+    }
   }
 }
