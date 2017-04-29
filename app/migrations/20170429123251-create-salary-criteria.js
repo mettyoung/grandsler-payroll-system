@@ -1,27 +1,25 @@
-'use strict'
-
+'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('users', {
+    return queryInterface.createTable('SALARY_CRITERIA', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      username: {
+      name: {
         allowNull: false,
         type: Sequelize.STRING,
         unique: true
       },
-      password: {
-        allowNull: false,
-        type: Sequelize.STRING
+      minimum_minutes: {
+        type: Sequelize.INTEGER
       },
-      is_enabled: {
+      mark_up: {
         allowNull: false,
-        type: Sequelize.BOOLEAN,
-        defaultValue: true
+        type: Sequelize.DECIMAL(10, 2),
+        defaultValue: 0
       },
       updated_by: {
         allowNull: false,
@@ -31,10 +29,6 @@ module.exports = {
           key: 'id'
         }
       },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE
@@ -42,6 +36,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable('SALARY_CRITERIA');
   }
 };
