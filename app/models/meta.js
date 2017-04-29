@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var Configuration = sequelize.define('Configuration', {
+  return sequelize.define('Meta', {
     particular: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -9,7 +9,6 @@ module.exports = function(sequelize, DataTypes) {
     value: DataTypes.STRING
   }, {
     timestamps: false,
-    tableName: 'configurations'
+    tableName: 'meta'
   });
-  return Configuration;
 };

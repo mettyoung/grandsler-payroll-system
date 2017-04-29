@@ -2,13 +2,13 @@
 
 module.exports = {
   up: function (queryInterface, Sequelize) {
-    return queryInterface.bulkInsert('configurations', [{
+    return queryInterface.bulkInsert('meta', [{
       "particular": "version",
       "value": "1.0.0"
     }]);
   },
 
   down: function (queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('configurations', {"particular": "version"});
+    return queryInterface.bulkDelete('meta', {"particular": "version"});
   }
 };

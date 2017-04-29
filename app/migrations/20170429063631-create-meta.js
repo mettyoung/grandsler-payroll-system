@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('configurations', {
+    return queryInterface.createTable('meta', {
         particular: {
           type: Sequelize.STRING,
           allowNull: false,
@@ -11,6 +11,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('configurations');
+    return queryInterface.dropTable('meta');
   }
 };
