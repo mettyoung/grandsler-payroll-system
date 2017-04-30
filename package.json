@@ -27,7 +27,7 @@
     "dist": "build",
     "publish": "publish",
     "release": "npm run dist && npm run publish",
-    "test": "mocha"
+    "test": "mocha test/integration/*.js"
   },
   "build": {
     "win": {
