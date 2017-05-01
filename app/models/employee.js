@@ -49,6 +49,12 @@ module.exports = function(sequelize, DataTypes) {
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });
+
+        Employee.hasMany(models.Employment, {
+          foreignKey: "employee_id",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
       }
     },
     tableName: "employees"
