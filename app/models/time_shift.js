@@ -28,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
           onUpdate: 'RESTRICT'
         });
 
-        TimeShift.belongsTo(models.SALARY_CRITERIUM, {
+        TimeShift.belongsTo(models.SALARY_CRITERION, {
           foreignKey: "salary_criterion_id",
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'

@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var SALARY_CRITERIUM = sequelize.define('SALARY_CRITERIUM', {
+  var SALARY_CRITERION = sequelize.define('SALARY_CRITERION', {
     name: DataTypes.STRING,
     minimum_minutes: DataTypes.INTEGER,
     mark_up: DataTypes.DECIMAL(10, 2),
@@ -8,14 +8,14 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        SALARY_CRITERIUM.belongsTo(models.User, {
+        SALARY_CRITERION.belongsTo(models.User, {
           as: "UpdatedBy",
           foreignKey: "updated_by",
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });
 
-        SALARY_CRITERIUM.hasMany(models.TimeShift, {
+        SALARY_CRITERION.hasMany(models.TimeShift, {
           foreignKey: "salary_criterion_id",
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
@@ -25,5 +25,5 @@ module.exports = function(sequelize, DataTypes) {
     tableName: "SALARY_CRITERIA",
     createdAt: false
   });
-  return SALARY_CRITERIUM;
+  return SALARY_CRITERION;
 };
