@@ -8,9 +8,13 @@
   "repository": "https://bitbucket.org/Xegara/c3_grandsler_payroll",
   "main": "app/main.js",
   "dependencies": {
+    "angular": "^1.6.4",
+    "angular-route": "^1.6.4",
+    "bootstrap": "^3.3.7",
     "electron-simple-updater": "^1.2.0",
     "moment": "^2.18.1",
     "mysql": "^2.13.0",
+    "normalize.css": "^6.0.0",
     "sequelize": "^3.30.4",
     "sequelize-cli": "^2.7.0"
   },
