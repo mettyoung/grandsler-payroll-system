@@ -23,8 +23,10 @@
     "electron": "^1.6.2",
     "electron-builder": "^17.0.1",
     "electron-builder-squirrel-windows": "^17.0.1",
+    "electron-connect": "^0.6.1",
     "electron-simple-publisher": "^0.4.4",
     "mocha": "^3.3.0"
+    "gulp": "^3.9.1",
   },
   "scripts": {
     "postinstall": "install-app-deps",

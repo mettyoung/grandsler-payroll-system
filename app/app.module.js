@@ -15,3 +15,6 @@ angular.module('grandsler-payroll-system', [
       .otherwise('/log-in');
   }
 ]);
+
+if (process.env.NODE_ENV === 'development')
+  require('electron-connect').client.create();

@@ -18,7 +18,7 @@ app.on('ready', () => {
 	mainWindow.loadURL('file://' + __dirname + '/index.html');
 
 	if (process.env.NODE_ENV === 'development')
-		mainWindow.webContents.openDevTools({detach: true});
+    mainWindow.webContents.openDevTools();
 });
 
 updater.init({
