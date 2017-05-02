@@ -4,7 +4,7 @@
 const {expect} = require('chai');
 const moment = require('moment');
 const {User, Employee, Position, TimeShift, SALARY_CRITERION, Employment} = require('../../app/models/persistence/index');
-const transactionScope = require('../transaction_scope');
+const transactionScope = require('../helpers/transaction_scope');
 
 /**
  * System Under Test
