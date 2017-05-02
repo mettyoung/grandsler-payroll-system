@@ -1,14 +1,17 @@
 angular.module('authentication')
   .component('logIn', {
     templateUrl: './modules/authentication/authentication.template.html',
-    controller: function()
+    controller: ['Loader', function(Loader)
     {
-      this.login = () =>
+      this.login = event =>
       {
-        require('../../models/domain/authentication')
-          .attempt(this.username, this.password)
-          .then(() => alert("Log-in successful!"))
-          .catch(() => alert("Log-in failed!"));
+        Loader.perform(event.target, () =>
+        {
+          return require('../../models/domain/authentication')
+            .attempt(this.username, this.password)
+            .then(() => alert("Log-in successful!"))
+            .catch(() => alert("Log-in failed!"));
+        });
       };
-    }
+    }]
   });

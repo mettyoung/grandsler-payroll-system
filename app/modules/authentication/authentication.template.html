@@ -1,9 +1,12 @@
-<form>
-    <div>
-        <input placeholder="Enter Username" id="username" ng-model="$ctrl.username"/>
-    </div>
-    <div>
-        <input placeholder="Enter Password" id="password" type="password" ng-model="$ctrl.password"/>
-    </div>
-    <button type="submit" ng-click="$ctrl.login()">Login</button>
-</form>
+<link rel="stylesheet" href="modules/authentication/authentication.template.css">
+
+<div class="container">
+    <form class="form-signin">
+        <h2 class="form-signin-heading">Grandsler Payroll System</h2>
+        <label for="inputUsername" class="sr-only">Username</label>
+        <input type="text" id="inputUsername" class="form-control" placeholder="Username" ng-model="$ctrl.username" autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" ng-model="$ctrl.password">
+        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="$ctrl.login($event)">Sign in</button>
+    </form>
+</div>
