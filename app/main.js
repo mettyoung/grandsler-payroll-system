@@ -1,10 +1,9 @@
 'use strict';
 
+// TODO: Integrate auto-updater.
 const {app, BrowserWindow} = require('electron');
 const updater = require('electron-simple-updater');
 const process = require('process');
-
-process.env.NODE_ENV = 'development';
 
 let mainWindow;
 
@@ -19,7 +18,7 @@ app.on('ready', () => {
 	mainWindow.loadURL('file://' + __dirname + '/index.html');
 
 	if (process.env.NODE_ENV === 'development')
-		mainWindow.webContents.openDevTools();
+		mainWindow.webContents.openDevTools({detach: true});
 });
 
 updater.init({
