@@ -1,7 +1,7 @@
 /**
  * Singleton authentication module.
  */
-const {User, Employee, Employment, Sequelize} = require('../index');
+const {User, Employee, Employment, Sequelize} = require('../persistence/index');
 
 let auth = {
   /**

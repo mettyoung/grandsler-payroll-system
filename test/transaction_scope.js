@@ -1,7 +1,7 @@
 /**
  * Created by emmet on 30/04/2017.
  */
-const {sequelize} = require('../app/models/index');
+const {sequelize} = require('../app/models/persistence/index');
 
 /**
  * Opens a transaction before each tests and rollbacks it back after each tests.

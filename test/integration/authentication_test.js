@@ -3,7 +3,7 @@
  */
 const {expect} = require('chai');
 const moment = require('moment');
-const {User, Employee, Position, TimeShift, SALARY_CRITERION, Employment} = require('../../app/models/index');
+const {User, Employee, Position, TimeShift, SALARY_CRITERION, Employment} = require('../../app/models/persistence/index');
 const transactionScope = require('../transaction_scope');
 
 /**
