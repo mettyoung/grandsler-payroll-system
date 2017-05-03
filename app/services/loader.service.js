@@ -4,12 +4,19 @@
 class Loader {
 
   /**
+   * Defines the loading template.
+   */
+  constructor() {
+    this.LOADING_TEMPLATE = '<i class="fa fa-refresh fa-spin"></i> Loading...';
+  }
+
+  /**
    * Replaces the innerHTML of the target with its loading animation and disables the control.
    * @param target The target HTML control.
    */
   addLoading(target) {
     this.originalHtml = target.innerHTML;
-    target.innerHTML = `<i class="fa fa-refresh fa-spin"></i> Loading...`;
+    target.innerHTML = this.LOADING_TEMPLATE;
     target.disabled = true;
   }
 
@@ -28,19 +35,28 @@ class Loader {
    * @param callback The asynchronous operation must return a Promise object.
    */
   perform(target, callback) {
-    if(!target.disabled)
-    {
-      this.addLoading(target);
-      // This is necessary in order to fulfill the required rendering time of the loading animation
-      // before proceeding with the operation.
-      setTimeout(() => this.perform(target, callback), 100);
-    }
-    else
-    {
-      callback()
-        .then(() => this.removeLoading(target))
-        .catch(() => this.removeLoading(target));
-    }
+    const self = this;
+    return new Promise((resolve, reject) => {
+      (function recursion(target, callback) {
+        if (!target.disabled) {
+          self.addLoading(target);
+          // This is necessary in order to fulfill the required rendering time of the loading animation
+          // before proceeding with the operation.
+          setTimeout(() => recursion(target, callback), 100);
+        }
+        else {
+          callback()
+            .then(() => {
+              self.removeLoading(target);
+              resolve();
+            })
+            .catch(() => {
+              self.removeLoading(target);
+              reject();
+            });
+        }
+      })(target, callback);
+    });
   }
 }
 
