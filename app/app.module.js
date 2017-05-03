@@ -1,5 +1,5 @@
-require('./modules/authentication/authentication.module');
-require('./modules/authentication/authentication.component');
+require('./controllers/authentication/authentication.module');
+require('./controllers/authentication/authentication.component');
 
 angular.module('grandsler-payroll-system', [
   'ngRoute',

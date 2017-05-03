@@ -1,6 +1,6 @@
 angular.module('authentication')
   .component('logIn', {
-    templateUrl: './modules/authentication/authentication.template.html',
+    templateUrl: './controllers/authentication/authentication.template.html',
     controller: ['Loader', function(Loader)
     {
       this.login = event =>
