@@ -1,5 +1,7 @@
 <link rel="stylesheet" href="controllers/authentication/authentication.template.css">
-
+<div id="error-message" class="alert alert-danger" ng-hide="$ctrl.isAuthenticated === undefined || $ctrl.isAuthenticated">
+    <strong>Authentication failed!</strong> You have entered an invalid user.
+</div>
 <div class="container">
     <form class="form-signin">
         <h2 class="form-signin-heading">Grandsler Payroll System</h2>

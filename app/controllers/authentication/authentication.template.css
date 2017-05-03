@@ -29,3 +29,7 @@ body {
 .form-signin .form-control:focus {
     z-index: 2;
 }
+
+#error-message {
+    margin-top: -40px;
+}
