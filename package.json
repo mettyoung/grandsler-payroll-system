@@ -20,6 +20,7 @@
     "sequelize-cli": "^2.7.0"
   },
   "devDependencies": {
+    "angular-mocks": "^1.6.4",
     "chai": "^3.5.0",
     "electron": "^1.6.2",
     "electron-builder": "^17.0.1",
@@ -28,6 +29,8 @@
     "electron-simple-publisher": "^0.4.4",
     "mocha": "^3.3.0"
     "gulp": "^3.9.1",
+    "jsdom": "^9.12.0",
+    "jsdom-global": "^2.1.1",
   },
   "scripts": {
     "postinstall": "install-app-deps",
