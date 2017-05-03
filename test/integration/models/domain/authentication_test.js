@@ -3,13 +3,13 @@
  */
 const {expect} = require('chai');
 const moment = require('moment');
-const {User, Employee, Position, TimeShift, SALARY_CRITERION, Employment} = require('../../app/models/persistence/index');
-const transactionScope = require('../helpers/transaction_scope');
+const {User, Employee, Position, TimeShift, SALARY_CRITERION, Employment} = require('../../../../app/models/persistence/index');
+const transactionScope = require('../../../helpers/transaction_scope');
 
 /**
  * System Under Test
  */
-const auth = require('../../app/models/domain/authentication');
+const auth = require('../../../../app/models/domain/authentication');
 
 /**
  * Specs
