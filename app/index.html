@@ -17,6 +17,50 @@
     <script src="../node_modules/angular-material/angular-material.min.js"></script>
     <script src="app.module.js"></script>
 </head>
+
+<!-- Body -->
 <body>
+
+<!-- Header toolbar -->
+<header layout="column" layout-fill>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+
+            <!-- Title -->
+            <h2 md-truncate flex>Grandsler Payroll System</h2>
+
+            <!-- Menu -->
+            <md-menu md-position-mode="target-right target" md-offset="-10 45">
+                <!-- Trigger element is a md-button with an icon -->
+                <md-button ng-click="$mdMenu.open($event)" class="md-icon-button" aria-label="Open Menu">
+                    <md-icon md-svg-icon="action:ic_settings_24px"></md-icon>
+                </md-button>
+                <md-menu-content>
+                    <md-menu-item>
+                        <md-button>
+                            <md-icon md-svg-icon="action:ic_account_circle_24px"></md-icon>
+                            <span>Change Password</span>
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                        <md-button>
+                            <md-icon md-svg-icon="action:ic_assignment_24px"></md-icon>
+                            <span>Salary Criteria</span>
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                        <md-button>
+                            <md-icon md-svg-icon="action:ic_alarm_add_24px"></md-icon>
+                            <span>Time-shift Registry</span>
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
+        </div>
+    </md-toolbar>
+    <md-content>
+    </md-content>
+</header>
+
 </body>
 </html>
