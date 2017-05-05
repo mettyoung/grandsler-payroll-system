@@ -1,7 +1,7 @@
 /**
  * Test Helpers
  */
-const {expect} = require('chai');
+require('../../helpers/chai_with_promised');
 const {ngModule, inject} = require('../../helpers/angular_test_setup');
 
 /**
@@ -15,16 +15,19 @@ require('../../../app/components/authentication/authentication.component');
  */
 describe('Authentication Angular Component', function(){
 
-  const USERNAME = "admin";
-  const PASSWORD = "admin";
+  const ADMIN_USER = {
+    username: "admin",
+    password: "admin"
+  };
+
   let controller;
 
   beforeEach(ngModule('authentication'));
-  beforeEach(inject($componentController => controller = $componentController('logIn')));
+  beforeEach(inject($componentController => controller = $componentController('authentication')));
 
   it("should be able to log-in successfully with correct credentials", function(done){
-    controller.username = USERNAME;
-    controller.password = PASSWORD;
+    controller.username = ADMIN_USER.username;
+    controller.password = ADMIN_USER.password;
     controller.login({target: {disabled: false}}).then(() => {
       expect(controller.isAuthenticated).to.be.true;
       done();
@@ -32,8 +35,8 @@ describe('Authentication Angular Component', function(){
   });
 
   it("should be able to restrict invalid user credentials", function(done){
-    controller.username = USERNAME + "wrong-username";
-    controller.password = PASSWORD + "wrong-password";
+    controller.username = ADMIN_USER.username + "wrong-username";
+    controller.password = ADMIN_USER.password + "wrong-password";
     controller.login({target: {disabled: false}}).then(() => {
       expect(controller.isAuthenticated).to.be.false;
       done();

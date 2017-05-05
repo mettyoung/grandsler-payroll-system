@@ -22,9 +22,10 @@ delete require.cache[require.resolve('angular/angular')];
 delete require.cache[require.resolve('angular-mocks')];
 
 require('angular/angular');
-require('angular-mocks');
-
 global.angular = global.window.angular;
+
+require('angular-mocks');
+require('@uirouter/angularjs');
 
 module.exports = {
   inject: global.window.angular.mock.inject,
