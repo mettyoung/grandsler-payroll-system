@@ -1,8 +1,8 @@
 /**
  * Components
  */
-require('./controllers/authentication/authentication.module');
-require('./controllers/authentication/authentication.component');
+require('./components/authentication/authentication.module');
+require('./components/authentication/authentication.component');
 
 /**
  * Various App Configuration

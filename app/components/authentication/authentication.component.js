@@ -1,6 +1,6 @@
 angular.module('authentication')
   .component('logIn', {
-    templateUrl: './controllers/authentication/authentication.template.html',
+    templateUrl: './components/authentication/authentication.template.html',
     controller: ['Loader', '$scope', function (Loader, $scope) {
       /**
        * Login method of the controller.

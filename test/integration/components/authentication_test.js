@@ -7,13 +7,13 @@ const {ngModule, inject} = require('../../helpers/angular_test_setup');
 /**
  * System Under Test
  */
-require('../../../app/controllers/authentication/authentication.module');
-require('../../../app/controllers/authentication/authentication.component');
+require('../../../app/components/authentication/authentication.module');
+require('../../../app/components/authentication/authentication.component');
 
 /**
  * Specs
  */
-describe('Authentication Angular Controller', function(){
+describe('Authentication Angular Component', function(){
 
   const USERNAME = "admin";
   const PASSWORD = "admin";
