@@ -1,7 +1,7 @@
 angular.module('authentication')
-  .component('logIn', {
+  .component('authentication', {
     templateUrl: './components/authentication/authentication.template.html',
-    controller: ['Loader', '$scope', function (Loader, $scope) {
+    controller: ['Loader', '$scope', '$state', function (Loader, $scope, $state) {
       /**
        * Login method of the controller.
        * @param event Contains the event object.
@@ -13,7 +13,11 @@ angular.module('authentication')
             .attempt(this.username, this.password)
         }).then(() => this.isAuthenticated = true)
           .catch(() => this.isAuthenticated = false)
-          .then(() => $scope.$apply());
+          .then(() => $scope.$apply())
+          .then(() => {
+            if(this.isAuthenticated)
+              $state.go('main-app')
+          });
       };
     }]
   });
