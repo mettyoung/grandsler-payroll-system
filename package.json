@@ -8,6 +8,7 @@
   "repository": "https://bitbucket.org/Xegara/c3_grandsler_payroll",
   "main": "app/main.js",
   "dependencies": {
+    "@uirouter/angularjs": "^1.0.1",
     "angular": "^1.6.4",
     "angular-animate": "^1.6.4",
     "angular-aria": "^1.6.4",
@@ -24,6 +25,7 @@
     "sequelize-cli": "^2.7.0"
   },
   "devDependencies": {
+    "@uirouter/visualizer": "^4.0.0",
     "angular-mocks": "^1.6.4",
     "chai": "^3.5.0",
     "electron": "^1.6.2",

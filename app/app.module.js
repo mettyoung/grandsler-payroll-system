@@ -10,11 +10,9 @@ require('./controllers/authentication/authentication.component');
 angular.module('grandsler-payroll-system', [
   'ngRoute',
   'authentication',
-  'ngMaterial'
-]).config(['$locationProvider', '$routeProvider', '$mdIconProvider', ($locationProvider, $routeProvider, $mdIconProvider) => {
-
-  // Just following a good convention.
-  $locationProvider.hashPrefix('!');
+  'ngMaterial',
+  'ui.router'
+]).config(['$routeProvider', '$mdIconProvider', ($routeProvider, $mdIconProvider) => {
 
   // Main Router Logic
   $routeProvider
@@ -28,8 +26,14 @@ angular.module('grandsler-payroll-system', [
   $mdIconProvider.iconSet('social', '../node_modules/material-design-icons/sprites/svg-sprite/svg-sprite-social.svg');
 }]);
 
+
 /**
- * For live-reload.
+ * For live-reload and state visualizer.
  */
 if (process.env.NODE_ENV === 'development')
+{
   require('electron-connect').client.create();
+  angular.module('grandsler-payroll-system').run(function($uiRouter) {
+    $uiRouter.plugin(require('@uirouter/visualizer').Visualizer);
+  });
+}
