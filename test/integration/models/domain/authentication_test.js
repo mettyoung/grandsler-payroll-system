@@ -154,4 +154,101 @@ describe('Authentication Module', () => {
         });
       });
   });
+
+  it("should save the authenticated user in the created_by field whether present or not of any given model if authenticated", function () {
+
+    const DUMMY_USER = {
+      id: 100,
+      username: "dummy",
+      is_enabled: 1,
+      password: "dummy"
+    };
+
+    const DUMMY_POSITION = {
+      id: 100,
+      name: "dummy"
+    };
+
+    return auth.attempt(ADMIN_USER.username, ADMIN_USER.password, {transaction: transaction}).then(() => {
+      return Promise.all([
+        User.create(DUMMY_USER, {transaction: transaction}).should.eventually.deep.include({
+          'created_by': auth.user.id,
+          'updated_by': auth.user.id
+        }),
+        Position.create(DUMMY_POSITION, {transaction: transaction}).should.eventually.deep.include({
+          'created_by': auth.user.id,
+          'updated_by': auth.user.id
+        })
+      ]);
+    });
+  });
+
+  it("should save the authenticated user in the updated_by field of any given model if authenticated", function (done) {
+
+    const DUMMY_USER = {
+      id: 100,
+      username: "dummy",
+      is_enabled: 1,
+      password: "dummy"
+    };
+
+    const DUMMY_POSITION = {
+      id: 100,
+      name: "dummy"
+    };
+
+    auth.attempt(ADMIN_USER.username, ADMIN_USER.password, {transaction: transaction}).then(user => {
+      return Promise.all([
+        User.create(DUMMY_USER, {transaction: transaction}),
+        Position.create(DUMMY_POSITION, {transaction: transaction})
+      ]).then(values => {
+
+        // Modify models.
+        const user = values[0];
+        const position = values[1];
+        user.username += "dummy";
+        position.name += "dummy";
+
+        // Change authenticated user.
+        return auth.attempt(DUMMY_USER.username, DUMMY_USER.password, {transaction: transaction}).then(() => {
+          // Save the changes.
+          return Promise.all([
+            user.save({transaction: transaction}),
+            position.save({transaction: transaction})
+          ]);
+        });
+
+      }).then(values => {
+        expect(values[0]).to.deep.include({
+          created_by: ADMIN_USER.id,
+          updated_by: DUMMY_USER.id
+        });
+        expect(values[1]).to.deep.include({
+          created_by: ADMIN_USER.id,
+          updated_by: DUMMY_USER.id
+        });
+        done();
+      });
+    });
+  });
+
+  it("should not supply any authenticated user in the created_by or updated_by field if not authenticated", function () {
+
+    const DUMMY_USER = {
+      id: 100,
+      username: "dummy",
+      is_enabled: 1,
+      password: "dummy"
+    };
+
+    const DUMMY_POSITION = {
+      id: 100,
+      name: "dummy"
+    };
+
+    return Promise.all([
+      User.create(DUMMY_USER, {transaction: transaction}),
+      Position.create(DUMMY_POSITION, {transaction: transaction})
+    ]).should.be.rejected;
+  });
 });
