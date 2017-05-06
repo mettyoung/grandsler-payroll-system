@@ -1,4 +1,5 @@
-const auth = require('../../models/domain/authentication');
+const { remote } = require('electron');
+const auth = remote.require('./models/domain/authentication');
 
 angular.module('change-password')
   .component('changePassword', {

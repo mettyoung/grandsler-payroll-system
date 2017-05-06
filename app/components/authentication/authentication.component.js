@@ -1,3 +1,5 @@
+const { remote } = require('electron');
+
 angular.module('authentication')
   .component('authentication', {
     templateUrl: './components/authentication/authentication.template.html',
@@ -9,7 +11,7 @@ angular.module('authentication')
        */
       this.login = event => {
         return Loader.perform(event.target, () => {
-          return require('../../models/domain/authentication')
+          return remote.require('./models/domain/authentication')
             .attempt(this.username, this.password)
         }).then(() => this.isAuthenticated = true)
           .catch(() => this.isAuthenticated = false)
