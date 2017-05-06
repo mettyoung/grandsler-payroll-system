@@ -25,6 +25,10 @@ require('angular/angular');
 global.angular = global.window.angular;
 
 require('angular-mocks');
+require('angular-animate');
+require('angular-messages');
+require('angular-aria');
+require('angular-material');
 require('@uirouter/angularjs');
 
 module.exports = {
