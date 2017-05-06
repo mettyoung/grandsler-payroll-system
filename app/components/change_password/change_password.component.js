@@ -5,7 +5,7 @@ angular.module('change-password')
     templateUrl: './components/change_password/change_password.template.html',
     controller: ['$scope', '$mdDialog', function($scope, $mdDialog) {
 
-      this.current_user = auth.user;
+      this.current_user_password = auth.user.password;
 
       this.save = function(options) {
         auth.user.password = this.new_password;

@@ -28,6 +28,10 @@ describe('Change Password Component', function () {
   let controller;
   let dom;
 
+  beforeEach(() => {
+    return auth.attempt(ADMIN_USER.username, ADMIN_USER.password);
+  });
+
   beforeEach(ngModule('change-password'));
 
   beforeEach(inject(($componentController, $compile, $rootScope) => {
@@ -43,14 +47,10 @@ describe('Change Password Component', function () {
 
 
     dom = angular.element('<md-dialog>' + require('fs')
-      .readFileSync('./app/components/change_password/change_password.template.html') +
+        .readFileSync('./app/components/change_password/change_password.template.html') +
       '</md-dialog>');
     $compile(dom)($scope);
   }));
-
-  beforeEach(() => {
-    return auth.attempt(ADMIN_USER.username, ADMIN_USER.password);
-  });
 
   it("should require text for current, new and confirmation password", () => {
 
@@ -96,7 +96,7 @@ describe('Change Password Component', function () {
     expect(controller.Form.confirmation_password.$error).to.not.have.property('compareTo');
   });
 
-  it("should require equality of current_password to the password of the authenticated user", function() {
+  it("should require equality of current_password to the password of the authenticated user", function () {
 
     controller.Form.current_password.$setViewValue(ADMIN_USER.password + "wrong-password");
     expect(controller.Form.current_password.$error).to.have.property('compareTo');
@@ -105,7 +105,7 @@ describe('Change Password Component', function () {
     expect(controller.Form.current_password.$error).to.not.have.property('compareTo');
   });
 
-  it("should be able to change the password of the authenticated user", function() {
+  it("should be able to change the password of the authenticated user", function () {
 
     controller.Form.current_password.$setViewValue(ADMIN_USER.password);
     controller.Form.new_password.$setViewValue('12');
@@ -117,6 +117,15 @@ describe('Change Password Component', function () {
   });
 
   it("should hide the dialog if hide() is called", function() {
+  it("should not update the current_user_password of the controller when the password is changed", function () {
+    controller.new_password = "hello";
+    expect(controller.current_user_password).to.equal(ADMIN_USER.password);
+    return controller.save({transaction: transaction})
+      .then(() => {
+        expect(controller.current_user_password).to.equal(ADMIN_USER.password);
+      });
+  });
+
     expect($mdDialog.isHideCalled).to.be.false;
     controller.cancel();
     expect($mdDialog.isHideCalled).to.be.true;
