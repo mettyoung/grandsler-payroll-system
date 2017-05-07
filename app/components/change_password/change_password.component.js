@@ -11,12 +11,12 @@ angular.module('change-password')
 
       this.save = function(options) {
         auth.user.password = this.new_password;
-        return auth.user.save(options);
         return auth.user.save(options)
           .then(user => {
             this.cancel();
             return user;
           })
+          .catch(error => this.error = error);
       };
 
       this.cancel = function() {

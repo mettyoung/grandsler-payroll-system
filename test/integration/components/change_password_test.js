@@ -24,6 +24,7 @@ describe('Change Password Component', function () {
   transactionScope();
 
   let $scope;
+  let $compile;
   let $mdDialog;
   let controller;
   let dom;
@@ -34,9 +35,10 @@ describe('Change Password Component', function () {
 
   beforeEach(ngModule('change-password'));
 
-  beforeEach(inject(($componentController, $compile, $rootScope) => {
+  beforeEach(inject(($componentController, _$compile_, $rootScope) => {
 
     $scope = $rootScope.$new();
+    $compile = _$compile_;
     $mdDialog = {
       isHideCalled: false,
       hide() {
@@ -50,6 +52,7 @@ describe('Change Password Component', function () {
         .readFileSync('./app/components/change_password/change_password.template.html') +
       '</md-dialog>');
     $compile(dom)($scope);
+    $scope.$digest();
   }));
 
   it("should require text for current, new and confirmation password", () => {
@@ -149,6 +152,19 @@ describe('Change Password Component', function () {
 
     controller.save({transaction: transaction}).then(() => {
       expect($mdDialog.isHideCalled).to.be.true;
+      done();
+    });
+  });
+
+  it("should format the error message when change password failed", function (done) {
+
+    controller.new_password = null;
+
+    controller.save({transaction: transaction}).then(() => {
+      // Check if error object is formatted.
+      $scope.$digest();
+      let errorContainer = Object.values(dom.find('div')).filter(element => element.id === 'error-message')[0];
+      expect(errorContainer.innerHTML).to.contain(`<strong class="ng-binding">SequelizeDatabaseError</strong> ER_BAD_NULL_ERROR: Column 'password' cannot be null`);
       done();
     });
   });
