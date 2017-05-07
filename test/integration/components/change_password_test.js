@@ -116,7 +116,6 @@ describe('Change Password Component', function () {
     });
   });
 
-  it("should hide the dialog if hide() is called", function() {
   it("should not update the current_user_password of the controller when the password is changed", function () {
     controller.new_password = "hello";
     expect(controller.current_user_password).to.equal(ADMIN_USER.password);
@@ -126,8 +125,31 @@ describe('Change Password Component', function () {
       });
   });
 
+  it("should hide the dialog if cancel() is called", function () {
     expect($mdDialog.isHideCalled).to.be.false;
     controller.cancel();
     expect($mdDialog.isHideCalled).to.be.true;
+  });
+
+  it("should not hide the dialog if change password operation failed", function (done) {
+
+    expect($mdDialog.isHideCalled).to.be.false;
+    controller.new_password = null;
+
+    controller.save({transaction: transaction}).then(() => {
+      expect($mdDialog.isHideCalled).to.be.false;
+      done();
+    });
+  });
+
+  it("should hide the dialog if change password operation is successful", function (done) {
+
+    expect($mdDialog.isHideCalled).to.be.false;
+    controller.new_password = '12';
+
+    controller.save({transaction: transaction}).then(() => {
+      expect($mdDialog.isHideCalled).to.be.true;
+      done();
+    });
   });
 });

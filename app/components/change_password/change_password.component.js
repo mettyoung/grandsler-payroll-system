@@ -1,5 +1,6 @@
 const { remote } = require('electron');
-const auth = remote.require('./models/domain/authentication');
+const auth = remote && remote.require('./models/domain/authentication') ||
+  require('../../models/domain/authentication');
 
 angular.module('change-password')
   .component('changePassword', {
@@ -11,10 +12,15 @@ angular.module('change-password')
       this.save = function(options) {
         auth.user.password = this.new_password;
         return auth.user.save(options);
+        return auth.user.save(options)
+          .then(user => {
+            this.cancel();
+            return user;
+          })
       };
 
       this.cancel = function() {
         $mdDialog.hide();
-      }
+      };
     }]
   });
