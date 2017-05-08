@@ -11,7 +11,8 @@ angular.module('authentication')
        */
       this.login = event => {
         return Loader.perform(event.target, () => {
-          return remote.require('./models/domain/authentication')
+          return (remote && remote.require('./models/domain/authentication') ||
+            require('../../models/domain/authentication'))
             .attempt(this.username, this.password)
         }).then(() => this.isAuthenticated = true)
           .catch(() => this.isAuthenticated = false)
