@@ -25,31 +25,29 @@ class Notifier {
   }
 
   /**
-   * Creates a function that executes its callback after which returns a promise containing a {Message} object,
+   * Executes its callback after which returns a promise containing a {Message} object,
    * saves the {Message} object to the database for logging purposes, shows a system-wide toast
    * and updates the activity logs if present.
    * @param callback The callback function that should return a Promise with {Message} object.
    * @param options Additional options to be applied for database saving (e.g. transaction).
-   * @returns {Function} A function that includes calling of notifier services.
+   * @returns {Promise} Returns the {Message} object with user_id if successful.
    */
-  register(callback, options) {
-    return () => {
-      return callback().then(message => {
-        message.user_id = auth.user.id;
-        return UserLog.create(message, options)
-        // These will be skipped if UserLog failed.
-          .then(userLog => {
-            this.$mdToast.show(
-              this.$mdToast.simple()
-                .textContent('Saved!')
-                .action('close')
-                .highlightAction(true)
-                .hideDelay(3000)
-            );
-            return message;
-          });
-      })
-    }
+  perform(callback, options) {
+    return callback().then(message => {
+      message.user_id = auth.user.id;
+      return UserLog.create(message, options)
+      // These will be skipped if UserLog failed.
+        .then(userLog => {
+          this.$mdToast.show(
+            this.$mdToast.simple()
+              .textContent('Saved!')
+              .action('close')
+              .highlightAction(true)
+              .hideDelay(3000)
+          );
+          return message;
+        });
+    });
   }
 }
 

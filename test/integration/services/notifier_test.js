@@ -75,11 +75,11 @@ describe('Notifier Angular Service', function () {
   }));
 
   it("should return the message object as a promise", function () {
-    return Notifier.register(CONTROLLER.save, {transaction: transaction})().should.eventually.deep.equal(EXPECTED_MESSAGE);
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).should.eventually.deep.equal(EXPECTED_MESSAGE);
   });
 
   it("should save the EXPECTED_MESSAGE to user_log", function () {
-    return Notifier.register(CONTROLLER.save, {transaction: transaction})().then(message => {
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
       return UserLog.findOne({
         where: EXPECTED_MESSAGE,
         transaction: transaction
@@ -90,7 +90,7 @@ describe('Notifier Angular Service', function () {
   it("should execute a toast containing a saved message", function(done) {
 
     expect(MOCK_MD_TOAST.isShowCalled).to.be.false;
-    Notifier.register(CONTROLLER.save, {transaction: transaction})().then(message => {
+    Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
       expect(MOCK_MD_TOAST.isShowCalled).to.be.true;
       expect(MOCK_MD_TOAST.content).to.equal('Saved!');
       done();
