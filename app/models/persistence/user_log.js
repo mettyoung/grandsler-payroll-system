@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function (sequelize, DataTypes) {
-  var UserLog = sequelize.define('user_logs', {
+  var UserLog = sequelize.define('UserLog', {
     user_id: DataTypes.INTEGER,
     module: DataTypes.STRING,
     description: DataTypes.TEXT
@@ -14,7 +14,8 @@ module.exports = function (sequelize, DataTypes) {
         });
       }
     },
-    updatedAt: false
+    updatedAt: false,
+    tableName: 'user_logs'
   });
   return UserLog;
 };
