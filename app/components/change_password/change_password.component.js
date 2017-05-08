@@ -16,7 +16,11 @@ angular.module('change-password')
             this.cancel();
             return user;
           })
-          .catch(error => this.error = error);
+          .catch(error => {
+            this.error = error;
+            $scope.$apply();
+            auth.user.reload();
+          })
       };
 
       this.cancel = function() {

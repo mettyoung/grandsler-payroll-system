@@ -167,7 +167,7 @@ describe('Change Password Component', function () {
       // Check if error object is formatted.
       $scope.$digest();
       let errorContainer = Object.values(dom.find('div')).filter(element => element.id === 'error-message')[0];
-      expect(errorContainer.innerHTML).to.contain(`<strong class="ng-binding">SequelizeDatabaseError</strong> ER_BAD_NULL_ERROR: Column 'password' cannot be null`);
+      expect(errorContainer.innerHTML).to.contain(`<strong class="ng-binding">SequelizeDatabaseError:</strong> ER_BAD_NULL_ERROR: Column 'password' cannot be null`);
       done();
     });
   });
