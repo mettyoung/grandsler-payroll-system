@@ -17,9 +17,17 @@ require('../../../app/components/change_password/change_password.component');
 describe('Change Password Component', function () {
 
   const ADMIN_USER = {
+    id: 1,
     username: "admin",
     password: "admin"
   };
+
+  const EXPECTED_MESSAGE = {
+    user_id: ADMIN_USER.id,
+    module: 'Account Settings',
+    description: 'Changed password successfully!',
+  };
+
   const auth = require('../../../app/models/domain/authentication');
   transactionScope();
 
@@ -114,9 +122,10 @@ describe('Change Password Component', function () {
     controller.Form.new_password.$setViewValue('12');
     controller.Form.confirmation_password.$setViewValue('12');
 
-    return controller.save({transaction: transaction}).should.eventually.deep.include({
+    return controller.save({transaction: transaction}).then(() =>
+      auth.user.reload({transaction: transaction}).should.eventually.deep.include({
       password: '12'
-    });
+    }));
   });
 
   it("should not update the current_user_password of the controller when the password is changed", function () {
@@ -170,5 +179,10 @@ describe('Change Password Component', function () {
       expect(errorContainer.innerHTML).to.contain(`<strong class="ng-binding">SequelizeDatabaseError:</strong> ER_BAD_NULL_ERROR: Column 'password' cannot be null`);
       done();
     });
+  });
+  
+  it("should be integrated to Notifier services", function() {
+    controller.new_password = "hello";
+    return controller.save({transaction: transaction}).should.eventually.deep.include(EXPECTED_MESSAGE);
   });
 });

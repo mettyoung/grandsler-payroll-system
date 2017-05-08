@@ -1,2 +1,4 @@
 require('../../validations/validations.module');
-angular.module('change-password', ['ngMaterial', 'validations']);
+require('../../services/notifier/notifier.module');
+require('../../services/notifier/notifier.service');
+angular.module('change-password', ['ngMaterial', 'validations', 'notifier']);
