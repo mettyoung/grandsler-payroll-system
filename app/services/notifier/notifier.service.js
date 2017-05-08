@@ -20,7 +20,8 @@ class Notifier {
    * Store injected dependencies.
    * @param $mdToast
    */
-  constructor($mdToast) {
+  constructor($mdToast)
+  {
     this.$mdToast = $mdToast;
   }
 
@@ -32,12 +33,15 @@ class Notifier {
    * @param options Additional options to be applied for database saving (e.g. transaction).
    * @returns {Promise} Returns the {Message} object with user_id if successful.
    */
-  perform(callback, options) {
-    return callback().then(message => {
+  perform(callback, options)
+  {
+    return callback().then(message =>
+    {
       message.user_id = auth.user.id;
       return UserLog.create(message, options)
       // These will be skipped if UserLog failed.
-        .then(userLog => {
+        .then(userLog =>
+        {
           this.$mdToast.show(
             this.$mdToast.simple()
               .textContent('Saved!')
