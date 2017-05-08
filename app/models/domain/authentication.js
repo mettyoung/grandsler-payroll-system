@@ -11,6 +11,21 @@ let auth = {
   user: null,
 
   /**
+   * Logs the authenticated user out.
+   */
+  logOut: () => {
+    auth.removeHooks();
+    auth.user = null
+  },
+  
+  /**
+   * Removes the global hooks for assigning users.
+   */
+  removeHooks: () => {
+    sequelize.removeHook('beforeCreate', 'assignUser')
+      .removeHook('beforeUpdate', 'assignUser');
+  },
+  /**
    * Attempts to authenticate the given username and password against the database.
    * The user must have its is_enabled set to 1 in order to be authenticated.
    * The is_enabled is automatically invalidated if the employee is inactive (i.e. when an employee is not hired).
@@ -47,23 +62,21 @@ let auth = {
     }, _options);
 
     return User.findOne(options).then(user => {
+      auth.removeHooks();
       if (user != null && (user.Employee == null || user.Employee.Employments.length > 0)) {
-
         /**
          * Add beforeCreate hook to save created_by user.
          */
-        sequelize.removeHook('beforeCreate', 'assignUser')
-          .addHook('beforeCreate', 'assignUser', function (instance) {
-          instance.created_by = auth.user.id;
-          instance.updated_by = auth.user.id;
+        sequelize.addHook('beforeCreate', 'assignUser', function (instance) {
+          instance.created_by = user.id;
+          instance.updated_by = user.id;
         });
 
         /**
          * Add beforeUpdate hook to save updated_by user.
          */
-        sequelize.removeHook('beforeUpdate', 'assignUser')
-          .addHook('beforeUpdate', 'assignUser', function (instance) {
-          instance.updated_by = auth.user.id;
+        sequelize.addHook('beforeUpdate', 'assignUser', function (instance) {
+          instance.updated_by = user.id;
         });
 
         return auth.user = user;

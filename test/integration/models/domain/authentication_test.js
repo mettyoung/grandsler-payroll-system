@@ -61,7 +61,7 @@ describe('Authentication Module', () => {
   transactionScope();
 
   afterEach(() => {
-    auth.user = null;
+    auth.logOut();
   });
 
   it("should authenticate user against the database", () => {
@@ -147,7 +147,6 @@ describe('Authentication Module', () => {
       .then(SALARY_CRITERION => TimeShift.create(DUMMY_TIME_SHIFT, {transaction: transaction}))
       .then(timeShift => Employee.create(DUMMY_EMPLOYEE, {transaction: transaction}))
       .then(employee => Employment.create(DUMMY_EMPLOYMENT, {transaction: transaction}))
-      .then(() => auth.attempt(ADMIN_USER.username, ADMIN_USER.password, {transaction: transaction}))
       .then(() => {
         auth.attempt(ADMIN_USER.username, ADMIN_USER.password, {transaction: transaction}).catch(() => {
           done();
