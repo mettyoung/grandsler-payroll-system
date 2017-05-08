@@ -39,14 +39,39 @@ describe('Notifier Angular Service', function () {
   };
 
   let Notifier;
+  const MOCK_MD_TOAST = {
+    show() {
+      this.isShowCalled = true;
+      return this;
+    },
+    simple() {
+      return this;
+    },
+    textContent(content) {
+      this.content = content;
+      return this;
+    },
+    action() {
+      return this;
+    },
+    highlightAction() {
+      return this;
+    },
+    hideDelay() {
+      return this;
+    }
+  };
 
   const auth = require('../../../app/models/domain/authentication');
   transactionScope();
 
   beforeEach(() => auth.attempt(ADMIN_USER.username, ADMIN_USER.password));
   beforeEach(ngModule('notifier'));
+  beforeEach(ngModule($provide => {$provide.value('$mdToast', MOCK_MD_TOAST); return null; }));
   beforeEach(inject((_Notifier_) => {
     Notifier = _Notifier_;
+    MOCK_MD_TOAST.isShowCalled = false;
+    MOCK_MD_TOAST.content = null;
   }));
 
   it("should return the message object as a promise", function () {
@@ -61,4 +86,14 @@ describe('Notifier Angular Service', function () {
       }).should.eventually.deep.include(EXPECTED_MESSAGE);
     });
   });
+
+  it("should execute a toast containing a saved message", function(done) {
+
+    expect(MOCK_MD_TOAST.isShowCalled).to.be.false;
+    Notifier.register(CONTROLLER.save, {transaction: transaction})().then(message => {
+      expect(MOCK_MD_TOAST.isShowCalled).to.be.true;
+      expect(MOCK_MD_TOAST.content).to.equal('Saved!');
+      done();
+    });
+  })
 });

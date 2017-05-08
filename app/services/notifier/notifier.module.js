@@ -1,1 +1,1 @@
-angular.module('notifier', []);
+angular.module('notifier', ['ngMaterial']);
