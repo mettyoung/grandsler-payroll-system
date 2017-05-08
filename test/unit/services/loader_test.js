@@ -7,8 +7,8 @@ const {expect} = require('chai');
 /**
  * System Under Test
  */
-require('../../../app/services/loader.module');
-require('../../../app/services/loader.service');
+require('../../../app/services/loader/loader.module.js');
+require('../../../app/services/loader/loader.service.js');
 
 /**
  * Specs
