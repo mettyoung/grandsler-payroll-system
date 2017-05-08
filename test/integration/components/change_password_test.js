@@ -156,9 +156,12 @@ describe('Change Password Component', function () {
     });
   });
 
-  it("should format the error message when change password failed", function (done) {
+  it("should format and show the error message when change password failed", function (done) {
 
     controller.new_password = null;
+
+    let errorContainer = Object.values(dom.find('div')).filter(element => element.id === 'error-message')[0];
+    expect(errorContainer.getAttribute('ng-hide')).to.be.equal('!$ctrl.error');
 
     controller.save({transaction: transaction}).then(() => {
       // Check if error object is formatted.
