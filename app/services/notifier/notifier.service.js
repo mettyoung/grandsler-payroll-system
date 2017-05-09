@@ -4,7 +4,6 @@
 const {remote} = require('electron');
 const auth = remote && remote.require('./models/domain/authentication') ||
   require('../../models/domain/authentication');
-const moment = require('moment');
 
 /**
  * ORM for UserLog
@@ -54,8 +53,7 @@ class Notifier {
           );
 
           return Object.assign(userLog.get({plain: true}), {
-            username: auth.user.username,
-            formatted_date: moment(userLog.created_at).format("MMMM Do YYYY, hh:mm:ss a")
+            username: auth.user.username
           });
         });
 
