@@ -85,10 +85,19 @@ describe('Notifier Angular Service', function ()
     MOCK_MD_TOAST.content = null;
   }));
 
-  it("should return the userLog object as a promise", function ()
+  it("should transform the {Message} to its UserLog equivalent from the user_logs to the succeeding chains after a successful operation", function ()
   {
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction})
-      .then(userLog => assertUserLog(userLog, EXPECTED_USER_LOG));
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    {
+      return UserLog.findOne({
+        where: ORIGINAL_MESSAGE,
+        include: [{
+          model: User,
+          include: [Employee]
+        }],
+        transaction: transaction
+      }).then(newUserLog => expect(newUserLog.get({plain: true})).to.deep.equal(userLog));
+    });
   });
 
   it("should save the {Message} to user_logs", function ()
@@ -111,30 +120,14 @@ describe('Notifier Angular Service', function ()
     });
   });
 
-  it("should transform the {Message} to its UserLog equivalent from the user_logs to the succeeding chains after a successful operation", function ()
-  {
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
-    {
-      return UserLog.findOne({
-        where: ORIGINAL_MESSAGE,
-        include: [{
-          model: User,
-          include: [Employee]
-        }],
-        transaction: transaction
-      }).then(newUserLog => expect(newUserLog.get({plain: true})).to.deep.equal(userLog));
-    });
-  });
-
-  it("should execute a toast after a successful operation", function (done)
+  it("should execute a toast after a successful operation", function ()
   {
 
     expect(MOCK_MD_TOAST.isShowCalled).to.be.false;
-    Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
     {
       expect(MOCK_MD_TOAST.isShowCalled).to.be.true;
       expect(MOCK_MD_TOAST.content).to.equal('Saved!');
-      done();
     });
   });
 
