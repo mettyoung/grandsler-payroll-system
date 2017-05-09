@@ -17,8 +17,10 @@ angular.module('activity-logs')
        * @param userLog from the database.
        * @returns {{date: (*|string), description: string}}
        */
-      this.format = function(userLog) {
+      this.format = function (userLog)
+      {
         return {
+          _date: userLog.created_at,
           date: moment(userLog.created_at).format("MMMM Do YYYY, hh:mm:ss a"),
           description: `${capitalize(userLog.User.username)} ${userLog.description.toLowerCase()}`
         }
@@ -37,7 +39,7 @@ angular.module('activity-logs')
        */
       this.load = (_options) =>
       {
-        const options = Object.assign({ include: [User] }, _options);
+        const options = Object.assign({include: [User]}, _options);
 
         return UserLog.findAll(options).then(userLogs => this.activities =
           [...this.activities, ...userLogs.map(this.format)]);
