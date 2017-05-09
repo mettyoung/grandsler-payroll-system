@@ -5,7 +5,7 @@ const {User, UserLog} = require('../../models/persistence/index');
 angular.module('activity-logs')
   .component('activityLogs', {
     templateUrl: './components/activity_logs/activity_logs.template.html',
-    controller: ['Notifier', function (Notifier)
+    controller: ['Notifier', '$scope', function (Notifier, $scope)
     {
       /**
        * Sets the default entries to load
@@ -52,7 +52,7 @@ angular.module('activity-logs')
       /**
        * Preload the activities.
        */
-      this.load({limit: DEFAULT_NUMBER_OF_ENTRIES});
+      this.load({limit: DEFAULT_NUMBER_OF_ENTRIES}).then(activities => $scope.$apply());
 
       /**
        * Adds a listener for the notifier event if a user action is committed, the activity logs must be updated.
