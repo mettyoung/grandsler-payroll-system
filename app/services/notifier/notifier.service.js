@@ -23,6 +23,7 @@ class Notifier {
   constructor($mdToast)
   {
     this.$mdToast = $mdToast;
+    this.listeners = [];
   }
 
   /**
@@ -38,7 +39,8 @@ class Notifier {
     return callback().then(message =>
     {
       message.user_id = auth.user.id;
-      return UserLog.create(message, options)
+
+      const mainChain = UserLog.create(message, options)
       // These will be skipped if UserLog failed.
         .then(userLog =>
         {
@@ -51,7 +53,22 @@ class Notifier {
           );
           return message;
         });
+
+      // Add dynamically these listeners.
+      for (let listener of this.listeners)
+        mainChain.then(listener);
+
+      return mainChain;
     });
+  }
+
+  /**
+   * Adds a listener to be executed after the successful operation.
+   * @param callback The callback to be executed.
+   */
+  addListener(callback)
+  {
+    this.listeners.push(callback);
   }
 }
 

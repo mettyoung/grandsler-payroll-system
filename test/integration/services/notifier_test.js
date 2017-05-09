@@ -95,5 +95,25 @@ describe('Notifier Angular Service', function () {
       expect(MOCK_MD_TOAST.content).to.equal('Saved!');
       done();
     });
-  })
+  });
+
+  it("should be capable of adding listeners to be executed if operation is successful", function() {
+
+    let isFirstListenerCalled = false;
+    Notifier.addListener(message => {
+      expect(message).to.deep.equal(EXPECTED_MESSAGE);
+      isFirstListenerCalled = true;
+    });
+
+    let isSecondListenerCalled = false;
+    Notifier.addListener(message => {
+      expect(message).to.deep.equal(EXPECTED_MESSAGE);
+      isSecondListenerCalled = true;
+    });
+
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
+      expect(isFirstListenerCalled).to.be.true;
+      expect(isSecondListenerCalled).to.be.true;
+    });
+  });
 });
