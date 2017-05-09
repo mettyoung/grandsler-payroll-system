@@ -2,7 +2,7 @@
 <md-toolbar id="activity-logs-toolbar">
     <h1 class="md-toolbar-tools">Activities</h1>
 </md-toolbar>
-<md-content>
+<md-content flex>
     <md-list>
         <md-list-item ng-repeat="message in $ctrl.activities | orderBy:'-_date'">
             <div layout="column" id="activity-logs-list-item-container" flex>
