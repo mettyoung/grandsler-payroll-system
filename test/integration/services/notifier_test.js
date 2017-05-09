@@ -75,7 +75,7 @@ describe('Notifier Angular Service', function () {
   }));
 
   it("should return the message object as a promise", function () {
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).should.eventually.deep.equal(EXPECTED_MESSAGE);
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).should.eventually.deep.include(EXPECTED_MESSAGE);
   });
 
   it("should save the EXPECTED_MESSAGE to user_log", function () {
@@ -84,6 +84,15 @@ describe('Notifier Angular Service', function () {
         where: EXPECTED_MESSAGE,
         transaction: transaction
       }).should.eventually.deep.include(EXPECTED_MESSAGE);
+    });
+  });
+
+  it("should pass the new message from the user_logs to the succeeding chains after a successful operation", function() {
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
+      return UserLog.findOne({
+        where: EXPECTED_MESSAGE,
+        transaction: transaction
+      }).then(user => expect(user.get({plain: true})).to.deep.equal(message));
     });
   });
 
@@ -101,13 +110,13 @@ describe('Notifier Angular Service', function () {
 
     let isFirstListenerCalled = false;
     Notifier.addListener(message => {
-      expect(message).to.deep.equal(EXPECTED_MESSAGE);
+      expect(message).to.deep.include(EXPECTED_MESSAGE);
       isFirstListenerCalled = true;
     });
 
     let isSecondListenerCalled = false;
     Notifier.addListener(message => {
-      expect(message).to.deep.equal(EXPECTED_MESSAGE);
+      expect(message).to.deep.include(EXPECTED_MESSAGE);
       isSecondListenerCalled = true;
     });
 

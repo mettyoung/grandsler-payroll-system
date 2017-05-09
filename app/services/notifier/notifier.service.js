@@ -51,7 +51,7 @@ class Notifier {
               .highlightAction(true)
               .hideDelay(3000)
           );
-          return message;
+          return userLog.get({plain: true});
         });
 
       // Add dynamically these listeners.
