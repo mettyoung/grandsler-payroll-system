@@ -4,6 +4,7 @@
 const {remote} = require('electron');
 const auth = remote && remote.require('./models/domain/authentication') ||
   require('../../models/domain/authentication');
+const moment = require('moment');
 
 /**
  * ORM for UserLog
@@ -51,7 +52,10 @@ class Notifier {
               .highlightAction(true)
               .hideDelay(3000)
           );
-          return userLog.get({plain: true});
+
+          return Object.assign(userLog.get({plain: true}), {
+            formatted_date: moment(userLog.created_at).format("MMMM Do YYYY, hh:mm:ss a")
+          });
         });
 
       // Add dynamically these listeners.

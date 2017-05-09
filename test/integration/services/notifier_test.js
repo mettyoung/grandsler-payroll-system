@@ -5,6 +5,7 @@ const {ngModule, inject} = require('../../helpers/angular_test_setup');
 require('../../helpers/chai_with_promised');
 const transactionScope = require('../../helpers/transaction_scope');
 const {UserLog} = require('../../../app/models/persistence/index');
+const moment = require('moment');
 
 /**
  * System Under Test
@@ -89,10 +90,19 @@ describe('Notifier Angular Service', function () {
 
   it("should pass the new message from the user_logs to the succeeding chains after a successful operation", function() {
     return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
+      if (typeof message.formatted_date !== 'undefined')
+        delete message.formatted_date;
+      
       return UserLog.findOne({
         where: EXPECTED_MESSAGE,
         transaction: transaction
-      }).then(user => expect(user.get({plain: true})).to.deep.equal(message));
+      }).then(userLog => expect(userLog.get({plain: true})).to.deep.equal(message));
+    });
+  });
+
+  it("should format the new message with a proper format", function() {
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
+      expect(moment(message.formatted_date, 'MMMM Do YYYY, hh:mm:ss a').toDate()).to.deep.equal(message.created_at);
     });
   });
 
