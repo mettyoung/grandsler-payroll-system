@@ -32,7 +32,6 @@ describe('Change Password Component', function () {
   transactionScope();
 
   let $scope;
-  let $compile;
   let $mdDialog;
   let controller;
   let dom;
@@ -43,10 +42,9 @@ describe('Change Password Component', function () {
 
   beforeEach(ngModule('change-password'));
 
-  beforeEach(inject(($componentController, _$compile_, $rootScope) => {
+  beforeEach(inject(($componentController, $compile, $rootScope) => {
 
     $scope = $rootScope.$new();
-    $compile = _$compile_;
     $mdDialog = {
       isHideCalled: false,
       hide() {
@@ -54,7 +52,6 @@ describe('Change Password Component', function () {
       }
     };
     controller = $componentController('changePassword', {$scope: $scope, $mdDialog: $mdDialog});
-
 
     dom = angular.element('<md-dialog>' + require('fs')
         .readFileSync('./app/components/change_password/change_password.template.html') +
