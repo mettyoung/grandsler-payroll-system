@@ -27,12 +27,12 @@ class Notifier {
   }
 
   /**
-   * Executes its callback after which returns a promise containing a {Message} object,
+   * Executes its callback after which returns a promise containing a {UserLog} object,
    * saves the {Message} object to the database for logging purposes, shows a system-wide toast
    * and updates the activity logs if present.
-   * @param callback The callback function that should return a Promise with {Message} object.
+   * @param callback The callback function that should return a Promise with {UserLog} object.
    * @param options Additional options to be applied for database saving (e.g. transaction).
-   * @returns {Promise} Returns the {Message} object with user_id if successful.
+   * @returns {Promise} Returns the {UserLog} object with User object if successful.
    */
   perform(callback, options)
   {
@@ -53,7 +53,7 @@ class Notifier {
           );
 
           return Object.assign(userLog.get({plain: true}), {
-            username: auth.user.username
+            User: auth.user.get({plain: true})
           });
         });
 

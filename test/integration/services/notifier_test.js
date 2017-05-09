@@ -4,8 +4,9 @@
 const {ngModule, inject} = require('../../helpers/angular_test_setup');
 require('../../helpers/chai_with_promised');
 const transactionScope = require('../../helpers/transaction_scope');
-const {UserLog} = require('../../../app/models/persistence/index');
+const {User, UserLog, Employee} = require('../../../app/models/persistence/index');
 const moment = require('moment');
+const auth = require('../../../app/models/domain/authentication');
 
 /**
  * System Under Test
@@ -16,7 +17,8 @@ require('../../../app/services/notifier/notifier.service');
 /**
  * Specs
  */
-describe('Notifier Angular Service', function () {
+describe('Notifier Angular Service', function ()
+{
 
   const ADMIN_USER = {
     id: 1,
@@ -29,12 +31,16 @@ describe('Notifier Angular Service', function () {
     description: 'Changed his/her password'
   };
 
-  const EXPECTED_MESSAGE = Object.assign(ORIGINAL_MESSAGE, {
-    user_id: ADMIN_USER.id
+  const EXPECTED_USER_LOG = Object.assign({}, ORIGINAL_MESSAGE, {
+    User: {
+      id: ADMIN_USER.id,
+      username: ADMIN_USER.username
+    }
   });
 
   const CONTROLLER = {
-    save: function () {
+    save: function ()
+    {
       return Promise.resolve(ORIGINAL_MESSAGE);
     }
   };
@@ -63,77 +69,113 @@ describe('Notifier Angular Service', function () {
     }
   };
 
-  const auth = require('../../../app/models/domain/authentication');
   transactionScope();
 
   beforeEach(() => auth.attempt(ADMIN_USER.username, ADMIN_USER.password));
   beforeEach(ngModule('notifier'));
-  beforeEach(ngModule($provide => {$provide.value('$mdToast', MOCK_MD_TOAST); return null; }));
-  beforeEach(inject((_Notifier_) => {
+  beforeEach(ngModule($provide =>
+  {
+    $provide.value('$mdToast', MOCK_MD_TOAST);
+    return null;
+  }));
+  beforeEach(inject((_Notifier_) =>
+  {
     Notifier = _Notifier_;
     MOCK_MD_TOAST.isShowCalled = false;
     MOCK_MD_TOAST.content = null;
   }));
 
-  it("should return the message object as a promise", function () {
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).should.eventually.deep.include(EXPECTED_MESSAGE);
+  it("should return the userLog object as a promise", function ()
+  {
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction})
+      .then(userLog => assertUserLog(userLog, EXPECTED_USER_LOG));
   });
 
-  it("should save the EXPECTED_MESSAGE to user_log", function () {
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
+  it("should save the {Message} to user_logs", function ()
+  {
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    {
       return UserLog.findOne({
-        where: EXPECTED_MESSAGE,
+        include: [User],
+        where: ORIGINAL_MESSAGE,
         transaction: transaction
-      }).should.eventually.deep.include(EXPECTED_MESSAGE);
+      }).then(userLog => assertUserLog(userLog.get({plain: true}), EXPECTED_USER_LOG));
     });
   });
 
-  it("should pass the new message from the user_logs to the succeeding chains after a successful operation", function() {
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
+  it("should include the User to the userLog", function ()
+  {
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    {
+      expect(userLog.User.username).to.equal(ADMIN_USER.username);
+    });
+  });
 
-      if (typeof message.username !== 'undefined')
-        delete message.username;
-
+  it("should transform the {Message} to its UserLog equivalent from the user_logs to the succeeding chains after a successful operation", function ()
+  {
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    {
       return UserLog.findOne({
-        where: EXPECTED_MESSAGE,
+        where: ORIGINAL_MESSAGE,
+        include: [{
+          model: User,
+          include: [Employee]
+        }],
         transaction: transaction
-      }).then(userLog => expect(userLog.get({plain: true})).to.deep.equal(message));
+      }).then(newUserLog => expect(newUserLog.get({plain: true})).to.deep.equal(userLog));
     });
   });
 
-  it("should include the username to the message", function() {
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
-      expect(message.username).to.equal(ADMIN_USER.username);
-    });
-  });
-
-  it("should execute a toast containing a saved message", function(done) {
+  it("should execute a toast after a successful operation", function (done)
+  {
 
     expect(MOCK_MD_TOAST.isShowCalled).to.be.false;
-    Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
+    Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    {
       expect(MOCK_MD_TOAST.isShowCalled).to.be.true;
       expect(MOCK_MD_TOAST.content).to.equal('Saved!');
       done();
     });
   });
 
-  it("should be capable of adding listeners to be executed if operation is successful", function() {
+  it("should be capable of adding listeners to be executed if operation is successful", function ()
+  {
 
     let isFirstListenerCalled = false;
-    Notifier.addListener(message => {
-      expect(message).to.deep.include(EXPECTED_MESSAGE);
+    Notifier.addListener(userLog =>
+    {
+      assertUserLog(userLog, EXPECTED_USER_LOG);
       isFirstListenerCalled = true;
     });
 
     let isSecondListenerCalled = false;
-    Notifier.addListener(message => {
-      expect(message).to.deep.include(EXPECTED_MESSAGE);
+    Notifier.addListener(userLog =>
+    {
+      assertUserLog(userLog, EXPECTED_USER_LOG);
       isSecondListenerCalled = true;
     });
 
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    {
       expect(isFirstListenerCalled).to.be.true;
       expect(isSecondListenerCalled).to.be.true;
     });
   });
+
+  /**
+   * Assertion helpers
+   */
+  function assertUserLog(actual, expected)
+  {
+    const expectedClone = Object.assign({}, expected);
+    const actualClone = Object.assign({}, actual);
+
+    // Assert the user part.
+    expect(actualClone.User).to.deep.include(expectedClone.User);
+
+    // Assert the userLog
+    delete actualClone.User;
+    delete expectedClone.User;
+    expect(actualClone).to.deep.include(expectedClone);
+  }
 });
