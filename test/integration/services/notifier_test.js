@@ -90,9 +90,13 @@ describe('Notifier Angular Service', function () {
 
   it("should pass the new message from the user_logs to the succeeding chains after a successful operation", function() {
     return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
+
       if (typeof message.formatted_date !== 'undefined')
         delete message.formatted_date;
-      
+
+      if (typeof message.username !== 'undefined')
+        delete message.username;
+
       return UserLog.findOne({
         where: EXPECTED_MESSAGE,
         transaction: transaction
@@ -103,6 +107,12 @@ describe('Notifier Angular Service', function () {
   it("should format the new message with a proper format", function() {
     return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
       expect(moment(message.formatted_date, 'MMMM Do YYYY, hh:mm:ss a').toDate()).to.deep.equal(message.created_at);
+    });
+  });
+
+  it("should include the username to the message", function() {
+    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(message => {
+      expect(message.username).to.equal(ADMIN_USER.username);
     });
   });
 

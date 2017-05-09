@@ -54,6 +54,7 @@ class Notifier {
           );
 
           return Object.assign(userLog.get({plain: true}), {
+            username: auth.user.username,
             formatted_date: moment(userLog.created_at).format("MMMM Do YYYY, hh:mm:ss a")
           });
         });
