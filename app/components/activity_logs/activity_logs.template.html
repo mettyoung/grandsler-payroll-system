@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="components/activity_logs/activity_logs.template.css">
+<md-toolbar id="activity-logs-toolbar">
+    <h1 class="md-toolbar-tools">Activities</h1>
+</md-toolbar>
+<md-content>
+    <md-list>
+        <md-list-item ng-repeat="message in $ctrl.messages">
+            <div layout="column" id="activity-logs-list-item-container" flex>
+                <span id="activity-logs-timestamp">{{ message.date }}</span>
+                <span>{{ message.description }}</span>
+            </div>
+            <md-divider ng-if="!$last"></md-divider>
+        </md-list-item>
+    </md-list>
+</md-content>
