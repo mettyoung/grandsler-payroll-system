@@ -8,6 +8,11 @@ angular.module('activity-logs')
     controller: ['Notifier', function (Notifier)
     {
       /**
+       * Sets the default entries to load
+       */
+      const DEFAULT_NUMBER_OF_ENTRIES = 10;
+
+      /**
        * Formats the userLog object to be presented to the view template.
        * @param userLog from the database.
        * @returns {{date: (*|string), description: string}}
@@ -27,7 +32,7 @@ angular.module('activity-logs')
 
       /**
        * Loads user logs from the database and formats it.
-       * @param _options
+       * @param _options Options such as transaction or limit can be used here.
        * @returns {Promise} Returns the updated activities.
        */
       this.load = (_options) =>
@@ -45,7 +50,7 @@ angular.module('activity-logs')
       /**
        * Preload the activities.
        */
-      this.load();
+      this.load({limit: DEFAULT_NUMBER_OF_ENTRIES});
 
       /**
        * Adds a listener for the notifier event if a user action is committed, the activity logs must be updated.

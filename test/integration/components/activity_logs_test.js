@@ -36,7 +36,6 @@ describe('Activity Logs Angular Component', function ()
   };
 
   const FORMATTED_USER_LOG_ENTRY = {
-    date: moment(USER_LOG_ENTRY.created_at).format("MMMM Do YYYY, hh:mm:ss a"),
     description: `${capitalize(USER_LOG_ENTRY.username)} ${USER_LOG_ENTRY.description.toLowerCase()}`
   };
 
@@ -45,13 +44,6 @@ describe('Activity Logs Angular Component', function ()
     USER_LOG_ENTRY,
     USER_LOG_ENTRY,
     USER_LOG_ENTRY
-  ];
-
-  const FORMATTED_USER_LOG_ENTRIES = [
-    FORMATTED_USER_LOG_ENTRY,
-    FORMATTED_USER_LOG_ENTRY,
-    FORMATTED_USER_LOG_ENTRY,
-    FORMATTED_USER_LOG_ENTRY
   ];
 
   let changePasswordController;
@@ -72,16 +64,26 @@ describe('Activity Logs Angular Component', function ()
   it('should update the activities of a successful change password', function ()
   {
     changePasswordController.new_password = "hello";
-    return changePasswordController.save({transaction: transaction}).then(message =>
+    return changePasswordController.save({transaction: transaction}).then(userLog =>
     {
-      expect(activityController.activities.pop()).to.deep.equal(FORMATTED_USER_LOG_ENTRY);
+      expect(activityController.activities.pop()).to.deep.include(FORMATTED_USER_LOG_ENTRY);
     });
   });
 
   it('should retrieve initial list from the database', function ()
   {
-    return activityController.load({transaction: transaction}).then(messages => {
-      expect(activityController.activities).to.deep.equal(FORMATTED_USER_LOG_ENTRIES);
+    return activityController.load({transaction: transaction}).then(activities => {
+      expect(activityController.activities.length).to.be.equal(4);
+      for (let activity of activityController.activities)
+        expect(activity).to.deep.include(FORMATTED_USER_LOG_ENTRY);
     })
   });
+  
+  it("should limit the loading of the initial list", function() {
+    return activityController.load({transaction: transaction, limit: 2}).then(activities => {
+      expect(activityController.activities.length).to.be.equal(2);
+      for (let activity of activityController.activities)
+        expect(activity).to.deep.include(FORMATTED_USER_LOG_ENTRY);
+    })
+  })
 });
