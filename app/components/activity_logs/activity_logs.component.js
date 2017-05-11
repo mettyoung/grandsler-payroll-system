@@ -118,7 +118,9 @@ angular.module('activity-logs')
           if (userLogs.length === 0 || mostRecentActivity && userLogs[0].id === mostRecentActivity._id)
             return this.activities;
 
-          olderActivities = [...userLogs.map(this.format), mostRecentActivity, ...olderActivities];
+          if (mostRecentActivity !== null)
+            olderActivities = [mostRecentActivity, ...olderActivities];
+          olderActivities = [...userLogs.map(this.format), ...olderActivities];
           mostRecentActivity = olderActivities.shift();
 
           return this.activities =

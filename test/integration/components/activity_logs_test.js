@@ -155,4 +155,11 @@ describe('Activity Logs Angular Component', function ()
       });
   });
 
+  it("should not contain a null when pulling updates in an empty list", function() {
+    return activityController.pullUpdates({transaction: transaction})
+      .then(() =>
+      {
+        expect(activityController.activities).to.not.contain(null);
+      });
+  });
 });
