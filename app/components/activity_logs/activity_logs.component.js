@@ -1,3 +1,4 @@
+const process = require('process');
 const moment = require('moment');
 const capitalize = require('lodash.capitalize');
 const {User, UserLog} = require('../../models/persistence/index');
@@ -7,6 +8,11 @@ angular.module('activity-logs')
     templateUrl: './components/activity_logs/activity_logs.template.html',
     controller: ['Notifier', '$scope', function (Notifier, $scope)
     {
+      /**
+       * Sets to use the global.transaction object if test.
+       */
+      const TEST_OPTIONS = process.env.NODE_ENV === 'test'? {transaction: transaction}: {};
+
       /**
        * Sets the default entries to load
        */
@@ -133,11 +139,11 @@ angular.module('activity-logs')
        * Adds a listener for the notifier event if a user action is committed, the activity logs must be updated.
        * This also formats the activities.
        */
-      this.onNotifyUserAction = new Promise(resolve => Notifier.addListener(userLog => this.pullUpdates({transaction: transaction}).then(resolve)));
+      this.onNotifyUserAction = new Promise(resolve => Notifier.addListener(userLog => this.pullUpdates(TEST_OPTIONS).then(() => $scope.$apply()).then(resolve)));
 
       /**
        * Adds a refresh timer to pull log updates recurring from the database.
        */
-      this.onNotifyTimer = new Promise(resolve => setInterval(() => this.pullUpdates({transaction: transaction}).then(resolve), REFRESH_RATE_IN_SECONDS * 1000));
+      this.onNotifyTimer = new Promise(resolve => setInterval(() => this.pullUpdates(TEST_OPTIONS).then(() => $scope.$apply()).then(resolve), REFRESH_RATE_IN_SECONDS * 1000));
     }]
   });

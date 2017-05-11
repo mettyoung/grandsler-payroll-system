@@ -62,15 +62,6 @@ describe('Activity Logs Angular Component', function ()
     changePasswordController = $componentController('changePassword');
   }));
 
-  it('should update the activities of a successful change password', function ()
-  {
-    changePasswordController.new_password = "hello";
-    return changePasswordController.save({transaction: transaction}).then(userLog =>
-    {
-      expect(activityController.activities.pop()).to.deep.include(FORMATTED_USER_LOG_ENTRY);
-    });
-  });
-
   it('should retrieve initial list from the database in order', function ()
   {
     return activityController.load({transaction: transaction}).then(activities =>
