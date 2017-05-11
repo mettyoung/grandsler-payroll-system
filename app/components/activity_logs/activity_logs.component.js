@@ -20,6 +20,7 @@ angular.module('activity-logs')
       this.format = function (userLog)
       {
         return {
+          _id: userLog.id,
           _date: userLog.created_at,
           date: moment(userLog.created_at).format("MMMM Do YYYY, hh:mm:ss a"),
           description: `${capitalize(userLog.User.username)} ${userLog.description.toLowerCase()}`
@@ -39,7 +40,10 @@ angular.module('activity-logs')
        */
       this.load = (_options) =>
       {
-        const options = Object.assign({include: [User]}, _options);
+        const options = Object.assign({
+          order: 'id DESC',
+          include: [User]
+        }, _options);
 
         return UserLog.findAll(options).then(userLogs => this.activities =
           [...this.activities, ...userLogs.map(this.format)]);
