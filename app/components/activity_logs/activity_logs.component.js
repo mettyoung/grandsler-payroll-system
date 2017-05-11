@@ -137,8 +137,11 @@ angular.module('activity-logs')
       /**
        * Preload the activities.
        */
-      Progress.perform(this, 'isLoadFinished', () => this.load({limit: DEFAULT_NUMBER_OF_ENTRIES}))
-        .then(() => $scope.$apply());
+      this.loadMoreLogs = () => {
+        Progress.perform(this, 'isLoadFinished', () => this.load({limit: DEFAULT_NUMBER_OF_ENTRIES}))
+          .then(() => $scope.$apply());
+      };
+      this.loadMoreLogs();
 
       /**
        * Adds a listener for the notifier event if a user action is committed, the activity logs must be updated.
