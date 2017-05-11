@@ -127,6 +127,6 @@ angular.module('activity-logs')
        * Adds a listener for the notifier event if a user action is committed, the activity logs must be updated.
        * This also formats the activities.
        */
-      Notifier.addListener(userLog => this.activities.push(this.format(userLog)));
+      this.onNotifyUserAction = new Promise(resolve => Notifier.addListener(userLog => this.pullUpdates({transaction: transaction}).then(resolve)));
     }]
   });

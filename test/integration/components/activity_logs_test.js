@@ -137,4 +137,30 @@ describe('Activity Logs Angular Component', function ()
       });
   });
 
+  it("should be able to fill absent newer logs every notifier event", function ()
+  {
+    return activityController.load({transaction: transaction})
+      .then(activities => UserLog.bulkCreate(USER_LOG_ENTRIES, {transaction: transaction}))
+      .then(() => {
+        changePasswordController.new_password = "hello";
+        return changePasswordController.save({transaction: transaction});
+      })
+      .then(() =>
+      {
+        activityController.onNotifyUserAction.then(() => {
+          expect(activityController.activities.length).to.equal(11);
+          expect(activityController.activities[10]._id + 1).to.equal(activityController.activities[9]._id);
+          expect(activityController.activities[10]._id + 2).to.equal(activityController.activities[8]._id);
+          expect(activityController.activities[10]._id + 3).to.equal(activityController.activities[7]._id);
+          expect(activityController.activities[10]._id + 4).to.equal(activityController.activities[6]._id);
+          expect(activityController.activities[10]._id + 5).to.equal(activityController.activities[5]._id);
+          expect(activityController.activities[10]._id + 6).to.equal(activityController.activities[4]._id);
+          expect(activityController.activities[10]._id + 7).to.equal(activityController.activities[3]._id);
+          expect(activityController.activities[10]._id + 8).to.equal(activityController.activities[2]._id);
+          expect(activityController.activities[10]._id + 9).to.equal(activityController.activities[1]._id);
+          expect(activityController.activities[10]._id + 10).to.equal(activityController.activities[0]._id);
+        });
+      });
+  });
+
 });
