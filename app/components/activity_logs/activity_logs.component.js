@@ -80,6 +80,41 @@ angular.module('activity-logs')
       };
 
       /**
+       * Pull log updates from the database and prepends it to the logs.
+       * @param _options Options such as transaction or limit can be used here.
+       * @returns {Promise} Returns the updated activities.
+       */
+      this.pullUpdates = (_options) =>
+      {
+        const options = Object.assign({
+          order: 'id DESC',
+          include: [User]
+        }, _options);
+
+        // Load newer logs if there are logs already loaded.
+        if (this.activities.length > 0)
+          Object.assign(options, {
+            where: {
+              id: {
+                $gt: mostRecentActivity._id
+              }
+            }
+          });
+
+        return UserLog.findAll(options).then(userLogs =>
+        {
+          if (userLogs.length === 0)
+            return this.activities;
+
+          olderActivities = [...userLogs.map(this.format), mostRecentActivity, ...olderActivities];
+          mostRecentActivity = olderActivities.shift();
+
+          return this.activities =
+            [mostRecentActivity, ...olderActivities];
+        });
+      };
+
+      /**
        * Initializations
        */
 
