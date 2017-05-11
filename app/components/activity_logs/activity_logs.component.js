@@ -13,6 +13,12 @@ angular.module('activity-logs')
       const DEFAULT_NUMBER_OF_ENTRIES = 10;
 
       /**
+       * Variables to be used for the algorithm of preloading, loading of older and filling of the newer logs.
+       */
+      let olderActivities = [];
+      let mostRecentActivity = null;
+
+      /**
        * Formats the userLog object to be presented to the view template.
        * @param userLog from the database.
        * @returns {{date: (*|string), description: string}}
@@ -34,7 +40,8 @@ angular.module('activity-logs')
       this.activities = [];
 
       /**
-       * Loads user logs from the database and formats it.
+       * Loads most recent user logs from the database and formats it for display; appends if repeatedly called
+       * and loads older logs.
        * @param _options Options such as transaction or limit can be used here.
        * @returns {Promise} Returns the updated activities.
        */
@@ -45,8 +52,31 @@ angular.module('activity-logs')
           include: [User]
         }, _options);
 
-        return UserLog.findAll(options).then(userLogs => this.activities =
-          [...this.activities, ...userLogs.map(this.format)]);
+        // Load older logs if there are logs already loaded.
+        if (this.activities.length > 0)
+        {
+          const oldestActivity = this.activities[this.activities.length - 1];
+          Object.assign(options, {
+            where: {
+              id: {
+                $lt: oldestActivity._id
+              }
+            }
+          });
+        }
+
+        return UserLog.findAll(options).then(userLogs =>
+        {
+          if (userLogs.length === 0)
+            return this.activities;
+
+          olderActivities = [...olderActivities, ...userLogs.map(this.format)];
+          if (mostRecentActivity === null)
+            mostRecentActivity = olderActivities.shift();
+
+          return this.activities =
+            [mostRecentActivity, ...olderActivities];
+        });
       };
 
       /**

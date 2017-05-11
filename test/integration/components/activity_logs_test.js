@@ -43,6 +43,7 @@ describe('Activity Logs Angular Component', function ()
     USER_LOG_ENTRY,
     USER_LOG_ENTRY,
     USER_LOG_ENTRY,
+    USER_LOG_ENTRY,
     USER_LOG_ENTRY
   ];
 
@@ -72,22 +73,47 @@ describe('Activity Logs Angular Component', function ()
 
   it('should retrieve initial list from the database in order', function ()
   {
-    return activityController.load({transaction: transaction}).then(activities => {
-      expect(activityController.activities.length).to.be.equal(4);
+    return activityController.load({transaction: transaction}).then(activities =>
+    {
+      expect(activityController.activities.length).to.be.equal(5);
       for (let activity of activityController.activities)
         expect(activity).to.deep.include(FORMATTED_USER_LOG_ENTRY);
-      expect(activityController.activities[3]._id + 1).to.equal(activityController.activities[2]._id);
-      expect(activityController.activities[3]._id + 2).to.equal(activityController.activities[1]._id);
-      expect(activityController.activities[3]._id + 3).to.equal(activityController.activities[0]._id);
+      expect(activityController.activities[4]._id + 1).to.equal(activityController.activities[3]._id);
+      expect(activityController.activities[4]._id + 2).to.equal(activityController.activities[2]._id);
+      expect(activityController.activities[4]._id + 3).to.equal(activityController.activities[1]._id);
+      expect(activityController.activities[4]._id + 4).to.equal(activityController.activities[0]._id);
     })
   });
 
-  it("should limit the loading of the initial list", function() {
-    return activityController.load({transaction: transaction, limit: 2}).then(activities => {
+  it("should limit the loading of the initial list", function ()
+  {
+    return activityController.load({transaction: transaction, limit: 2}).then(activities =>
+    {
       expect(activityController.activities.length).to.be.equal(2);
       for (let activity of activityController.activities)
         expect(activity).to.deep.include(FORMATTED_USER_LOG_ENTRY);
       expect(activityController.activities[1]._id + 1).to.equal(activityController.activities[0]._id);
     })
-  })
+  });
+
+  it("should be able to load older logs if available", function ()
+  {
+    return activityController.load({transaction: transaction, limit: 1}).then(activities =>
+    {
+      return activityController.load({transaction: transaction, limit: 1}).then(activities =>
+      {
+        return activityController.load({transaction: transaction, limit: 2}).then(activities =>
+        {
+          return activityController.load({transaction: transaction, limit: 1}).then(activities =>
+          {
+            expect(activityController.activities.length).to.equal(5);
+            expect(activityController.activities[4]._id + 1).to.equal(activityController.activities[3]._id);
+            expect(activityController.activities[4]._id + 2).to.equal(activityController.activities[2]._id);
+            expect(activityController.activities[4]._id + 3).to.equal(activityController.activities[1]._id);
+            expect(activityController.activities[4]._id + 4).to.equal(activityController.activities[0]._id);
+          });
+        });
+      });
+    });
+  });
 });
