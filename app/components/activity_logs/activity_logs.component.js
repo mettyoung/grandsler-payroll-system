@@ -13,6 +13,11 @@ angular.module('activity-logs')
       const DEFAULT_NUMBER_OF_ENTRIES = 10;
 
       /**
+       * Refresh rate
+       */
+      const REFRESH_RATE_IN_SECONDS = 5;
+
+      /**
        * Variables to be used for the algorithm of preloading, loading of older and filling of the newer logs.
        */
       let olderActivities = [];
@@ -103,7 +108,8 @@ angular.module('activity-logs')
 
         return UserLog.findAll(options).then(userLogs =>
         {
-          if (userLogs.length === 0)
+          // Second condition is meant to avoid race condition.
+          if (userLogs.length === 0 || mostRecentActivity && userLogs[0].id === mostRecentActivity._id)
             return this.activities;
 
           olderActivities = [...userLogs.map(this.format), mostRecentActivity, ...olderActivities];
@@ -128,5 +134,10 @@ angular.module('activity-logs')
        * This also formats the activities.
        */
       this.onNotifyUserAction = new Promise(resolve => Notifier.addListener(userLog => this.pullUpdates({transaction: transaction}).then(resolve)));
+
+      /**
+       * Adds a refresh timer to pull log updates recurring from the database.
+       */
+      this.onNotifyTimer = new Promise(resolve => setInterval(() => this.pullUpdates({transaction: transaction}).then(resolve), REFRESH_RATE_IN_SECONDS * 1000));
     }]
   });
