@@ -6,12 +6,12 @@ const {User, UserLog} = require('../../models/persistence/index');
 angular.module('activity-logs')
   .component('activityLogs', {
     templateUrl: './components/activity_logs/activity_logs.template.html',
-    controller: ['Notifier', '$scope', function (Notifier, $scope)
+    controller: ['Notifier', 'Progress', '$scope', function (Notifier, Progress, $scope)
     {
       /**
        * Sets to use the global.transaction object if test.
        */
-      const TEST_OPTIONS = process.env.NODE_ENV === 'test'? {transaction: transaction}: {};
+      const TEST_OPTIONS = process.env.NODE_ENV === 'test' ? {transaction: transaction} : {};
 
       /**
        * Sets the default entries to load
@@ -132,20 +132,37 @@ angular.module('activity-logs')
        * Initializations
        */
 
+      this.isLoadFinished = this.isPullFinished = false;
+
       /**
        * Preload the activities.
        */
-      this.load({limit: DEFAULT_NUMBER_OF_ENTRIES}).then(activities => $scope.$apply());
+      Progress.perform(this, 'isLoadFinished', () => this.load({limit: DEFAULT_NUMBER_OF_ENTRIES}))
+        .then(() => $scope.$apply());
 
       /**
        * Adds a listener for the notifier event if a user action is committed, the activity logs must be updated.
        * This also formats the activities.
        */
-      this.onNotifyUserAction = new Promise(resolve => Notifier.addListener(userLog => this.pullUpdates(TEST_OPTIONS).then(() => $scope.$apply()).then(resolve)));
+      this.onNotifyUserAction = new Promise(resolve => Notifier.addListener(userLog =>
+      {
+        Progress.perform(this, 'isPullFinished', () => this.pullUpdates(TEST_OPTIONS))
+          .then(() => $scope.$apply())
+          .then(resolve);
+        $scope.$apply();
+      }));
 
       /**
        * Adds a refresh timer to pull log updates recurring from the database.
        */
-      this.onNotifyTimer = new Promise(resolve => setInterval(() => this.pullUpdates(TEST_OPTIONS).then(() => $scope.$apply()).then(resolve), REFRESH_RATE_IN_SECONDS * 1000));
+      this.onNotifyTimer = new Promise(resolve =>
+        setInterval(() =>
+        {
+          Progress.perform(this, 'isPullFinished', () => this.pullUpdates(TEST_OPTIONS))
+            .then(() => $scope.$apply())
+            .then(resolve);
+          $scope.$apply();
+        }, REFRESH_RATE_IN_SECONDS * 1000)
+      );
     }]
   });
