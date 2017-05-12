@@ -3,18 +3,18 @@
 module.exports = {
   up: function (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('SALARY_CRITERIA', [{
-      name: "Regular Pay",
+      name: "Regular",
       mark_up: 0,
       updated_by: 1,
       updated_at: queryInterface.sequelize.fn('NOW')
     }, {
-      name: "Overtime Pay",
+      name: "Overtime",
       minimum_minutes: 15,
       mark_up: 30,
       updated_by: 1,
       updated_at: queryInterface.sequelize.fn('NOW')
     }, {
-      name: "Night-differential Pay",
+      name: "Night-differential",
       mark_up: 10,
       updated_by: 1,
       updated_at: queryInterface.sequelize.fn('NOW')
