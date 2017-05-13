@@ -1,0 +1,71 @@
+<!-- Accept enter key -->
+<form id='form' name="$ctrl.Form" flex>
+    <!-- 1st sibling: Contains the content of the dialog -->
+    <md-dialog-content>
+        <!-- Title bar -->
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h3><span>Salary Criteria</span></h3>
+            </div>
+        </md-toolbar>
+        <!-- Preload error message; hides the content and save button if pre-loading error occurs. -->
+        <div id="preload-error-message" class="alert alert-danger" ng-hide="!$ctrl.preload_error">
+            <strong>{{$ctrl.preload_error.name}}:</strong> {{$ctrl.preload_error.message}}
+        </div>
+        <!-- Main Content; hides if preload_error occurs. -->'
+        <md-content id="main-content" ng-hide="$ctrl.preload_error">
+            <!-- This error occurs on saving -->
+            <div id="save-error-message" class="alert alert-danger" ng-hide="!$ctrl.save_error">
+                <strong>{{$ctrl.save_error.name}}:</strong> {{$ctrl.save_error.message}}
+            </div>
+            <!-- Overtime setting -->
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>Overtime</strong></div>
+                <div class="panel-body">
+                    <md-input-container class="md-block" flex>
+                        <label>Minimum Required Minutes</label>
+                        <input required name="overtime.minimum_minutes" ng-model="$ctrl.overtime.minimum_minutes"
+                               type="number" md-auto-focus="true">
+                        <div ng-messages="$ctrl.Form.overtime.minimum_minutes.$error">
+                            <div ng-message="required">This is required.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex>
+                        <label>Mark-up (%)</label>
+                        <input required name="overtime.mark_up" ng-model="$ctrl.overtime.mark_up"
+                               type="number">
+                        <div ng-messages="$ctrl.Form.overtime.mark_up.$error">
+                            <div ng-message="required">This is required.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+            <!-- Night-differential setting -->
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>Night-differential</strong></div>
+                <div class="panel-body">
+                    <md-input-container class="md-block">
+                        <label>Mark-up (%)</label>
+                        <input required name="night_differential.mark_up" ng-model="$ctrl.night_differential.mark_up"
+                               type="number">
+                        <div ng-messages="$ctrl.Form.night_differential.mark_up.$error">
+                            <div ng-message="required">This is required.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+        </md-content>
+    </md-dialog-content>
+    <!-- Actions -->
+    <md-dialog-actions>
+        <!-- Save button is hidden if preloading error occurs. -->
+        <!-- Save button is disabled if there are any input errors. -->
+        <md-button id='save-button' class="md-primary" type='submit'
+                   ng-hide="$ctrl.preload_error"
+                   ng-disabled="!$ctrl.Form.$valid"
+                   ng-click="$ctrl.save()">
+            Save
+        </md-button>
+        <md-button id='cancel-button' ng-click="$ctrl.cancel()">Cancel</md-button>
+    </md-dialog-actions>
+</form>
