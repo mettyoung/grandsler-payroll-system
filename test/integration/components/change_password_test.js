@@ -1,9 +1,9 @@
 /**
  * Test Helpers
  */
-require('../../helpers/chai_with_promised');
-const {ngModule, inject} = require('../../helpers/angular_test_setup');
-const transactionScope = require('../../helpers/transaction_scope');
+require('../../helpers/unit_helper');
+require('../../helpers/integration_helper');
+require('../../helpers/authentication_helper');
 
 /**
  * System Under Test
@@ -14,13 +14,13 @@ require('../../../app/components/change_password/change_password.component');
 /**
  * Specs
  */
-describe('Change Password Component', function () {
+describe('Change Password Component', function ()
+{
 
-  const ADMIN_USER = {
-    id: 1,
-    username: "admin",
-    password: "admin"
-  };
+  /**
+   * Constants and variables
+   */
+  const CHANGE_PASSWORD_TEMPLATE = './app/components/change_password/change_password.template.html';
 
   const EXPECTED_MESSAGE = {
     user_id: ADMIN_USER.id,
@@ -28,158 +28,225 @@ describe('Change Password Component', function () {
     description: 'Changed password successfully!',
   };
 
-  const auth = require('../../../app/models/domain/authentication');
+  const $services = {
+    $scope: {},
+    $controller: null,
+    $dom: null,
+    $mdDialog: null,
+    ModelProvider: null
+  };
+
+  /**
+   * Set-up
+   */
   transactionScope();
-
-  let $scope;
-  let $mdDialog;
-  let controller;
-  let dom;
-
-  beforeEach(() => {
-    return auth.attempt(ADMIN_USER.username, ADMIN_USER.password);
-  });
-
+  authenticate();
   beforeEach(ngModule('change-password'));
+  beforeEach(inject(
+    ($rootScope, $componentController, $compile, ModelProvider) =>
+    {
+      // Create a new scope.
+      $services.$scope = $rootScope.$new();
 
-  beforeEach(inject(($componentController, $compile, $rootScope) => {
+      // Create mock for mdDialog
+      $services.$mdDialog = {
+        isHideCalled: false,
+        hide() {
+          this.isHideCalled = true;
+        }
+      };
 
-    $scope = $rootScope.$new();
-    $mdDialog = {
-      isHideCalled: false,
-      hide() {
-        this.isHideCalled = true;
-      }
-    };
-    controller = $componentController('changePassword', {$scope: $scope, $mdDialog: $mdDialog});
+      // Store the controller and inject the scope.
+      $services.$controller = $componentController('changePassword', {
+        $scope: $services.$scope,
+        $mdDialog: $services.$mdDialog
+      });
 
-    dom = angular.element('<md-dialog>' + require('fs')
-        .readFileSync('./app/components/change_password/change_password.template.html') +
-      '</md-dialog>');
-    $compile(dom)($scope);
-    $scope.$digest();
-  }));
+      // Import dom
+      $services.$dom = $('<md-dialog>').append($(fs.readFileSync(CHANGE_PASSWORD_TEMPLATE).toString()));
 
-  it("should require text for current, new and confirmation password", () => {
+      // Compile the template and scope.
+      $compile($services.$dom)($services.$scope);
+      $services.$scope.$digest();
 
-    controller.Form.current_password.$setViewValue('');
-    controller.Form.new_password.$setViewValue('');
-    controller.Form.confirmation_password.$setViewValue('');
+      // Store dependencies
+      $services.ModelProvider = ModelProvider;
+      $services.ModelProvider.load();
+    }
+  ));
 
-    expect(controller.Form.current_password.$error).to.have.property('required');
-    expect(controller.Form.new_password.$error).to.have.property('required');
-    expect(controller.Form.confirmation_password.$error).to.have.property('required');
+  it("should require text for all fields", () =>
+  {
+    $services.$controller.Form.current_password.$setViewValue('');
+    $services.$controller.Form.new_password.$setViewValue('');
+    $services.$controller.Form.confirmation_password.$setViewValue('');
 
-    controller.Form.current_password.$setViewValue('12');
-    controller.Form.new_password.$setViewValue('12');
-    controller.Form.confirmation_password.$setViewValue('12');
+    expect($services.$controller.Form.current_password.$error).to.have.property('required');
+    expect($services.$controller.Form.new_password.$error).to.have.property('required');
+    expect($services.$controller.Form.confirmation_password.$error).to.have.property('required');
 
-    expect(controller.Form.current_password.$error).to.not.have.property('required');
-    expect(controller.Form.new_password.$error).to.not.have.property('required');
-    expect(controller.Form.confirmation_password.$error).to.not.have.property('required');
+    $services.$controller.Form.current_password.$setViewValue('12');
+    $services.$controller.Form.new_password.$setViewValue('12');
+    $services.$controller.Form.confirmation_password.$setViewValue('12');
+
+    expect($services.$controller.Form.current_password.$error).to.not.have.property('required');
+    expect($services.$controller.Form.new_password.$error).to.not.have.property('required');
+    expect($services.$controller.Form.confirmation_password.$error).to.not.have.property('required');
   });
 
-  it("should disable the save button if there's a validation error", function () {
+  it("should require equality of confirmation password to new password", function ()
+  {
+    $services.$controller.Form.new_password.$setViewValue('12');
+    $services.$controller.Form.confirmation_password.$setViewValue('1');
+    expect($services.$controller.Form.confirmation_password.$error).to.have.property('compareTo');
 
-    controller.Form.current_password.$setViewValue('');
-    controller.Form.new_password.$setViewValue('12');
-    controller.Form.confirmation_password.$setViewValue('12');
-
-    expect(controller.Form.$valid).to.be.false;
-    expect(dom.find('button')[0].disabled).to.be.true;
-
-    controller.Form.current_password.$setViewValue(ADMIN_USER.password);
-
-    expect(controller.Form.$valid).to.be.true;
-    expect(dom.find('button')[0].disabled).to.be.false;
+    $services.$controller.Form.confirmation_password.$setViewValue('12');
+    expect($services.$controller.Form.confirmation_password.$error).to.not.have.property('compareTo');
   });
 
-  it("should require equality of confirmation password to new password", function () {
+  it("should require equality of current_password to the password of the authenticated user", function ()
+  {
+    $services.$controller.Form.current_password.$setViewValue(ADMIN_USER.password + "wrong-password");
+    expect($services.$controller.Form.current_password.$error).to.have.property('compareTo');
 
-    controller.Form.new_password.$setViewValue('12');
-    controller.Form.confirmation_password.$setViewValue('1');
-    expect(controller.Form.confirmation_password.$error).to.have.property('compareTo');
-
-    controller.Form.confirmation_password.$setViewValue('12');
-    expect(controller.Form.confirmation_password.$error).to.not.have.property('compareTo');
+    $services.$controller.Form.current_password.$setViewValue(ADMIN_USER.password);
+    expect($services.$controller.Form.current_password.$error).to.not.have.property('compareTo');
   });
 
-  it("should require equality of current_password to the password of the authenticated user", function () {
+  it("should disable the save button if there's a validation error", function ()
+  {
+    $services.$controller.Form.current_password.$setViewValue('');
+    $services.$controller.Form.new_password.$setViewValue('12');
+    $services.$controller.Form.confirmation_password.$setViewValue('12');
 
-    controller.Form.current_password.$setViewValue(ADMIN_USER.password + "wrong-password");
-    expect(controller.Form.current_password.$error).to.have.property('compareTo');
+    expect($services.$dom.find('button#save-button').is(':disabled')).to.be.true;
 
-    controller.Form.current_password.$setViewValue(ADMIN_USER.password);
-    expect(controller.Form.current_password.$error).to.not.have.property('compareTo');
+    $services.$controller.Form.current_password.$setViewValue(ADMIN_USER.password);
+
+    expect($services.$dom.find('button#save-button').is(':disabled')).to.be.false;
   });
 
-  it("should be able to change the password of the authenticated user", function () {
+  it("should be able to change the password of the authenticated user", function ()
+  {
+    $services.$controller.Form.current_password.$setViewValue(ADMIN_USER.password);
+    $services.$controller.Form.new_password.$setViewValue('12');
+    $services.$controller.Form.confirmation_password.$setViewValue('12');
 
-    controller.Form.current_password.$setViewValue(ADMIN_USER.password);
-    controller.Form.new_password.$setViewValue('12');
-    controller.Form.confirmation_password.$setViewValue('12');
-
-    return controller.save({transaction: transaction}).then(() =>
+    return $services.$controller.save(transaction).then(() =>
       auth.user.reload({transaction: transaction}).should.eventually.deep.include({
-      password: '12'
-    }));
+        password: '12'
+      }));
   });
 
-  it("should not update the current_user_password of the controller when the password is changed", function () {
-    controller.new_password = "hello";
-    expect(controller.current_user_password).to.equal(ADMIN_USER.password);
-    return controller.save({transaction: transaction})
-      .then(() => {
-        expect(controller.current_user_password).to.equal(ADMIN_USER.password);
+  it("should only call the save operation one at a time", function ()
+  {
+    $services.$controller.Form.current_password.$setViewValue(ADMIN_USER.password);
+    $services.$controller.Form.new_password.$setViewValue('12');
+    $services.$controller.Form.confirmation_password.$setViewValue('12');
+    expect(typeof $services.$controller.save(transaction)).to.not.equal('undefined');
+    expect(typeof $services.$controller.save(transaction)).to.equal('undefined');
+  });
+
+  it("should not update the current_user_password of the $services.$controller when the password is changed", function ()
+  {
+    $services.$controller.new_password = "hello";
+    expect($services.$controller.current_user_password).to.equal(ADMIN_USER.password);
+    return $services.$controller.save(transaction)
+      .then(() =>
+      {
+        expect($services.$controller.current_user_password).to.equal(ADMIN_USER.password);
       });
   });
 
-  it("should hide the dialog if cancel() is called", function () {
-    expect($mdDialog.isHideCalled).to.be.false;
-    controller.cancel();
-    expect($mdDialog.isHideCalled).to.be.true;
-  });
+  it("should format and show the error message when saving failed", function ()
+  {
+    $services.$controller.new_password = null;
+    expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.true;
 
-  it("should not hide the dialog if change password operation failed", function (done) {
-
-    expect($mdDialog.isHideCalled).to.be.false;
-    controller.new_password = null;
-
-    controller.save({transaction: transaction}).then(() => {
-      expect($mdDialog.isHideCalled).to.be.false;
-      done();
+    return $services.$controller.save(transaction).then(() =>
+    {
+      expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.false;
+      expect($services.$dom.find('div#save-error-message').text()).to.contain('SequelizeDatabaseError')
+        .and.contain("ER_BAD_NULL_ERROR: Column 'password' cannot be null");
     });
   });
 
-  it("should hide the dialog if change password operation is successful", function (done) {
+  it('should hide error message if the error is resolved', function ()
+  {
+    $services.$controller.new_password = null;
 
-    expect($mdDialog.isHideCalled).to.be.false;
-    controller.new_password = '12';
-
-    controller.save({transaction: transaction}).then(() => {
-      expect($mdDialog.isHideCalled).to.be.true;
-      done();
+    expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.true;
+    return $services.$controller.save(transaction).then(() =>
+    {
+      expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.false;
+      $services.$controller.new_password = 'Helo';
+      return $services.$controller.save(transaction).then(() =>
+      {
+        expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.true;
+      });
     });
   });
 
-  it("should format and show the error message when change password failed", function (done) {
+  it("should hide the dialog if cancel() is called", function ()
+  {
+    expect($services.$mdDialog.isHideCalled).to.be.false;
+    $services.$controller.cancel();
+    expect($services.$mdDialog.isHideCalled).to.be.true;
+  });
 
-    controller.new_password = null;
+  it("should not hide the dialog if saving failed", function ()
+  {
+    expect($services.$mdDialog.isHideCalled).to.be.false;
+    $services.$controller.new_password = null;
 
-    let errorContainer = Object.values(dom.find('div')).filter(element => element.id === 'error-message')[0];
-    expect(errorContainer.getAttribute('ng-hide')).to.be.equal('!$ctrl.error');
-
-    controller.save({transaction: transaction}).then(() => {
-      // Check if error object is formatted.
-      $scope.$digest();
-      let errorContainer = Object.values(dom.find('div')).filter(element => element.id === 'error-message')[0];
-      expect(errorContainer.innerHTML).to.contain(`<strong class="ng-binding">SequelizeDatabaseError:</strong> ER_BAD_NULL_ERROR: Column 'password' cannot be null`);
-      done();
+    return $services.$controller.save(transaction).then(() =>
+    {
+      expect($services.$mdDialog.isHideCalled).to.be.false;
     });
   });
-  
-  it("should be integrated to Notifier services", function() {
-    controller.new_password = "hello";
-    return controller.save({transaction: transaction}).should.eventually.deep.include(EXPECTED_MESSAGE);
+
+  it("should hide the dialog if saving is successful", function ()
+  {
+    expect($services.$mdDialog.isHideCalled).to.be.false;
+    $services.$controller.new_password = 'Hello';
+
+    return $services.$controller.save(transaction).then(() =>
+    {
+      expect($services.$mdDialog.isHideCalled).to.be.true;
+    });
+  });
+
+  it("should propagate the message to the Notifier if operation is successful", function ()
+  {
+    const date = new Date();
+    $services.$controller.new_password = "hello";
+    return $services.$controller.save(transaction).then(() =>
+    {
+      return $services.ModelProvider.models.UserLog.findOne({
+        where: Object.assign(EXPECTED_MESSAGE, {
+          created_at: {
+            $gte: date
+          }
+        }),
+        transaction: transaction
+      }).should.eventually.not.be.a('null')
+    });
+  });
+
+  it("should not propagate the message to the Notifier if operation failed", function ()
+  {
+    const date = new Date();
+    $services.$controller.new_password = null;
+    return $services.$controller.save(transaction).then(() =>
+    {
+      return $services.ModelProvider.models.UserLog.findOne({
+        where: Object.assign(EXPECTED_MESSAGE, {
+          created_at: {
+            $gte: date
+          }
+        }),
+        transaction: transaction
+      }).should.eventually.be.a('null')
+    });
   });
 });

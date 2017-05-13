@@ -59,7 +59,7 @@ angular.module('salary-criteria')
         /**
          * Saves the overtime and night differential.
          * @param transaction
-         * @returns {*}
+         * @returns {Promise} if executed; {undefined} otherwise.
          */
         this.save = (transaction) =>
         {
@@ -72,7 +72,7 @@ angular.module('salary-criteria')
             else
               transactionPromise = ModelProvider.sequelize.transaction(_save);
 
-            transactionPromise.then(() =>
+            return transactionPromise.then(() =>
             {
               this.cancel();
               this.save_error = null;

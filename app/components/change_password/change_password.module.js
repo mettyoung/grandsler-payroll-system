@@ -1,4 +1,6 @@
 require('../../validations/validations.module');
 require('../../services/notifier/notifier.module');
 require('../../services/notifier/notifier.service');
-angular.module('change-password', ['ngMaterial', 'validations', 'notifier']);
+require('../../services/model_provider/model_provider.module');
+require('../../services/model_provider/model_provider.service');
+angular.module('change-password', ['validations', 'notifier', 'model-provider']);

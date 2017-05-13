@@ -31,6 +31,7 @@ describe('Salary Criteria Component', function ()
     $scope: {},
     $controller: null,
     $dom: null,
+    $mdDialog: null,
     ModelProvider: null
   };
 
