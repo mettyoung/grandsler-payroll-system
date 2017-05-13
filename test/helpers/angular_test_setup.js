@@ -21,7 +21,7 @@ delete require.cache[require.resolve('angular')];
 delete require.cache[require.resolve('angular/angular')];
 delete require.cache[require.resolve('angular-mocks')];
 
-global.window.jQuery = require('jquery');
+global.$ = global.window.jQuery = require('jquery');
 require('angular/angular');
 global.angular = global.window.angular;
 
