@@ -42,6 +42,13 @@ angular.module('salary-criteria')
           ]);
         };
 
+
+        /**
+         * Used to only allow one save at a time.
+         * @type {boolean}
+         */
+        let isSaveIdle = true;
+        
         /**
          * Saves the overtime and night differential.
          * @param transaction
@@ -49,32 +56,37 @@ angular.module('salary-criteria')
          */
         this.save = (transaction) =>
         {
-          let transactionPromise;
-          let options = {};
-          if (transaction)
+          if (isSaveIdle)
           {
-            transactionPromise = _save(transaction);
-            options = {transaction: transaction};
-          }
-          else
-            transactionPromise = ModelProvider.sequelize.transaction(_save);
+            isSaveIdle = false;
+            let transactionPromise;
+            let options = {};
+            if (transaction)
+            {
+              transactionPromise = _save(transaction);
+              options = {transaction: transaction};
+            }
+            else
+              transactionPromise = ModelProvider.sequelize.transaction(_save);
 
-          return Notifier.perform(() =>
-          {
-            return transactionPromise
-              .then(() =>
-              {
-                this.cancel();
-                this.save_error = null;
-                return {
-                  module: 'Salary Criteria Registry',
-                  description: 'Changed salary criteria successfully!'
-                };
-              });
-          }, options).catch(error =>
-          {
-            this.save_error = error;
-          }).then(() => $scope.$apply());
+            return Notifier.perform(() =>
+            {
+              return transactionPromise
+                .then(() =>
+                {
+                  this.cancel();
+                  this.save_error = null;
+                  return {
+                    module: 'Salary Criteria Registry',
+                    description: 'Changed salary criteria successfully!'
+                  };
+                });
+            }, options).catch(error =>
+            {
+              this.save_error = error;
+            }).then(() => $scope.$apply())
+              .then(() => isSaveIdle = true);
+          }
         };
 
         /**

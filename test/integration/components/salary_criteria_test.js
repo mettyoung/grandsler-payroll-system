@@ -190,7 +190,14 @@ describe('Salary Criteria Component', function ()
     });
   });
 
-  it("should only call the save operation one at a time");
+  it("should only call the save operation one at a time", function()
+  {
+    return $services.$controller.notifyOnLoad.then(() =>
+    {
+      expect($services.$controller.save(transaction)).to.be.a('Promise');
+      expect($services.$controller.save(transaction)).to.be.a('undefined');
+    });
+  });
 
   it("should format and show the error message when saving failed", function ()
   {
