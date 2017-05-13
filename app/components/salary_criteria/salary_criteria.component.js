@@ -29,17 +29,24 @@ angular.module('salary-criteria')
         this.notifyOnLoad = this.load();
 
         /**
-         * Saves the overtime and night-differential models.
+         * Saves the overtime and night-differential models and logs to user logs.
          * @param transaction to be passed in tests.
          * @returns {Promise}
          * @private
          */
         const _save = (transaction) =>
         {
-          return Promise.all([
-            this.night_differential.save({transaction: transaction}),
-            this.overtime.save({transaction: transaction})
-          ]);
+          return Notifier.perform(() =>
+            Promise.all([
+              this.night_differential.save({transaction: transaction}),
+              this.overtime.save({transaction: transaction})
+            ]).then(() =>
+            {
+              return {
+                module: 'Salary Criteria Registry',
+                description: 'Changed salary criteria successfully!'
+              };
+            }), transaction);
         };
 
 
@@ -48,7 +55,7 @@ angular.module('salary-criteria')
          * @type {boolean}
          */
         let isSaveIdle = true;
-        
+
         /**
          * Saves the overtime and night differential.
          * @param transaction
@@ -60,31 +67,17 @@ angular.module('salary-criteria')
           {
             isSaveIdle = false;
             let transactionPromise;
-            let options = {};
             if (transaction)
-            {
               transactionPromise = _save(transaction);
-              options = {transaction: transaction};
-            }
             else
               transactionPromise = ModelProvider.sequelize.transaction(_save);
 
-            return Notifier.perform(() =>
+            transactionPromise.then(() =>
             {
-              return transactionPromise
-                .then(() =>
-                {
-                  this.cancel();
-                  this.save_error = null;
-                  return {
-                    module: 'Salary Criteria Registry',
-                    description: 'Changed salary criteria successfully!'
-                  };
-                });
-            }, options).catch(error =>
-            {
-              this.save_error = error;
-            }).then(() => $scope.$apply())
+              this.cancel();
+              this.save_error = null;
+            }).catch(error => this.save_error = error)
+              .then(() => $scope.$apply())
               .then(() => isSaveIdle = true);
           }
         };

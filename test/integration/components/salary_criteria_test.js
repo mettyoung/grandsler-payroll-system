@@ -163,7 +163,6 @@ describe('Salary Criteria Component', function ()
       $services.$controller.Form['overtime.minimum_minutes'].$setViewValue('1');
       $services.$controller.Form['overtime.mark_up'].$setViewValue('2');
       $services.$controller.Form['night_differential.mark_up'].$setViewValue('3');
-      $services.$scope.$digest();
 
       return $services.$controller.save(transaction).then(() =>
         $services.ModelProvider.models.SALARY_CRITERION.findAll({
@@ -272,7 +271,7 @@ describe('Salary Criteria Component', function ()
     });
   });
 
-  it("should notify the Notifier if operation is successful", function ()
+  it("should propagate the message to the Notifier if operation is successful", function ()
   {
     return $services.$controller.notifyOnLoad.then(() =>
     {
@@ -292,7 +291,7 @@ describe('Salary Criteria Component', function ()
     });
   });
 
-  it("should not notify the Notifier if operation failed", function ()
+  it("should not propagate the message to the Notifier if operation failed", function ()
   {
     return $services.$controller.notifyOnLoad.then(() =>
     {
