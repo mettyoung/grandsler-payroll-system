@@ -31,11 +31,15 @@ class Notifier {
    * saves the {Message} object to the database for logging purposes, shows a system-wide toast
    * and updates the activity logs if present.
    * @param callback The callback function that should return a Promise with {UserLog} object.
-   * @param options Additional options to be applied for database saving (e.g. transaction).
+   * @param transaction Optional transaction to be applied for database saving.
    * @returns {Promise} Returns the {UserLog} object with User object if successful.
    */
-  perform(callback, options)
+  perform(callback, transaction)
   {
+    let options = {};
+    if (transaction)
+      options = Object.assign(options, {transaction: transaction});
+
     return callback().then(message =>
     {
       message.user_id = auth.user.id;

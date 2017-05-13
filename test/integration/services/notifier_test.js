@@ -87,7 +87,7 @@ describe('Notifier Angular Service', function ()
 
   it("should transform the {Message} to its UserLog equivalent from the user_logs to the succeeding chains after a successful operation", function ()
   {
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    return Notifier.perform(CONTROLLER.save, transaction).then(userLog =>
     {
       return UserLog.findOne({
         where: ORIGINAL_MESSAGE,
@@ -102,7 +102,7 @@ describe('Notifier Angular Service', function ()
 
   it("should save the {Message} to user_logs", function ()
   {
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    return Notifier.perform(CONTROLLER.save, transaction).then(userLog =>
     {
       return UserLog.findOne({
         include: [User],
@@ -114,7 +114,7 @@ describe('Notifier Angular Service', function ()
 
   it("should include the User to the userLog", function ()
   {
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    return Notifier.perform(CONTROLLER.save, transaction).then(userLog =>
     {
       expect(userLog.User.username).to.equal(ADMIN_USER.username);
     });
@@ -124,7 +124,7 @@ describe('Notifier Angular Service', function ()
   {
 
     expect(MOCK_MD_TOAST.isShowCalled).to.be.false;
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    return Notifier.perform(CONTROLLER.save, transaction).then(userLog =>
     {
       expect(MOCK_MD_TOAST.isShowCalled).to.be.true;
       expect(MOCK_MD_TOAST.content).to.equal('Saved!');
@@ -148,7 +148,7 @@ describe('Notifier Angular Service', function ()
       isSecondListenerCalled = true;
     });
 
-    return Notifier.perform(CONTROLLER.save, {transaction: transaction}).then(userLog =>
+    return Notifier.perform(CONTROLLER.save, transaction).then(userLog =>
     {
       expect(isFirstListenerCalled).to.be.true;
       expect(isSecondListenerCalled).to.be.true;
