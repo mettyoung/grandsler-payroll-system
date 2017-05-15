@@ -8,18 +8,18 @@ require('../../helpers/authentication_helper');
 /**
  * System Under Test
  */
-require('../../../app/components/salary_criteria/salary_criteria.module');
-require('../../../app/components/salary_criteria/salary_criteria.component');
+require('../../../app/components/salary_criteria_registry/salary_criteria_registry.module');
+require('../../../app/components/salary_criteria_registry/salary_criteria_registry.component');
 
 /**
  * Specs
  */
-describe('Salary Criteria Component', function ()
+describe('Salary Criteria Registry Component', function ()
 {
   /**
    * Constants and variables
    */
-  const SALARY_CRITERIA_TEMPLATE = './app/components/salary_criteria/salary_criteria.template.html';
+  const SALARY_CRITERIA_REGISTRY_TEMPLATE = './app/components/salary_criteria_registry/salary_criteria_registry.template.html';
 
   const EXPECTED_MESSAGE = {
     user_id: ADMIN_USER.id,
@@ -40,7 +40,7 @@ describe('Salary Criteria Component', function ()
    */
   transactionScope();
   authenticate();
-  beforeEach(ngModule('salary-criteria'));
+  beforeEach(ngModule('salary-criteria-registry'));
   beforeEach(inject(
     ($rootScope, $componentController, $compile, ModelProvider) =>
     {
@@ -56,13 +56,13 @@ describe('Salary Criteria Component', function ()
       };
 
       // Store the controller and inject the scope.
-      $services.$controller = $componentController('salaryCriteria', {
+      $services.$controller = $componentController('salaryCriteriaRegistry', {
         $scope: $services.$scope,
         $mdDialog: $services.$mdDialog
       });
 
       // Import dom
-      $services.$dom = $('<md-dialog>').append($(fs.readFileSync(SALARY_CRITERIA_TEMPLATE).toString()));
+      $services.$dom = $('<md-dialog>').append($(fs.readFileSync(SALARY_CRITERIA_REGISTRY_TEMPLATE).toString()));
 
       // Compile the template and scope.
       $compile($services.$dom)($services.$scope);

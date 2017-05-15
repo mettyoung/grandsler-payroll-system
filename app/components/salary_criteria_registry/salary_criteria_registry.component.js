@@ -1,6 +1,6 @@
-angular.module('salary-criteria')
-  .component('salaryCriteria', {
-    templateUrl: './components/salary_criteria/salary_criteria.template.html',
+angular.module('salary-criteria-registry')
+  .component('salaryCriteriaRegistry', {
+    templateUrl: './components/salary_criteria_registry/salary_criteria_registry.template.html',
     controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider',
       function ($scope, $mdDialog, Notifier, ModelProvider)
       {
