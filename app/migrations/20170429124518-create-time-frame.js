@@ -16,18 +16,28 @@ module.exports = {
           key: 'id'
         }
       },
-      main_in: {
+      fixed_in: {
         allowNull: false,
         type: Sequelize.TIME
       },
-      secondary_in: {
-        type: Sequelize.TIME
-      },
-      main_out: {
+      fixed_out: {
         allowNull: false,
         type: Sequelize.TIME
       },
-      secondary_out: {
+      flex_in_from: {
+        allowNull: false,
+        type: Sequelize.TIME
+      },
+      flex_in_to: {
+        allowNull: false,
+        type: Sequelize.TIME
+      },
+      flex_out_from: {
+        allowNull: false,
+        type: Sequelize.TIME
+      },
+      flex_out_to: {
+        allowNull: false,
         type: Sequelize.TIME
       }
     });

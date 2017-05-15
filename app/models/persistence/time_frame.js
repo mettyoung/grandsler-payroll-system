@@ -2,10 +2,12 @@
 module.exports = function(sequelize, DataTypes) {
   var TimeFrame = sequelize.define('TimeFrame', {
     time_shift_id: DataTypes.INTEGER,
-    main_in: DataTypes.TIME,
-    secondary_in: DataTypes.TIME,
-    main_out: DataTypes.TIME,
-    secondary_out: DataTypes.TIME
+    fixed_in: DataTypes.TIME,
+    fixed_out: DataTypes.TIME,
+    flex_in_from: DataTypes.TIME,
+    flex_in_to: DataTypes.TIME,
+    flex_out_from: DataTypes.TIME,
+    flex_out_to: DataTypes.TIME
   }, {
     classMethods: {
       associate: function(models) {
