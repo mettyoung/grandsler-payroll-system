@@ -14,7 +14,7 @@
   "test": {
     "username": "root",
     "password": "121586",
-    "database": "grandsler_development",
+    "database": "grandsler_test",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "timezone": "+08:00",
