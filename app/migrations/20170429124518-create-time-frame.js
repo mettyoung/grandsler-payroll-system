@@ -16,29 +16,29 @@ module.exports = {
           key: 'id'
         }
       },
-      fixed_in: {
+      fixed_in_index: {
         allowNull: false,
-        type: Sequelize.TIME
+        type: Sequelize.STRING
       },
-      fixed_out: {
+      fixed_out_index: {
         allowNull: false,
-        type: Sequelize.TIME
+        type: Sequelize.STRING
       },
       flex_in_from: {
         allowNull: false,
-        type: Sequelize.TIME
+        type: Sequelize.DATE
       },
       flex_in_to: {
         allowNull: false,
-        type: Sequelize.TIME
+        type: Sequelize.DATE
       },
       flex_out_from: {
         allowNull: false,
-        type: Sequelize.TIME
+        type: Sequelize.DATE
       },
       flex_out_to: {
         allowNull: false,
-        type: Sequelize.TIME
+        type: Sequelize.DATE
       }
     });
   },
