@@ -1,6 +1,4 @@
-const {remote} = require('electron');
-const auth = remote && remote.require('./models/domain/authentication') ||
-  require('../../models/domain/authentication');
+const auth = require('../../models/domain/authentication');
 
 angular.module('change-password')
   .component('changePassword', {
@@ -8,7 +6,6 @@ angular.module('change-password')
     controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', function ($scope, $mdDialog, Notifier, ModelProvider)
     {
       this.current_user_password = auth.user.password;
-
 
       /**
        * Saves the changed password and logs to user logs.
@@ -26,7 +23,8 @@ angular.module('change-password')
               module: 'Account Settings',
               description: 'Changed password successfully!'
             };
-          }), transaction);
+          }, transaction)
+        );
       };
 
 

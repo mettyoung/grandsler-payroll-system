@@ -1,9 +1,7 @@
 /**
  * Import the authentication module from renderer process, if not from main process.
  */
-const {remote} = require('electron');
-const auth = remote && remote.require('./models/domain/authentication') ||
-  require('../../models/domain/authentication');
+const auth = require('../../models/domain/authentication');
 
 /**
  * ORM for UserLog

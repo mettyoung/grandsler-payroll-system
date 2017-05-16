@@ -7,22 +7,27 @@ const process = require('process');
 
 let mainWindow;
 
-app.on('ready', () => {
+app.on('ready', () =>
+{
 
-	mainWindow = new BrowserWindow({
-		width: 800,
-		height: 600,
-		autoHideMenuBar: true
-	});
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    autoHideMenuBar: true
+  });
 
-	mainWindow.loadURL('file://' + __dirname + '/index.html');
+  mainWindow.loadURL('file://' + __dirname + '/index.html');
 
-	if (process.env.NODE_ENV === 'development')
+  if (process.env.NODE_ENV === 'development')
+  {
     mainWindow.webContents.openDevTools();
+    // Connect to server process
+    require('electron-connect').client.create(mainWindow);
+  }
 });
 
 updater.init({
-	autoDownload: false,
-	checkUpdateOnStart: false
+  autoDownload: false,
+  checkUpdateOnStart: false
 });
 

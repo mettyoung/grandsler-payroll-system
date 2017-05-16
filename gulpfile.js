@@ -8,6 +8,6 @@ gulp.task('serve', function () {
   // Start browser process
   electron.start();
 
-  // Reload renderer process
-  gulp.watch(['app/**/*.js', 'app/**/*.html', 'app/**/*.css'], electron.reload);
+  // Reload process process
+  gulp.watch(['app/**/*.js', 'app/**/*.html', 'app/**/*.css'], electron.restart);
 });
