@@ -1,0 +1,21 @@
+#master-container, #detail-container {
+  height: 500px;
+}
+
+.panel-body input[type="time"]::-webkit-clear-button {
+  display: none;
+}
+
+.panel-body h3 {
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.panel-body md-list-item:first-child h3 {
+  margin-top: -10px;
+}
+
+.panel-body md-input-container {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}

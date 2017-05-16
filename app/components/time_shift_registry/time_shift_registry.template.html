@@ -1,0 +1,183 @@
+<link rel="stylesheet" href="components/time_shift_registry/time_shift_registry.template.css">
+<!-- Accept enter key -->
+<form name="$ctrl.Form">
+    <!-- 1st sibling: Contains the content of the dialog -->
+    <md-dialog-content layout="column">
+        <!-- Title bar -->
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h3 flex><span>Time-shift Registry</span></h3>
+                <md-button type='submit' id='save-button' class="md-icon-button" aria-label="Save"
+                           ng-hide="$ctrl.preload_error"
+                           ng-disabled="!$ctrl.Form.$valid"
+                           ng-click="$ctrl.save()">
+                    <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
+                </md-button>
+                <md-button id="create-new-time-shift" class="md-icon-button"
+                           ng-click="$ctrl.createTimeShift()"
+                           ng-hide="$ctrl.preload_error"
+                           aria-label="Create new time-shift">
+                    <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
+                </md-button>
+                <md-button id="delete-time-shift" class="md-icon-button"
+                           ng-click="$ctrl.deleteTimeShift()"
+                           ng-hide="$ctrl.preload_error"
+                           aria-label="Create new time-shift">
+                    <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
+                </md-button>
+                <md-button id='close-button' ng-click="$ctrl.close()" class="md-icon-button" aria-label="Close dialog">
+                    <md-icon md-svg-icon="content:ic_clear_24px"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <!-- Preload error message; hides the content and save button if pre-loading error occurs. -->
+        <div id="preload-error-message" class="alert alert-danger" ng-hide="!$ctrl.preload_error">
+            <strong>{{$ctrl.preload_error.name}}:</strong> {{$ctrl.preload_error.message}}
+        </div>
+        <!-- Main Content; hides if preload_error occurs. -->
+        <div id="main-content" layout="row" flex ng-hide="$ctrl.preload_error">
+
+            <!-- Master List -->
+            <md-sidenav id="master-container" layout="column" flex="40" md-whiteframe="4" md-is-locked-open="true">
+                <md-content flex>
+                    <md-list>
+                        <md-list-item ng-repeat="timeShift in $ctrl.timeShifts"
+                                      ng-click="$ctrl.selectTimeShift(timeShift)">
+                            <h4 class="name">{{ timeShift.name }}</h4>
+                            <md-divider ng-if="!$last"></md-divider>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+            </md-sidenav>
+
+            <!-- Detail Content-->
+            <div id="detail-container" ng-hide="!$ctrl.selectedTimeShift" flex layout="column">
+                <!-- This error occurs on saving -->
+                <div id="save-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
+                    <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
+                </div>
+                <md-content class="panel panel-default" layout="column" flex>
+                    <!-- Headers -->
+                    <div class="panel-heading">
+                        <md-input-container class="md-block" flex>
+                            <label>Name</label>
+                            <input required name="name" id="name"
+                                   ng-model="$ctrl.selectedTimeShift.name" md-auto-focus="true">
+                            <!-- ng-show @touched has no test. -->
+                            <div id="name-validation" ng-messages="$ctrl.Form.name.$error"
+                                 ng-show="$ctrl.Form.name.$touched">
+                                <div ng-message="required">This is required.</div>
+                            </div>
+                        </md-input-container>
+                        <md-input-container class="md-block" flex>
+                            <label>Salary Criterion</label>
+                            <md-select required name="salary_criterion"
+                                       id="salary-criterion"
+                                       ng-model="$ctrl.selectedTimeShift.salary_criterion_id">
+                                <md-option ng-repeat="salary_criterion in $ctrl.SALARY_CRITERIA"
+                                           value="{{salary_criterion.id}}">
+                                    {{salary_criterion.name}}
+                                </md-option>
+                            </md-select>
+                            <div id="salary_criterion_validation" ng-messages="$ctrl.Form.salary_criterion.$error"
+                                 ng-show="$ctrl.Form.salary_criterion.$touched">
+                                <div ng-message="required">This is required.</div>
+                            </div>
+                        </md-input-container>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="panel-body" flex>
+                        <md-list md-no-ink flex>
+                            <md-list-item flex md-ink-ripple
+                                          ng-repeat="timeFrame in $ctrl.selectedTimeShift.TimeFrames">
+                                <div layout="row" flex>
+                                    <!-- Time-in -->
+                                    <div layout="column" flex>
+                                        <h3>
+                                            Time-in
+                                        </h3>
+                                        <md-radio-group required class="fixed-in" name="fixed_in"
+                                                        ng-model="timeFrame.fixed_in_index"
+                                                        flex>
+                                            <input hidden ng-model="timeFrame.fixed_in_index">
+                                            <div layout="row" class="flex-in-from" flex>
+                                                <md-radio-button value="flex_in_from"
+                                                                 aria-label="Flex-in from">
+                                                </md-radio-button>
+                                                <md-input-container class="md-block" flex>
+                                                    <label>From</label>
+                                                    <input required name="flex_in_from_{{$index}}" type="time"
+                                                           ng-model="timeFrame.flex_in_from">
+                                                    <div ng-messages="$ctrl.Form['flex_in_from_' + $index].$error">
+                                                        <div ng-message="required">This is required.</div>
+                                                    </div>
+                                                </md-input-container>
+                                            </div>
+                                            <div layout="row" class="flex-in-to" flex>
+                                                <md-radio-button value="flex_in_to"
+                                                                 aria-label="Flex-in to">
+                                                </md-radio-button>
+                                                <md-input-container class="md-block" flex>
+                                                    <label>To</label>
+                                                    <input required name="flex_in_to_{{$index}}" type="time"
+                                                           ng-model="timeFrame.flex_in_to">
+                                                    <div ng-messages="$ctrl.Form['flex_in_to_' + $index].$error">
+                                                        <div ng-message="required">This is required.</div>
+                                                    </div>
+                                                </md-input-container>
+                                            </div>
+                                        </md-radio-group>
+                                    </div>
+                                    <!-- Time-out -->
+                                    <div layout="column" flex>
+                                        <h3>
+                                            Time-out
+                                        </h3>
+                                        <md-radio-group required class="fixed-out" name="fixed_in"
+                                                        ng-model="timeFrame.fixed_out_index"
+                                                        flex>
+                                            <input hidden ng-model="timeFrame.fixed_out_index">
+                                            <div layout="row" class="flex-out-from" flex>
+                                                <md-radio-button value="flex_out_from"
+                                                                 aria-label="Flex-out from">
+                                                </md-radio-button>
+                                                <md-input-container class="md-block" flex>
+                                                    <label>From</label>
+                                                    <input required name="flex_out_from_{{$index}}" type="time"
+                                                           ng-model="timeFrame.flex_out_from">
+                                                    <div ng-messages="$ctrl.Form['flex_out_from_' + $index].$error">
+                                                        <div ng-message="required">This is required.</div>
+                                                    </div>
+                                                </md-input-container>
+                                            </div>
+                                            <div layout="row" class="flex-out-to" flex>
+                                                <md-radio-button value="flex_out_to"
+                                                                 aria-label="Flex-out to">
+                                                </md-radio-button>
+                                                <md-input-container class="md-block" flex>
+                                                    <label>To</label>
+                                                    <input required name="flex_out_to_{{$index}}" type="time"
+                                                           ng-model="timeFrame.flex_out_to">
+                                                    <div ng-messages="$ctrl.Form['flex_out_to_' + $index].$error">
+                                                        <div ng-message="required">This is required.</div>
+                                                    </div>
+                                                </md-input-container>
+                                            </div>
+                                        </md-radio-group>
+                                    </div>
+                                </div>
+                                <md-divider ng-if="!$last"></md-divider>
+                            </md-list-item>
+                        </md-list>
+                        <div layout="row" layout-align="center center">
+                            <md-button id="create-new-time-frame" class="md-primary"
+                                       ng-click="$ctrl.createTimeFrame()">Add time frame
+                            </md-button>
+                        </div>
+                    </div>
+                </md-content>
+            </div>
+        </div>
+    </md-dialog-content>
+</form>
