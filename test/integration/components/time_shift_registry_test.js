@@ -342,63 +342,7 @@ describe('Time Shift Registry Component', function ()
         expect($services.$dom.find('#save-button').is(":disabled")).to.be.false;
       });
     });
-
-    // TODO: VALIDATIONS
-    describe("TEST PLAYGROUND", function ()
-    {
-      function compareTo(date, dateRange)
-      {
-        // 11:30PM -> 12:30 AM
-        // 12:00 AM
-        // startTime (11:30PM) <= date (12:00AM) false && date (12:00AM) <= endTime(12:30 AM) true
-        // 11:45 PM
-        // startTime (11:30PM) <= date (11:45PM) true && date (11:45PM) <= endTime(12:30 AM) false
-
-        // 12:00 AM
-        // startTime (11:30PM) <= date+24 (12:00AM) true && date+24(12:00AM) <= endTime+24(12:00AM) true
-        // 11:45 PM
-        // startTime (11:30PM) <= date+24 (11:45PM) true && date+24(11:45PM) <= endTime+24(12:30AM) false
-        let {startTime, endTime} = dateRange;
-
-        // Tumawid sa hating gabi
-        if (endTime < startTime)
-        {
-          console.log([startTime <= date, date <= endTime]);
-          // date = moment(date).add(24, 'hours');
-          // endTime = moment(endTime).add(24, 'hours');
-          // return !(startTime <= date && moment(date).add(24, 'hours') <= moment(endTime).add(24, 'hours'));
-        }
-        return !(startTime <= date && date <= endTime)
-      }
-
-      it("shou", () =>
-      {
-        const dateRange = {
-          startTime: moment('11:30 PM', 'hh:mm A').toDate(),
-          endTime: moment('12:30 AM', 'hh:mm A').toDate()
-        };
-
-        const invalidate = [
-          moment('12:00 AM', 'hh:mm A').toDate(),
-          moment('11:45 PM', 'hh:mm A').toDate()
-        ];
-
-        const validate = [
-          moment('12:45 AM', 'hh:mm A').toDate(),
-          moment('07:00 AM', 'hh:mm A').toDate()
-        ];
-
-        for (let _case of invalidate)
-        {
-          console.log(_case);
-          expect(compareTo(_case, dateRange)).to.be.false;
-        }
-
-        for (let _case of validate)
-          expect(compareTo(_case, dateRange)).to.be.true;
-      });
-    });
-
+    
     // TODO: CONTINUE NEXT TIME
     it("should not permit the 'to' time to be lesser than 'from' time", function ()
     {
