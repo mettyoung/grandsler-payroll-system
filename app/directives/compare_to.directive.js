@@ -1,4 +1,4 @@
-angular.module('validations')
+angular.module('front-end-validations')
   .directive("compareTo", function () {
     return {
       require: "ngModel",

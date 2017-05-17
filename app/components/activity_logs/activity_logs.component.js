@@ -11,7 +11,7 @@ angular.module('activity-logs')
       /**
        * Sets to use the global.transaction object if test.
        */
-      const TEST_OPTIONS = process.env.NODE_ENV === 'test' ? {transaction: transaction} : {};
+      this.TEST_OPTIONS = {};
 
       /**
        * Sets the default entries to load
@@ -149,7 +149,7 @@ angular.module('activity-logs')
        */
       this.onNotifyUserAction = new Promise(resolve => Notifier.addListener(userLog =>
       {
-        Progress.perform(this, 'isPullFinished', () => this.pullUpdates(TEST_OPTIONS))
+        Progress.perform(this, 'isPullFinished', () => this.pullUpdates(this.TEST_OPTIONS))
           .then(() => $scope.$apply())
           .then(resolve);
         $scope.$apply();
@@ -159,9 +159,9 @@ angular.module('activity-logs')
        * Adds a refresh timer to pull log updates recurring from the database.
        */
       this.onNotifyTimer = new Promise(resolve =>
-        setInterval(() =>
+        this.INTERVAL_TIMER_ID = setInterval(() =>
         {
-          Progress.perform(this, 'isPullFinished', () => this.pullUpdates(TEST_OPTIONS))
+          Progress.perform(this, 'isPullFinished', () => this.pullUpdates(this.TEST_OPTIONS))
             .then(() => $scope.$apply())
             .then(resolve);
           $scope.$apply();

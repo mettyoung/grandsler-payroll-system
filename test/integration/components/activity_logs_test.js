@@ -60,7 +60,14 @@ describe('Activity Logs Angular Component', function ()
   {
     activityController = $componentController('activityLogs');
     changePasswordController = $componentController('changePassword');
+    activityController.TEST_OPTIONS = {transaction: transaction};
   }));
+
+  afterEach(() =>
+  {
+    activityController.TEST_OPTIONS = {};
+    clearInterval(activityController.INTERVAL_TIMER_ID);
+  });
 
   it('should retrieve initial list from the database in order', function ()
   {

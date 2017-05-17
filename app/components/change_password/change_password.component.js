@@ -17,13 +17,14 @@ angular.module('change-password')
       {
         auth.user.password = this.new_password;
         return Notifier.perform(() =>
-          auth.user.save({transaction: transaction}).then(() =>
-          {
-            return {
-              module: 'Account Settings',
-              description: 'Changed password successfully!'
-            };
-          }, transaction)
+          auth.user.save({transaction: transaction})
+            .then(() =>
+            {
+              return {
+                module: 'Account Settings',
+                description: 'Changed password successfully!'
+              };
+            }), transaction
         );
       };
 
@@ -57,9 +58,9 @@ angular.module('change-password')
           }).catch(error =>
           {
             this.save_error = error;
-            auth.user.reload();
+            return auth.user.reload();
           }).then(() => $scope.$apply())
-            .then(() => isSaveIdle = true)
+            .then(() => isSaveIdle = true);
         }
       };
 
