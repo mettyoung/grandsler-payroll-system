@@ -30,6 +30,7 @@ angular.module('time-shift-registry')
          */
         this.timeShifts = [];
         this.selectedTimeShift = null;
+        this.disableDeleteButton = true;
 
         /**
          * Commands
@@ -40,6 +41,7 @@ angular.module('time-shift-registry')
          */
         this.createTimeShift = () =>
         {
+          this.disableDeleteButton = true;
           this.selectedTimeShift = {TimeFrames: []};
           // Set it to untouched to reset validations.
           this.Form.$setUntouched();
@@ -57,6 +59,7 @@ angular.module('time-shift-registry')
         this.selectTimeShift = (timeShift, transaction) => timeShift.reload({transaction: transaction})
           .then(() =>
             {
+              this.disableDeleteButton = false;
               this.selectedTimeShift = timeShift;
               $scope.$apply();
             }
@@ -94,7 +97,10 @@ angular.module('time-shift-registry')
             this.SALARY_CRITERIA = values[1];
 
             if (this.timeShifts.length > 0)
+            {
               this.selectedTimeShift = this.timeShifts[0];
+              this.disableDeleteButton = false;
+            }
           }).catch(error => this.preload_error = error)
             .then(() => $scope.$apply());
 
@@ -168,7 +174,7 @@ angular.module('time-shift-registry')
         const _save = (transaction) =>
         {
           let action = 'modified';
-          if (this.selectedTimeShift.constructor == Object)
+          if (this.selectedTimeShift.constructor === Object)
           {
             this.selectedTimeShift = ModelProvider.models.TimeShift.build(this.selectedTimeShift, {
               include: [ModelProvider.models.TimeFrame]
@@ -195,6 +201,9 @@ angular.module('time-shift-registry')
          */
         const _delete = (transaction) =>
         {
+          if (this.selectedTimeShift.constructor === Object)
+            return Promise.reject('Cannot delete a new record.');
+
           return Notifier.perform(() =>
           {
             let promise = Promise.resolve();

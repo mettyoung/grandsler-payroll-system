@@ -342,7 +342,7 @@ describe('Time Shift Registry Component', function ()
         expect($services.$dom.find('#save-button').is(":disabled")).to.be.false;
       });
     });
-    
+
     // TODO: CONTINUE NEXT TIME
     it("should not permit the 'to' time to be lesser than 'from' time", function ()
     {
@@ -433,6 +433,16 @@ describe('Time Shift Registry Component', function ()
             expect($($listItems.find('.name')[0]).text()).to.equal('Night Shift');
           });
         });
+      });
+    });
+
+    it("should disable the delete button if creating new", function ()
+    {
+      return $services.$controller.load(transaction).then(() =>
+      {
+        expect($services.$dom.find('#delete-time-shift').is(":disabled")).to.be.false;
+        $services.$dom.find('#create-new-time-shift').click();
+        expect($services.$dom.find('#delete-time-shift').is(":disabled")).to.be.true;
       });
     });
   });
@@ -684,8 +694,6 @@ describe('Time Shift Registry Component', function ()
       {
         $services.$controller.selectedTimeShift = selectedTimeShift;
 
-        $services.$controller.selectedTimeShift.name = null;
-
         return $services.$controller.delete(transaction).then(() =>
         {
           expect($services.$mdDialog.isHideCalled).to.be.false;
@@ -695,13 +703,17 @@ describe('Time Shift Registry Component', function ()
 
     it("should hide the dialog if deleting is successful", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.ModelProvider.models.TimeShift.create(selectedTimeShift, {
+        transaction: transaction,
+        include: [$services.ModelProvider.models.TimeFrame]
+      }).then(() =>
       {
-        $services.$controller.selectedTimeShift = selectedTimeShift;
-
-        return $services.$controller.delete(transaction).then(() =>
+        return $services.$controller.load(transaction).then(() =>
         {
-          expect($services.$mdDialog.isHideCalled).to.be.true;
+          return $services.$controller.delete(transaction).then(() =>
+          {
+            expect($services.$mdDialog.isHideCalled).to.be.true;
+          });
         });
       });
     });
