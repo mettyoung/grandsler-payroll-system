@@ -1,4 +1,4 @@
-require('../../validations/validations.module');
+require('../../directives/validations.module');
 require('../../services/notifier/notifier.module');
 require('../../services/notifier/notifier.service');
 require('../../services/model_provider/model_provider.module');
