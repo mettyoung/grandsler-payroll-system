@@ -16,7 +16,8 @@ angular.module('time-shift-registry')
           },
           deleted: {
             module: 'Time Shift Registry',
-            description: 'Deleted a time-shift successfully!'
+            description: 'Deleted a time-shift successfully!',
+            toast: 'Deleted a time-shift!'
           },
           modified: {
             module: 'Time Shift Registry',
