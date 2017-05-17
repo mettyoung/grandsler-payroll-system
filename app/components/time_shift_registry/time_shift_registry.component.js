@@ -40,6 +40,7 @@ angular.module('time-shift-registry')
         this.createTimeShift = () =>
         {
           this.selectedTimeShift = {TimeFrames: []};
+          // Set it to untouched to reset validations.
           this.Form.$setUntouched();
         };
 
@@ -60,10 +61,18 @@ angular.module('time-shift-registry')
             }
           );
 
-        this.deleteTimeShift = () =>
+        this.deleteTimeShift = (event) =>
         {
-          if (confirm('Are you sure you want to delete this entry'))
-            this.delete();
+          var confirm = $mdDialog.confirm()
+            .title('Confirmation')
+            .textContent('Are you sure you want to delete this entry?')
+            .ariaLabel('Confirmation')
+            .targetEvent(event)
+            .ok('Yes')
+            .cancel('No');
+
+          confirm._options.multiple = true;
+          $mdDialog.show(confirm).then(() => this.delete(), () => (0));
         };
 
         /**
@@ -172,6 +181,7 @@ angular.module('time-shift-registry')
               include: [ModelProvider.models.TimeFrame]
             }).then(() =>
             {
+              this.close();
               return EXPECTED_MESSAGE[action];
             }), transaction);
         };
@@ -186,25 +196,21 @@ angular.module('time-shift-registry')
         {
           return Notifier.perform(() =>
           {
-            let promise = null;
+            let promise = Promise.resolve();
             for (let timeFrame of this.selectedTimeShift.TimeFrames)
-              if (promise === null)
-                promise = timeFrame.destroy({transaction: transaction});
-              else
-                promise.then(() => timeFrame.destroy({transaction: transaction}));
+              promise = promise.then(() => timeFrame.destroy({transaction: transaction}));
 
-            if (promise === null)
-              promise = this.selectedTimeShift.destroy({
+            promise = promise.then(() =>
+              this.selectedTimeShift.destroy({
                 transaction: transaction
-              });
-            else
-              promise.then(() =>
-                this.selectedTimeShift.destroy({
-                  transaction: transaction
-                }));
+              }));
 
-            return promise.then(() => EXPECTED_MESSAGE.deleted);
-          }, transaction)
+            return promise.then(() =>
+            {
+              this.close();
+              return EXPECTED_MESSAGE.deleted;
+            });
+          }, transaction);
         };
       }]
   });

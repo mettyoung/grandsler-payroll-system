@@ -20,10 +20,10 @@
                     <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
                 </md-button>
                 <md-button id="delete-time-shift" class="md-icon-button"
-                           ng-click="$ctrl.deleteTimeShift()"
+                           ng-click="$ctrl.deleteTimeShift($event)"
                            ng-hide="$ctrl.preload_error"
-                           aria-label="Create new time-shift">
-                    <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
+                           aria-label="Delete selected time-shift">
+                    <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
                 </md-button>
                 <md-button id='close-button' ng-click="$ctrl.close()" class="md-icon-button" aria-label="Close dialog">
                     <md-icon md-svg-icon="content:ic_clear_24px"></md-icon>

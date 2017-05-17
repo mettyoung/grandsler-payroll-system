@@ -679,11 +679,87 @@ describe('Time Shift Registry Component', function ()
 
   describe("Dialog", function ()
   {
+    let selectedTimeShift;
+
+    beforeEach(() =>
+    {
+      selectedTimeShift = {
+        name: 'Regular',
+        salary_criterion_id: 1,
+        TimeFrames: [
+          {
+            flex_in_from: moment('08:00 AM', 'hh:mm A').toDate(),
+            flex_in_to: moment('08:00 AM', 'hh:mm A').toDate(),
+            flex_out_from: moment('08:00 AM', 'hh:mm A').toDate(),
+            flex_out_to: moment('08:00 AM', 'hh:mm A').toDate(),
+            fixed_in_index: 'flex_in_from',
+            fixed_out_index: 'flex_out_from'
+          }
+        ]
+      };
+    });
+
     it("should hide the dialog if close() is called", function ()
     {
       expect($services.$mdDialog.isHideCalled).to.be.false;
       $services.$dom.find('#close-button').click();
       expect($services.$mdDialog.isHideCalled).to.be.true;
+    });
+
+    it("should not hide the dialog if saving failed", function ()
+    {
+      return $services.$controller.load(transaction).then(() =>
+      {
+        $services.$controller.selectedTimeShift = selectedTimeShift;
+
+        $services.$controller.selectedTimeShift.name = null;
+
+        return $services.$controller.save(transaction).then(() =>
+        {
+          expect($services.$mdDialog.isHideCalled).to.be.false;
+        });
+      });
+    });
+
+    it("should hide the dialog if saving is successful", function ()
+    {
+      return $services.$controller.load(transaction).then(() =>
+      {
+        $services.$controller.selectedTimeShift = selectedTimeShift;
+
+        return $services.$controller.save(transaction).then(() =>
+        {
+          expect($services.$mdDialog.isHideCalled).to.be.true;
+        });
+      });
+    });
+
+    it("should not hide the dialog if deleting failed", function ()
+    {
+      return $services.$controller.load(transaction).then(() =>
+      {
+        $services.$controller.selectedTimeShift = selectedTimeShift;
+
+        $services.$controller.selectedTimeShift.name = null;
+
+        return $services.$controller.delete(transaction).then(() =>
+        {
+          expect($services.$mdDialog.isHideCalled).to.be.false;
+        });
+      });
+    });
+
+    it("should hide the dialog if deleting is successful", function ()
+    {
+      return $services.$controller.load(transaction).then(() =>
+      {
+        $services.$controller.selectedTimeShift = selectedTimeShift;
+
+        return $services.$controller.delete(transaction).then(() =>
+        {
+          expect($services.$mdDialog.isHideCalled).to.be.true;
+        });
+      });
     });
   });
 
