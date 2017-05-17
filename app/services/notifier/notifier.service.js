@@ -42,13 +42,17 @@ class Notifier {
     {
       message.user_id = auth.user.id;
 
+      const toast = message.toast || 'Saved!';
+      if (message.toast)
+        delete message.toast;
+
       const mainChain = UserLog.create(message, options)
       // These will be skipped if UserLog failed.
         .then(userLog =>
         {
           this.$mdToast.show(
             this.$mdToast.simple()
-              .textContent('Saved!')
+              .textContent(toast)
               .action('close')
               .highlightAction(true)
               .hideDelay(3000)

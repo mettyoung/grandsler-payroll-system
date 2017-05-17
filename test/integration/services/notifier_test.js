@@ -38,12 +38,7 @@ describe('Notifier Angular Service', function ()
     }
   });
 
-  const CONTROLLER = {
-    save: function ()
-    {
-      return Promise.resolve(ORIGINAL_MESSAGE);
-    }
-  };
+  const CONTROLLER = {};
 
   let Notifier;
   const MOCK_MD_TOAST = {
@@ -85,6 +80,14 @@ describe('Notifier Angular Service', function ()
     MOCK_MD_TOAST.content = null;
   }));
 
+  beforeEach(() =>
+  {
+    CONTROLLER.save = function ()
+    {
+      return Promise.resolve(ORIGINAL_MESSAGE);
+    }
+  });
+
   it("should transform the {Message} to its UserLog equivalent from the user_logs to the succeeding chains after a successful operation", function ()
   {
     return Notifier.perform(CONTROLLER.save, transaction).then(userLog =>
@@ -120,9 +123,19 @@ describe('Notifier Angular Service', function ()
     });
   });
 
-  it("should execute a toast after a successful operation", function ()
+  it("should display the configured toast message after a successful operation", function ()
   {
+    CONTROLLER.save = () => Promise.resolve(Object.assign({toast: 'Hello World'}, ORIGINAL_MESSAGE));
+    expect(MOCK_MD_TOAST.isShowCalled).to.be.false;
+    return Notifier.perform(CONTROLLER.save, transaction).then(userLog =>
+    {
+      expect(MOCK_MD_TOAST.isShowCalled).to.be.true;
+      expect(MOCK_MD_TOAST.content).to.equal('Hello World');
+    });
+  });
 
+  it("should default to saved! toast message after a successful operation", function ()
+  {
     expect(MOCK_MD_TOAST.isShowCalled).to.be.false;
     return Notifier.perform(CONTROLLER.save, transaction).then(userLog =>
     {
@@ -133,7 +146,6 @@ describe('Notifier Angular Service', function ()
 
   it("should be capable of adding listeners to be executed if operation is successful", function ()
   {
-
     let isFirstListenerCalled = false;
     Notifier.addListener(userLog =>
     {
