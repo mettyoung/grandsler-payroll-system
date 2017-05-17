@@ -424,7 +424,7 @@ describe('Time Shift Registry Component', function ()
     });
   });
 
-  describe("Deleting", function()
+  describe("Deleting", function ()
   {
     beforeEach(() =>
     {
@@ -476,7 +476,7 @@ describe('Time Shift Registry Component', function ()
       });
     });
 
-    it("should delete the selectedTimeShift from the database", function()
+    it("should delete the selectedTimeShift from the database", function ()
     {
       return $services.$controller.load(transaction).then(() =>
       {
@@ -765,18 +765,18 @@ describe('Time Shift Registry Component', function ()
         return $services.$controller.save(transaction)
           .then(() => $services.$controller.load())
           .then(() =>
-          $services.$controller.delete(transaction).then(() =>
-          {
-            return $services.ModelProvider.models.UserLog.findOne({
-              where: Object.assign(EXPECTED_MESSAGE.deleted, {
-                created_at: {
-                  $gte: date
-                }
-              }),
-              transaction: transaction
-            }).should.eventually.not.be.a('null')
-          })
-        );
+            $services.$controller.delete(transaction).then(() =>
+            {
+              return $services.ModelProvider.models.UserLog.findOne({
+                where: Object.assign(EXPECTED_MESSAGE.deleted, {
+                  created_at: {
+                    $gte: date
+                  }
+                }),
+                transaction: transaction
+              }).should.eventually.not.be.a('null')
+            })
+          );
       })
     });
 
