@@ -7,7 +7,7 @@ angular.module('time-shift-registry')
       function ($scope, $mdDialog, Notifier, ModelProvider, CustomValidator)
       {
         /**
-         * Constants
+         * Constants...................................................................
          */
         const EXPECTED_MESSAGE = {
           created: {
@@ -26,14 +26,14 @@ angular.module('time-shift-registry')
         };
 
         /**
-         * View Models
+         * View Models...................................................................
          */
         this.timeShifts = [];
         this.selectedTimeShift = null;
         this.disableDeleteButton = true;
 
         /**
-         * Commands
+         * Commands...................................................................
          */
 
         /**
@@ -48,12 +48,7 @@ angular.module('time-shift-registry')
         };
 
         /**
-         * Creates a new time frame.
-         */
-        this.createTimeFrame = () => this.selectedTimeShift.TimeFrames.push({});
-
-        /**
-         * Master selector.
+         * Marks the time-shift as selected time-shift.
          * @param timeShift
          */
         this.selectTimeShift = (timeShift, transaction) => timeShift.reload({transaction: transaction})
@@ -65,7 +60,11 @@ angular.module('time-shift-registry')
             }
           );
 
-        this.deleteTimeShift = (event) =>
+        /**
+         * Deletes the selected time shift.
+         * @param event
+         */
+        this.deleteSelectedTimeShift = (event) =>
         {
           var confirm = $mdDialog.confirm()
             .title('Confirmation')
@@ -76,8 +75,13 @@ angular.module('time-shift-registry')
             .cancel('No');
 
           confirm._options.multiple = true;
-          $mdDialog.show(confirm).then(() => this.delete(), () => (0));
+          $mdDialog.show(confirm).then(() => this._deleteSelectedTimeShift(), () => (0));
         };
+
+        /**
+         * Creates a new time frame.
+         */
+        this.createTimeFrame = () => this.selectedTimeShift.TimeFrames.push({});
 
         /**
          * Deletes the time frame.
@@ -99,15 +103,24 @@ angular.module('time-shift-registry')
         };
 
         /**
-         * Service layer.
-         * @param timeFrame
-         * @private
+         * Saves the selected time-shift.
+         * @param transaction
+         * @returns {Promise} if executed; {undefined} otherwise.
          */
-        this._deleteTimeFrame = (timeFrame) =>
+        this.save = transaction => _write(transaction, _save);
+
+        /**
+         * Hides the dialog.
+         * @returns {Promise}
+         */
+        this.close = function ()
         {
-          this.selectedTimeShift.TimeFrames
-            .splice(this.selectedTimeShift.TimeFrames.indexOf(timeFrame),1);
+          return $mdDialog.hide();
         };
+
+        /**
+         * Service layer...................................................................
+         */
 
         /**
          * Loads the time-shifts and salary criteria from the database.
@@ -135,38 +148,33 @@ angular.module('time-shift-registry')
             .then(() => $scope.$apply());
 
         /**
-         * Saves the selected time-shift.
-         * @param transaction
-         * @returns {Promise} if executed; {undefined} otherwise.
-         */
-        this.save = transaction => _write(transaction, _save);
-
-
-        /**
-         * Deletes the selected time-shift.
-         * @param transaction
-         * @returns {Promise} if executed; {undefined} otherwise.
-         */
-        this.delete = transaction => _write(transaction, _delete);
-
-        /**
-         * Hides the dialog.
-         * @returns {Promise}
-         */
-        this.close = function ()
-        {
-          return $mdDialog.hide();
-        };
-
-        /**
          * If environment is not production or dev, then preload the module.
          */
         if (process.env.NODE_ENV !== 'test')
           this.load();
 
         /**
-         * Validation logic.
+         * Deletes the selected time-shift.
+         * @param transaction
+         * @returns {Promise} if executed; {undefined} otherwise.
+         */
+        this._deleteSelectedTimeShift = transaction => _write(transaction, _delete);
+
+        /**
+         * Deletes the time-frame without the dialog.
+         * @param timeFrame
+         * @private
+         */
+        this._deleteTimeFrame = (timeFrame) =>
+        {
+          this.selectedTimeShift.TimeFrames
+            .splice(this.selectedTimeShift.TimeFrames.indexOf(timeFrame),1);
+        };
+
+        /**
+         * Executes before saving.
          * @param timeShift
+         * @returns {Promise}
          */
         const onBeforeSave = timeShift =>
         {
@@ -192,6 +200,7 @@ angular.module('time-shift-registry')
 
           return Promise.resolve();
         };
+
         /**
          * Used to only allow one delete/save at a time.
          * @type {boolean}

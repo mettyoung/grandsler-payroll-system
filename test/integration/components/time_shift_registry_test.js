@@ -438,7 +438,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.load(transaction).then(() =>
       {
-        return $services.$controller.delete(transaction).then(() =>
+        return $services.$controller._deleteSelectedTimeShift(transaction).then(() =>
         {
           return $services.$controller.load(transaction).then(() =>
           {
@@ -749,7 +749,7 @@ describe('Time Shift Registry Component', function ()
       {
         $services.$controller.selectedTimeShift = selectedTimeShift;
 
-        return $services.$controller.delete(transaction).then(() =>
+        return $services.$controller._deleteSelectedTimeShift(transaction).then(() =>
         {
           expect($services.$mdDialog.isHideCalled).to.be.false;
         });
@@ -765,7 +765,7 @@ describe('Time Shift Registry Component', function ()
       {
         return $services.$controller.load(transaction).then(() =>
         {
-          return $services.$controller.delete(transaction).then(() =>
+          return $services.$controller._deleteSelectedTimeShift(transaction).then(() =>
           {
             expect($services.$mdDialog.isHideCalled).to.be.true;
           });
@@ -852,7 +852,7 @@ describe('Time Shift Registry Component', function ()
         return $services.$controller.save(transaction)
           .then(() => $services.$controller.load())
           .then(() =>
-            $services.$controller.delete(transaction).then(() =>
+            $services.$controller._deleteSelectedTimeShift(transaction).then(() =>
             {
               return $services.ModelProvider.models.UserLog.findOne({
                 where: Object.assign(EXPECTED_MESSAGE.deleted, {
