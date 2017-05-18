@@ -1,5 +1,6 @@
 'use strict';
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes)
+{
   var TimeShift = sequelize.define('TimeShift', {
     salary_criterion_id: DataTypes.INTEGER,
     name: DataTypes.STRING,
@@ -7,7 +8,8 @@ module.exports = function(sequelize, DataTypes) {
     updated_by: DataTypes.INTEGER
   }, {
     classMethods: {
-      associate: function(models) {
+      associate: function (models)
+      {
         TimeShift.belongsTo(models.User, {
           as: "CreatedBy",
           foreignKey: "created_by",
@@ -39,6 +41,14 @@ module.exports = function(sequelize, DataTypes) {
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });
+      },
+      instanceMethods: {
+        getWorkingHours() {
+          return this.TimeFrames.reduce(function (accumulator, timeFrame)
+          {
+            return accumulator + (timeFrame.getFixedOut() - timeFrame.getFixedIn()) * 1000 * 60 * 60;
+          }, 0);
+        }
       },
       tableName: "time_shifts"
     }
