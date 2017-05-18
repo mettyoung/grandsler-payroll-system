@@ -99,7 +99,7 @@ angular.module('time-shift-registry')
             .cancel('No');
 
           confirm._options.multiple = true;
-          $mdDialog.show(confirm).then(() => _deleteTimeFrame(timeFrame), () => (0));
+          $mdDialog.show(confirm).then(() => this._deleteTimeFrame(timeFrame), () => (0));
         };
 
         /**
