@@ -13,12 +13,23 @@ class CustomValidator
     return (startTime <= time && time <= endTime);
   }
 
-  IsTimeRangeOverlapping(firstTimeRange, secondTimeRange)
+  IsTimeRangeOverlapping(timeRanges)
   {
-    return this.IsBetweenTimeRange(firstTimeRange.startTime, secondTimeRange) ||
-      this.IsBetweenTimeRange(firstTimeRange.endTime, secondTimeRange) ||
-      this.IsBetweenTimeRange(secondTimeRange.startTime, firstTimeRange) ||
-      this.IsBetweenTimeRange(secondTimeRange.endTime, firstTimeRange);
+    for (let i = 0; i < timeRanges.length; i++)
+      for (let j = 0; j < timeRanges.length; j++)
+      {
+        if (i === j)
+          continue;
+
+        const firstTimeRange = timeRanges[i];
+        const secondTimeRange = timeRanges[j];
+        if (this.IsBetweenTimeRange(firstTimeRange.startTime, secondTimeRange) ||
+          this.IsBetweenTimeRange(firstTimeRange.endTime, secondTimeRange) ||
+          this.IsBetweenTimeRange(secondTimeRange.startTime, firstTimeRange) ||
+          this.IsBetweenTimeRange(secondTimeRange.endTime, firstTimeRange))
+          return true;
+      }
+    return false;
   }
 }
 

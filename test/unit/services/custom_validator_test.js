@@ -120,18 +120,50 @@ describe('Validator Angular Service', function ()
           }
         ];
 
-        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_end_1_and_start_2[0], overlap_at_end_1_and_start_2[1])).to.be.true;
-        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_start_1_and_end_2[0], overlap_at_start_1_and_end_2[1])).to.be.true;
-        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_both[0], overlap_at_both[1])).to.be.true;
-        expect(CustomValidator.IsTimeRangeOverlapping(no_overlap_before[0], no_overlap_before[1])).to.be.false;
-        expect(CustomValidator.IsTimeRangeOverlapping(no_overlap_after[0], no_overlap_after[1])).to.be.false;
+        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_end_1_and_start_2)).to.be.true;
+        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_start_1_and_end_2)).to.be.true;
+        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_both)).to.be.true;
+        expect(CustomValidator.IsTimeRangeOverlapping(no_overlap_before)).to.be.false;
+        expect(CustomValidator.IsTimeRangeOverlapping(no_overlap_after)).to.be.false;
 
         // Test for symmetry.
-        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_end_1_and_start_2[1], overlap_at_end_1_and_start_2[0])).to.be.true;
-        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_start_1_and_end_2[1], overlap_at_start_1_and_end_2[0])).to.be.true;
-        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_both[1], overlap_at_both[0])).to.be.true;
-        expect(CustomValidator.IsTimeRangeOverlapping(no_overlap_before[1], no_overlap_before[0])).to.be.false;
-        expect(CustomValidator.IsTimeRangeOverlapping(no_overlap_after[1], no_overlap_after[0])).to.be.false;
+        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_end_1_and_start_2)).to.be.true;
+        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_start_1_and_end_2)).to.be.true;
+        expect(CustomValidator.IsTimeRangeOverlapping(overlap_at_both)).to.be.true;
+        expect(CustomValidator.IsTimeRangeOverlapping(no_overlap_before)).to.be.false;
+        expect(CustomValidator.IsTimeRangeOverlapping(no_overlap_after)).to.be.false;
+      });
+
+      it("should be able to accept an array of time range and determine overlaps of all of them", function()
+      {
+        const no_overlap = [
+          {
+            startTime: moment('11:30 PM', 'hh:mm A').toDate(),
+            endTime: moment('01:30 AM', 'hh:mm A').toDate()
+          },
+          {
+            startTime: moment('02:30 PM', 'hh:mm A').toDate(),
+            endTime: moment('04:30 PM', 'hh:mm A').toDate()
+          },
+          {
+            startTime: moment('05:30 PM', 'hh:mm A').toDate(),
+            endTime: moment('07:30 PM', 'hh:mm A').toDate()
+          },
+          {
+            startTime: moment('08:30 PM', 'hh:mm A').toDate(),
+            endTime: moment('10:30 PM', 'hh:mm A').toDate()
+          }
+        ];
+
+        const overlap = [...no_overlap,
+          {
+            startTime: moment('10:30 PM', 'hh:mm A').toDate(),
+            endTime: moment('12:30 AM', 'hh:mm A').toDate()
+          }
+        ];
+        
+        expect(CustomValidator.IsTimeRangeOverlapping(no_overlap)).to.be.false;
+        expect(CustomValidator.IsTimeRangeOverlapping(overlap)).to.be.true;
       });
     });
   });
