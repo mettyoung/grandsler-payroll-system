@@ -76,7 +76,7 @@
                                        id="salary-criterion"
                                        ng-model="$ctrl.selectedTimeShift.salary_criterion_id">
                                 <md-option ng-repeat="salary_criterion in $ctrl.SALARY_CRITERIA"
-                                           value="{{salary_criterion.id}}">
+                                           ng-value="salary_criterion.id">
                                     {{salary_criterion.name}}
                                 </md-option>
                             </md-select>
