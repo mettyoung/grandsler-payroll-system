@@ -459,6 +459,47 @@ describe('Time Shift Registry Component', function ()
         expect($services.$dom.find('#delete-time-shift').is(":disabled")).to.be.true;
       });
     });
+
+    it("should be able to delete time-frame", function()
+    {
+      return $services.$controller.load(transaction).then(() =>
+      {
+        $services.$dom.find('#create-new-time-shift').click();
+        $services.$dom.find('#create-new-time-frame').click();
+        $services.$dom.find('#create-new-time-frame').click();
+
+        $services.$controller.selectedTimeShift.TimeFrames[0] = {
+          flex_in_from: moment('08:00 AM', 'hh:mm A').toDate(),
+          flex_in_to: moment('09:00 AM', 'hh:mm A').toDate(),
+          flex_out_from: moment('10:00 AM', 'hh:mm A').toDate(),
+          flex_out_to: moment('11:00 AM', 'hh:mm A').toDate(),
+          fixed_in_index: 'flex_in_from',
+          fixed_out_index: 'flex_out_from'
+        };
+
+        $services.$controller.selectedTimeShift.TimeFrames[1] = {
+          flex_in_from: moment('08:00 PM', 'hh:mm A').toDate(),
+          flex_in_to: moment('09:00 PM', 'hh:mm A').toDate(),
+          flex_out_from: moment('10:00 PM', 'hh:mm A').toDate(),
+          flex_out_to: moment('11:00 PM', 'hh:mm A').toDate(),
+          fixed_in_index: 'flex_in_to',
+          fixed_out_index: 'flex_out_to'
+        };
+        $services.$scope.$digest();
+
+        expect($services.$controller.selectedTimeShift.TimeFrames.length).to.equal(2);
+        $services.$controller._deleteTimeFrame($services.$controller.selectedTimeShift.TimeFrames[0]);
+        expect($services.$controller.selectedTimeShift.TimeFrames.length).to.equal(1);
+        expect($services.$controller.selectedTimeShift.TimeFrames[0].flex_in_from).to.deep.equal(moment('08:00 PM', 'hh:mm A').toDate());
+        expect($services.$controller.selectedTimeShift.TimeFrames[0].flex_in_to).to.deep.equal(moment('09:00 PM', 'hh:mm A').toDate());
+        expect($services.$controller.selectedTimeShift.TimeFrames[0].flex_out_from).to.deep.equal(moment('10:00 PM', 'hh:mm A').toDate());
+        expect($services.$controller.selectedTimeShift.TimeFrames[0].flex_out_to).to.deep.equal(moment('11:00 PM', 'hh:mm A').toDate());
+        expect($services.$controller.selectedTimeShift.TimeFrames[0]).to.deep.include({
+          fixed_in_index: 'flex_in_to',
+          fixed_out_index: 'flex_out_to'
+        });
+      });
+    });
   });
 
   describe("Creating and updating", function ()

@@ -69,7 +69,7 @@ angular.module('time-shift-registry')
         {
           var confirm = $mdDialog.confirm()
             .title('Confirmation')
-            .textContent('Are you sure you want to delete this entry?')
+            .textContent('Are you sure you want to delete this time-shift?')
             .ariaLabel('Confirmation')
             .targetEvent(event)
             .ok('Yes')
@@ -77,6 +77,36 @@ angular.module('time-shift-registry')
 
           confirm._options.multiple = true;
           $mdDialog.show(confirm).then(() => this.delete(), () => (0));
+        };
+
+        /**
+         * Deletes the time frame.
+         * @param timeFrame timeFrame to be deleted.
+         * @param event
+         */
+        this.deleteTimeFrame = (timeFrame, event) =>
+        {
+          var confirm = $mdDialog.confirm()
+            .title('Confirmation')
+            .textContent('Are you sure you want to delete this time-frame?')
+            .ariaLabel('Confirmation')
+            .targetEvent(event)
+            .ok('Yes')
+            .cancel('No');
+
+          confirm._options.multiple = true;
+          $mdDialog.show(confirm).then(() => _deleteTimeFrame(timeFrame), () => (0));
+        };
+
+        /**
+         * Service layer.
+         * @param timeFrame
+         * @private
+         */
+        this._deleteTimeFrame = (timeFrame) =>
+        {
+          this.selectedTimeShift.TimeFrames
+            .splice(this.selectedTimeShift.TimeFrames.indexOf(timeFrame),1);
         };
 
         /**

@@ -167,6 +167,13 @@
                                             </div>
                                         </md-radio-group>
                                     </div>
+                                    <div layout="column" layout-align="center end">
+                                        <md-button id="delete-time-frame" class="md-icon-button"
+                                                   ng-click="$ctrl.deleteTimeFrame(timeFrame, $event)"
+                                                   aria-label="Delete time-frame">
+                                            <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
+                                        </md-button>
+                                    </div>
                                 </div>
                                 <md-divider ng-if="!$last"></md-divider>
                             </md-list-item>
