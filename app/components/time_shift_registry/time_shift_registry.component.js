@@ -195,7 +195,7 @@ angular.module('time-shift-registry')
           if (CustomValidator.IsTimeRangeOverlapping(timeFrames))
             return Promise.reject({
               name: 'Validation Error',
-              message: 'Time frames must not be overlapping'
+              message: 'Time frames must not be overlapping.'
             });
 
           return Promise.resolve();

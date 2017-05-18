@@ -376,7 +376,7 @@ describe('Time Shift Registry Component', function ()
         {
           expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.false;
           expect($services.$dom.find('div#save-error-message').text()).to.contain('Validation Error')
-            .and.contain("Time frames must not be overlapping");
+            .and.contain("Time frames must not be overlapping.");
         });
       });
     });
