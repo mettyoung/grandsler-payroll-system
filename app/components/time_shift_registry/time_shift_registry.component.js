@@ -3,8 +3,8 @@ const process = require('process');
 angular.module('time-shift-registry')
   .component('timeShiftRegistry', {
     templateUrl: './components/time_shift_registry/time_shift_registry.template.html',
-    controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider',
-      function ($scope, $mdDialog, Notifier, ModelProvider)
+    controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', 'CustomValidator',
+      function ($scope, $mdDialog, Notifier, ModelProvider, CustomValidator)
       {
         /**
          * Constants
@@ -135,6 +135,34 @@ angular.module('time-shift-registry')
           this.load();
 
         /**
+         * Validation logic.
+         * @param timeShift
+         */
+        const onBeforeSave = timeShift =>
+        {
+          const timeFrames = [];
+          for (let timeFrame of timeShift.TimeFrames)
+          {
+            timeFrames.push({
+              startTime: timeFrame.flex_in_from,
+              endTime: timeFrame.flex_in_to
+            });
+
+            timeFrames.push({
+              startTime: timeFrame.flex_out_from,
+              endTime: timeFrame.flex_out_to
+            });
+          }
+
+          if (CustomValidator.IsTimeRangeOverlapping(timeFrames))
+            return Promise.reject({
+              name: 'Validation Error',
+              message: 'Time frames must not be overlapping'
+            });
+
+          return Promise.resolve();
+        };
+        /**
          * Used to only allow one delete/save at a time.
          * @type {boolean}
          */
@@ -154,9 +182,10 @@ angular.module('time-shift-registry')
             isWriteIdle = false;
             let transactionPromise;
             if (transaction)
-              transactionPromise = operation(transaction);
+              transactionPromise = onBeforeSave(this.selectedTimeShift).then(() => operation(transaction));
             else
-              transactionPromise = ModelProvider.sequelize.transaction(operation);
+              transactionPromise = onBeforeSave(this.selectedTimeShift).then(() =>
+                ModelProvider.sequelize.transaction(operation));
 
             return transactionPromise.then(() => this.write_error = null)
               .catch(error => this.write_error = error)

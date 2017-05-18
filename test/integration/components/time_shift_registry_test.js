@@ -343,27 +343,41 @@ describe('Time Shift Registry Component', function ()
       });
     });
 
-    // TODO: CONTINUE NEXT TIME
-    it("should not permit the 'to' time to be lesser than 'from' time", function ()
+    it("should validate the time frames before saving", function ()
     {
       return $services.$controller.load().then(() =>
       {
         $services.$dom.find('#create-new-time-shift').click();
-        $services.$dom.find('#create-new-time-frame').click();
 
-        $services.$controller.selectedTimeShift.TimeFrames[0].flex_in_from = moment('08:00 AM', 'hh:mm A').toDate();
-        $services.$controller.selectedTimeShift.TimeFrames[0].flex_in_to = moment('07:00 AM', 'hh:mm A').toDate();
-        $services.$controller.selectedTimeShift.TimeFrames[0].flex_out_from = moment('08:00 AM', 'hh:mm A').toDate();
-        $services.$controller.selectedTimeShift.TimeFrames[0].flex_out_to = moment('07:00 AM', 'hh:mm A').toDate();
-        $services.$scope.$digest();
+        $services.$controller.selectedTimeShift = {
+          name: 'Regular Shift',
+          salary_criterion_id: 1,
+          TimeFrames: [
+            {
+              fixed_in_index: 'flex_in_from',
+              fixed_out_index: 'flex_out_from',
+              flex_in_from: moment('11:00 PM', 'hh:mm A').toDate(),
+              flex_in_to: moment('01:30 AM', 'hh:mm A').toDate(),
+              flex_out_from: moment('10:00 PM', 'hh:mm A').toDate(),
+              flex_out_to: moment('10:45 PM', 'hh:mm A').toDate()
+            },
+            {
+              fixed_in_index: 'flex_in_from',
+              fixed_out_index: 'flex_out_from',
+              flex_in_from: moment('11:00 PM', 'hh:mm A').toDate(),
+              flex_in_to: moment('01:30 AM', 'hh:mm A').toDate(),
+              flex_out_from: moment('02:00 AM', 'hh:mm A').toDate(),
+              flex_out_to: moment('04:00 AM', 'hh:mm A').toDate()
+            }
+          ]
+        };
 
-        const $details = $services.$dom.find('#detail-container md-list-item');
-        expect($($details[0]).find('.flex-in-from input').val()).to.equal('08:00:00.000');
-
-        // expect($services.$controller.Form['flex_in_from_0'].$error).to.have.property('required');
-        // expect($services.$controller.Form['flex_in_to_0'].$error).to.have.property('required');
-        // expect($services.$controller.Form['flex_out_from_0'].$error).to.have.property('required');
-        // expect($services.$controller.Form['flex_out_to_0'].$error).to.have.property('required');
+        return $services.$controller.save(transaction).then(() =>
+        {
+          expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.false;
+          expect($services.$dom.find('div#save-error-message').text()).to.contain('Validation Error')
+            .and.contain("Time frames must not be overlapping");
+        });
       });
     });
   });
@@ -459,9 +473,9 @@ describe('Time Shift Registry Component', function ()
         TimeFrames: [
           {
             flex_in_from: moment('08:00 AM', 'hh:mm A').toDate(),
-            flex_in_to: moment('08:00 AM', 'hh:mm A').toDate(),
-            flex_out_from: moment('08:00 AM', 'hh:mm A').toDate(),
-            flex_out_to: moment('08:00 AM', 'hh:mm A').toDate(),
+            flex_in_to: moment('09:00 AM', 'hh:mm A').toDate(),
+            flex_out_from: moment('10:00 AM', 'hh:mm A').toDate(),
+            flex_out_to: moment('11:00 AM', 'hh:mm A').toDate(),
             fixed_in_index: 'flex_in_from',
             fixed_out_index: 'flex_out_from'
           }
@@ -535,9 +549,9 @@ describe('Time Shift Registry Component', function ()
 
             expect(timeFrames.length).to.equal(1);
             expect(timeFrames[0].flex_in_from).to.deep.equal(moment('08:00 AM', 'hh:mm A').toDate());
-            expect(timeFrames[0].flex_in_to).to.deep.equal(moment('08:00 AM', 'hh:mm A').toDate());
-            expect(timeFrames[0].flex_out_from).to.deep.equal(moment('08:00 AM', 'hh:mm A').toDate());
-            expect(timeFrames[0].flex_out_to).to.deep.equal(moment('08:00 AM', 'hh:mm A').toDate());
+            expect(timeFrames[0].flex_in_to).to.deep.equal(moment('09:00 AM', 'hh:mm A').toDate());
+            expect(timeFrames[0].flex_out_from).to.deep.equal(moment('10:00 AM', 'hh:mm A').toDate());
+            expect(timeFrames[0].flex_out_to).to.deep.equal(moment('11:00 AM', 'hh:mm A').toDate());
             expect(timeFrames[0]).to.deep.include({
               fixed_in_index: 'flex_in_from',
               fixed_out_index: 'flex_out_from'
@@ -572,9 +586,9 @@ describe('Time Shift Registry Component', function ()
 
               expect(timeFrames.length).to.equal(1);
               expect(timeFrames[0].flex_in_from).to.deep.equal(moment('08:00 AM', 'hh:mm A').toDate());
-              expect(timeFrames[0].flex_in_to).to.deep.equal(moment('08:00 AM', 'hh:mm A').toDate());
-              expect(timeFrames[0].flex_out_from).to.deep.equal(moment('08:00 AM', 'hh:mm A').toDate());
-              expect(timeFrames[0].flex_out_to).to.deep.equal(moment('08:00 AM', 'hh:mm A').toDate());
+              expect(timeFrames[0].flex_in_to).to.deep.equal(moment('09:00 AM', 'hh:mm A').toDate());
+              expect(timeFrames[0].flex_out_from).to.deep.equal(moment('10:00 AM', 'hh:mm A').toDate());
+              expect(timeFrames[0].flex_out_to).to.deep.equal(moment('11:00 AM', 'hh:mm A').toDate());
               expect(timeFrames[0]).to.deep.include({
                 fixed_in_index: 'flex_in_from',
                 fixed_out_index: 'flex_out_from'
@@ -643,9 +657,9 @@ describe('Time Shift Registry Component', function ()
         TimeFrames: [
           {
             flex_in_from: moment('08:00 AM', 'hh:mm A').toDate(),
-            flex_in_to: moment('08:00 AM', 'hh:mm A').toDate(),
-            flex_out_from: moment('08:00 AM', 'hh:mm A').toDate(),
-            flex_out_to: moment('08:00 AM', 'hh:mm A').toDate(),
+            flex_in_to: moment('09:00 AM', 'hh:mm A').toDate(),
+            flex_out_from: moment('10:00 AM', 'hh:mm A').toDate(),
+            flex_out_to: moment('11:00 AM', 'hh:mm A').toDate(),
             fixed_in_index: 'flex_in_from',
             fixed_out_index: 'flex_out_from'
           }
@@ -731,9 +745,9 @@ describe('Time Shift Registry Component', function ()
         TimeFrames: [
           {
             flex_in_from: moment('08:00 AM', 'hh:mm A').toDate(),
-            flex_in_to: moment('08:00 AM', 'hh:mm A').toDate(),
-            flex_out_from: moment('08:00 AM', 'hh:mm A').toDate(),
-            flex_out_to: moment('08:00 AM', 'hh:mm A').toDate(),
+            flex_in_to: moment('09:00 AM', 'hh:mm A').toDate(),
+            flex_out_from: moment('10:00 AM', 'hh:mm A').toDate(),
+            flex_out_to: moment('11:00 AM', 'hh:mm A').toDate(),
             fixed_in_index: 'flex_in_from',
             fixed_out_index: 'flex_out_from'
           }

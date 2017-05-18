@@ -3,4 +3,6 @@ require('../../services/notifier/notifier.module');
 require('../../services/notifier/notifier.service');
 require('../../services/model_provider/model_provider.module');
 require('../../services/model_provider/model_provider.service');
-angular.module('time-shift-registry', ['front-end-validations', 'notifier', 'model-provider']);
+require('../../services/custom_validator/custom_validator.module');
+require('../../services/custom_validator/custom_validator.service');
+angular.module('time-shift-registry', ['front-end-validations', 'notifier', 'model-provider', 'custom-validator']);
