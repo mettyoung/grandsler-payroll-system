@@ -204,7 +204,7 @@ describe('Time Shift Registry Component', function ()
         expect($header.find('#name').val()).to.equal('Regular Shift');
         expect($header.find('#salary-criterion md-option[selected=selected]').text().trim()).to.equal('Regular');
         expect($.map($header.find('#salary-criterion md-option'), option => $(option).text().trim()))
-          .to.deep.equal(['Regular', 'Overtime', 'Night-differential']);
+          .to.deep.equal(['Regular', 'Night-differential']);
 
         expect($details.length).to.equal(2);
 
@@ -237,7 +237,7 @@ describe('Time Shift Registry Component', function ()
             expect($header.find('#name').val()).to.equal('Night Shift');
             expect($header.find('#salary-criterion md-option[selected=selected]').text().trim()).to.equal('Night-differential');
             expect($.map($header.find('#salary-criterion md-option'), option => $(option).text().trim()))
-              .to.deep.equal(['Regular', 'Overtime', 'Night-differential']);
+              .to.deep.equal(['Regular', 'Night-differential']);
 
             expect($details.length).to.equal(1);
 
@@ -537,7 +537,7 @@ describe('Time Shift Registry Component', function ()
         expect($header.find('#name').val()).to.equal('');
         expect($header.find('#salary-criterion md-option:selected').length).to.equal(0);
         expect($.map($header.find('#salary-criterion md-option'), option => $(option).text().trim()))
-          .to.deep.equal(['Regular', 'Overtime', 'Night-differential']);
+          .to.deep.equal(['Regular', 'Night-differential']);
 
         expect($details.length).to.equal(0);
       });
@@ -556,7 +556,7 @@ describe('Time Shift Registry Component', function ()
         expect($header.find('#name').val()).to.equal('');
         expect($header.find('#salary-criterion md-option:selected').length).to.equal(0);
         expect($.map($header.find('#salary-criterion md-option'), option => $(option).text().trim()))
-          .to.deep.equal(['Regular', 'Overtime', 'Night-differential']);
+          .to.deep.equal(['Regular', 'Night-differential']);
 
         expect($details.length).to.equal(1);
         expect($($details[0]).find('.fixed-in input[hidden]').val()).to.equal('');

@@ -132,7 +132,10 @@ angular.module('time-shift-registry')
               transaction: transaction
             }),
             ModelProvider.models.SALARY_CRITERION.findAll({
-              transaction: transaction
+              transaction: transaction,
+              where: {
+                name: ['Regular', 'Night-differential']
+              }
             })
           ]).then(values =>
           {
