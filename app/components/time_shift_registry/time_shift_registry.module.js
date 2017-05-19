@@ -5,4 +5,6 @@ require('../../services/model_provider/model_provider.module');
 require('../../services/model_provider/model_provider.service');
 require('../../services/custom_validator/custom_validator.module');
 require('../../services/custom_validator/custom_validator.service');
-angular.module('time-shift-registry', ['front-end-validations', 'notifier', 'model-provider', 'custom-validator']);
+require('../../services/crud_helper/crud_helper.module');
+require('../../services/crud_helper/crud_helper.service');
+angular.module('time-shift-registry', ['front-end-validations', 'notifier', 'model-provider', 'custom-validator', 'crud-helper']);

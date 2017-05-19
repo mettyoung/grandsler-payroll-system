@@ -8,20 +8,20 @@
             <div class="md-toolbar-tools">
                 <h3 flex><span>Time-shift Registry</span></h3>
                 <md-button type='submit' id='save-button' class="md-icon-button" aria-label="Save"
-                           ng-hide="$ctrl.preload_error"
+                           ng-hide="$ctrl.load_error"
                            ng-disabled="!$ctrl.Form.$valid"
-                           ng-click="$ctrl.save()">
+                           ng-click="$ctrl.saveSelectedMasterItem()">
                     <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
                 </md-button>
                 <md-button id="create-new-time-shift" class="md-icon-button"
-                           ng-click="$ctrl.createTimeShift()"
-                           ng-hide="$ctrl.preload_error"
+                           ng-click="$ctrl.createMasterItem()"
+                           ng-hide="$ctrl.load_error"
                            aria-label="Create new time-shift">
                     <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
                 </md-button>
                 <md-button id="delete-time-shift" class="md-icon-button"
-                           ng-click="$ctrl.deleteSelectedTimeShift($event)"
-                           ng-hide="$ctrl.preload_error"
+                           ng-click="$ctrl.deleteSelectedMasterItem('Are you sure you want to delete this time-shift?')"
+                           ng-hide="$ctrl.load_error"
                            ng-disabled="$ctrl.disableDeleteButton"
                            aria-label="Delete selected time-shift">
                     <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
@@ -31,19 +31,19 @@
                 </md-button>
             </div>
         </md-toolbar>
-        <!-- Preload error message; hides the content and save button if pre-loading error occurs. -->
-        <div id="preload-error-message" class="alert alert-danger" ng-hide="!$ctrl.preload_error">
-            <strong>{{$ctrl.preload_error.name}}:</strong> {{$ctrl.preload_error.message}}
+        <!-- Load error message; hides the content and saveSelectedMasterItem button if loading error occurs. -->
+        <div id="load-error-message" class="alert alert-danger" ng-hide="!$ctrl.load_error">
+            <strong>{{$ctrl.load_error.name}}:</strong> {{$ctrl.load_error.message}}
         </div>
-        <!-- Main Content; hides if preload_error occurs. -->
-        <div id="main-content" layout="row" flex ng-hide="$ctrl.preload_error">
+        <!-- Main Content; hides if load_error occurs. -->
+        <div id="main-content" layout="row" flex ng-hide="$ctrl.load_error">
 
             <!-- Master List -->
             <md-sidenav id="master-container" layout="column" flex="40" md-whiteframe="4" md-is-locked-open="true">
                 <md-content flex>
                     <md-list>
                         <md-list-item ng-repeat="timeShift in $ctrl.timeShifts"
-                                      ng-click="$ctrl.selectTimeShift(timeShift)">
+                                      ng-click="$ctrl.selectMasterItem(timeShift)">
                             <h4 class="name">{{ timeShift.name }}</h4>
                             <md-divider ng-if="!$last"></md-divider>
                         </md-list-item>
@@ -169,7 +169,7 @@
                                     </div>
                                     <div layout="column" layout-align="center end">
                                         <md-button id="delete-time-frame" class="md-icon-button"
-                                                   ng-click="$ctrl.deleteTimeFrame(timeFrame, $event)"
+                                                   ng-click="$ctrl.deleteDetailItem(timeFrame, 'Are you sure you want to delete this time frame?')"
                                                    aria-label="Delete time-frame">
                                             <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
                                         </md-button>
@@ -180,7 +180,7 @@
                         </md-list>
                         <div layout="row" layout-align="center center">
                             <md-button id="create-new-time-frame" class="md-primary"
-                                       ng-click="$ctrl.createTimeFrame()">Add time frame
+                                       ng-click="$ctrl.createDetailItem()">Add time frame
                             </md-button>
                         </div>
                     </div>
