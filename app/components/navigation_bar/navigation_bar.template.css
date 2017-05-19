@@ -1,0 +1,13 @@
+md-toolbar#navigation-bar-toolbar {
+  background-color: #2C80D2;
+}
+
+md-list-item #navigation-bar-timestamp {
+  font-style: italic;
+  color: #969696;
+}
+
+md-list-item #navigation-bar-list-item-container {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}

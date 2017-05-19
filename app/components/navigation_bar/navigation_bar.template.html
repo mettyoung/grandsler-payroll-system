@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="./components/navigation_bar/navigation_bar.template.css">
+<md-toolbar id="navigation-bar-toolbar">
+    <h1 class="md-toolbar-tools">Modules</h1>
+</md-toolbar>
+<md-content flex>
+    <md-list flex>
+        <md-list-item ng-repeat="message in $ctrl.activities | orderBy:'-_date'">
+            <div layout="column" id="navigation-bar-list-item-container" flex>
+                <span id="navigation-bar-timestamp">{{ message.date }}</span>
+                <span>{{ message.description }}</span>
+            </div>
+            <md-divider ng-if="!$last"></md-divider>
+        </md-list-item>
+    </md-list>
+</md-content>
