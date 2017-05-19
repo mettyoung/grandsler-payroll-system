@@ -6,7 +6,6 @@ const process = require('process');
 
 /**
  * Constants
- * @type {{masterProperty: string, detailProperty: string, selectedMasterItem: string, disableDeleteButton: string, message: {created: {module: string, description: string}, deleted: {module: string, description: string}, modified: {module: string, description: string}}}}
  */
 const DEFAULT_OPTIONS = {
   masterProperty: 'masterItems',
@@ -133,7 +132,6 @@ class CrudHelper {
      */
     this._controller.saveSelectedMasterItem = transaction => this._write(transaction, 'save');
 
-
     /**
      * Deletes the selected master item including its details.
      * @param transactionOrMessage If this parameter is a string, then it will ask for confirmation before deleting.
@@ -143,10 +141,13 @@ class CrudHelper {
     this._controller.deleteSelectedMasterItem = (transactionOrMessage) =>
     {
       let promise = Promise.resolve();
+      let transaction;
       if (typeof transactionOrMessage === 'string')
         promise = this._confirmation(transactionOrMessage);
+      else
+        transaction = transactionOrMessage;
 
-      return promise.then(() => this._write(transaction, 'delete'));
+      return promise.then(() => this._write(transaction, 'delete'), () => (0));
     };
 
     /**
@@ -162,7 +163,8 @@ class CrudHelper {
         promise = this._confirmation(message);
 
       return promise.then(() => this._controller[this._options.selectedMasterItemProperty][this._options.detailProperty]
-        .splice(this._controller[this._options.selectedMasterItemProperty][this._options.detailProperty].indexOf(detailItem), 1));
+        .splice(this._controller[this._options.selectedMasterItemProperty][this._options.detailProperty].indexOf(detailItem), 1),
+        () => (0));
     };
 
     /**
@@ -170,17 +172,17 @@ class CrudHelper {
      * @param transaction
      */
     this._controller.load = transaction =>
-      this._lifeCycles.onLoad && this._lifeCycles.onLoad(transaction)
-        .then(masterList =>
+    this._lifeCycles.onLoad && this._lifeCycles.onLoad(transaction)
+      .then(masterList =>
+      {
+        if (masterList.length > 0)
         {
-          if (masterList.length > 0)
-          {
-            this._controller[this._options.selectedMasterItemProperty] = masterList[0];
-            this._controller[this._options.disableDeleteButtonProperty] = false;
-          }
-        })
-        .catch(error => this._controller.load_error = error)
-        .then(() => this._$scope.$apply());
+          this._controller[this._options.selectedMasterItemProperty] = masterList[0];
+          this._controller[this._options.disableDeleteButtonProperty] = false;
+        }
+      })
+      .catch(error => this._controller.load_error = error)
+      .then(() => this._$scope.$apply());
 
 
     /**
@@ -190,7 +192,7 @@ class CrudHelper {
      * If environment is not production or dev, then preload the module.
      */
     if (process.env.NODE_ENV !== 'test')
-      this.load();
+      this._controller.load();
   }
 
   onAfterCreateMasterItem(onAfterCreateMasterItem)
@@ -270,10 +272,7 @@ class CrudHelper {
       .cancel('No');
     confirmationDialog._options.multiple = true;
 
-    let promise = this._$mdDialog.show(confirmationDialog);
-    promise.catch(() => (0));
-
-    return promise;
+    return this._$mdDialog.show(confirmationDialog);
   }
 }
 
