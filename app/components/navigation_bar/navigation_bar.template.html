@@ -4,12 +4,14 @@
 </md-toolbar>
 <md-content flex>
     <md-list flex>
-        <md-list-item ng-repeat="message in $ctrl.activities | orderBy:'-_date'">
-            <div layout="column" id="navigation-bar-list-item-container" flex>
-                <span id="navigation-bar-timestamp">{{ message.date }}</span>
-                <span>{{ message.description }}</span>
+        <md-list-item ng-click="null" ng-repeat="module in $ctrl.modules">
+            <div layout="column" flex>
+                <div layout="row" flex>
+                    <md-icon md-svg-icon="{{module.icon}}"></md-icon>
+                    <h4 layout-padding flex>{{module.name}}</h4>
+                </div>
+                <md-divider ng-if="!$last"></md-divider>
             </div>
-            <md-divider ng-if="!$last"></md-divider>
         </md-list-item>
     </md-list>
 </md-content>

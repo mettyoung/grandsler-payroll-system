@@ -1,1 +1,1 @@
-angular.module('navigation-bar', []);
+angular.module('navigation-bar', ['ngMaterial']);
