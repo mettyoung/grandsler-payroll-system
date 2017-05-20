@@ -19,5 +19,11 @@ angular.module('authentication')
               $state.go('main-app')
           });
       };
+
+      if (process.env.NODE_ENV === 'development')
+      {
+        require('../../models/domain/authentication').attempt("admin", "admin");
+        $state.go('main-app');
+      }
     }]
   });
