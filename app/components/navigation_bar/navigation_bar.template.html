@@ -4,7 +4,7 @@
 </md-toolbar>
 <md-content flex>
     <md-list flex>
-        <md-list-item ng-click="null" ng-repeat="module in $ctrl.modules">
+        <md-list-item ng-click="$ctrl.selectModule(module)" ng-repeat="module in $ctrl.modules">
             <div layout="column" flex>
                 <div layout="row" flex>
                     <md-icon md-svg-icon="{{module.icon}}"></md-icon>

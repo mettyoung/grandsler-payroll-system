@@ -18,14 +18,7 @@ const appDependencies = [
 angular.module('grandsler-payroll-system', [
   ...customComponents,
   ...appDependencies
-]).config(['$stateProvider', $stateProvider => {
-
-  $stateProvider.state({
-    name: 'main-app',
-    url: '/main-app',
-    component: 'mainApp'
-  });
-}]);
+]);
 
 
 /**

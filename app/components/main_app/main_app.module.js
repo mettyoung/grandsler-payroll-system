@@ -6,4 +6,4 @@ require('../navigation_bar/navigation_bar.config');
 require('../activity_logs/activity_logs.module');
 require('../activity_logs/activity_logs.component');
 
-angular.module('main-app', ['action-bar', 'navigation-bar', 'activity-logs']);
+angular.module('main-app', ['action-bar', 'navigation-bar', 'activity-logs', 'ui.router']);
