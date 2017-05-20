@@ -1,20 +1,30 @@
 /**
  * Components
  */
+require('./components/main_app/main_app.module');
+require('./components/main_app/main_app.component');
 require('./components/authentication/authentication.module');
 require('./components/authentication/authentication.component');
 
-/**
- * Various App Configuration
- */
-angular.module('grandsler-payroll-system', [
-  'authentication',
-  'ngMaterial',
+const customComponents = [
+  'main-app',
+  'authentication'
+];
+
+const appDependencies = [
   'ui.router'
-]).config(['$mdIconProvider', ($mdIconProvider) => {
-  // Icon Provider
-  $mdIconProvider.iconSet('action', '../node_modules/material-design-icons/sprites/svg-sprite/svg-sprite-action.svg');
-  $mdIconProvider.iconSet('social', '../node_modules/material-design-icons/sprites/svg-sprite/svg-sprite-social.svg');
+];
+
+angular.module('grandsler-payroll-system', [
+  ...customComponents,
+  ...appDependencies
+]).config(['$stateProvider', $stateProvider => {
+
+  $stateProvider.state({
+    name: 'main-app',
+    url: '/main-app',
+    component: 'mainApp'
+  });
 }]);
 
 
@@ -23,7 +33,6 @@ angular.module('grandsler-payroll-system', [
  */
 if (process.env.NODE_ENV === 'development')
 {
-  require('electron-connect').client.create();
   angular.module('grandsler-payroll-system').run(function($uiRouter) {
     $uiRouter.plugin(require('@uirouter/visualizer').Visualizer);
   });
