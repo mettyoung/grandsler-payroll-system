@@ -1,5 +1,3 @@
-require('./time_shift_registry.module');
-
 angular.module('time-shift-registry')
   .config(['$mdIconProvider', $mdIconProvider =>
   {

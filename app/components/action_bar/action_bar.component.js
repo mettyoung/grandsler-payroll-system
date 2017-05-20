@@ -2,7 +2,8 @@ angular.module('action-bar')
   .component('actionBar', {
     templateUrl: './components/action_bar/action_bar.template.html',
     bindings: {
-      title: '='
+      title: '<',
+      onMenuPressed: '&'
     },
     controller: ['$mdDialog', function ($mdDialog)
     {

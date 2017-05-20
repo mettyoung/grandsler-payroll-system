@@ -1,15 +1,15 @@
 <link rel="stylesheet" href="./components/main_app/main_app.template.css">
 <div layout="row" layout-fill>
     <!-- Navigation Bar -->
-    <md-sidenav class="md-sidenav-left md-whiteframe-4dp" md-component-id="left" md-is-locked-open="true">
-        <navigation-bar flex></navigation-bar>
+    <md-sidenav class="md-sidenav-left md-whiteframe-4dp" md-component-id="left">
+        <navigation-bar on-menu-item-pressed="$ctrl.closeNavigationBar()" flex></navigation-bar>
     </md-sidenav>
 
     <!-- Main Content Container -->
     <div layout="column" flex>
 
         <!-- Action Bar -->
-        <action-bar title="$ctrl.title"></action-bar>
+        <action-bar title="$ctrl.title" on-menu-pressed="$ctrl.openNavigationBar()"></action-bar>
 
         <!-- Main Content -->
         <md-content flex layout-padding layout="column">
