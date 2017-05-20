@@ -1,0 +1,15 @@
+md-sidenav.md-sidenav-right,
+md-sidenav.md-locked-open-add-active.md-sidenav-right,
+md-sidenav.md-closed.md-locked-open-add-active.md-sidenav-right,
+md-sidenav.md-locked-open.md-sidenav-right {
+  width: 250px;
+  min-width: 250px;
+}
+
+md-sidenav.md-sidenav-left,
+md-sidenav.md-locked-open-add-active.md-sidenav-left,
+md-sidenav.md-closed.md-locked-open-add-active.md-sidenav-left,
+md-sidenav.md-locked-open.md-sidenav-left {
+  width: 280px;
+  min-width: 280px;
+}
