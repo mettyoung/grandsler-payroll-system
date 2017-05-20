@@ -1,8 +1,8 @@
 angular.module('time-shift-registry')
   .component('timeShiftRegistry', {
     templateUrl: './components/time_shift_registry/time_shift_registry.template.html',
-    controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', 'CustomValidator', 'CrudHelper',
-      function ($scope, $mdDialog, Notifier, ModelProvider, CustomValidator, CrudHelper)
+    controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', 'CustomValidator', 'CrudHandler',
+      function ($scope, $mdDialog, Notifier, ModelProvider, CustomValidator, CrudHandler)
       {
         /**
          * This is used for the Notifier module.
@@ -28,7 +28,7 @@ angular.module('time-shift-registry')
          * Lifecycles
          */
         {
-          CrudHelper.onAfterCreateMasterItem(() =>
+          CrudHandler.onAfterCreateMasterItem(() =>
           {
             // Set it to untouched to reset validations.
             this.Form.$setUntouched();
@@ -37,7 +37,7 @@ angular.module('time-shift-registry')
           /**
            * Validation logic before saving.
            */
-          CrudHelper.onBeforeSaveSelectedMasterItem(timeShift =>
+          CrudHandler.onBeforeSaveSelectedMasterItem(timeShift =>
           {
             const timeFrames = [];
             for (let timeFrame of timeShift.TimeFrames)
@@ -61,7 +61,7 @@ angular.module('time-shift-registry')
             return Promise.resolve();
           });
 
-          CrudHelper.onSaveSelectedMasterItem(transaction =>
+          CrudHandler.onSaveSelectedMasterItem(transaction =>
           {
             let action = 'modified';
             if (this.selectedTimeShift.constructor === Object)
@@ -83,7 +83,7 @@ angular.module('time-shift-registry')
               }), transaction);
           });
           
-          CrudHelper.onDeleteSelectedMasterItem(transaction =>
+          CrudHandler.onDeleteSelectedMasterItem(transaction =>
           {
             if (this.selectedTimeShift.constructor === Object)
               return Promise.reject('Cannot delete a new record.');
@@ -107,7 +107,7 @@ angular.module('time-shift-registry')
             }, transaction);
           });
 
-          CrudHelper.onLoad(transaction =>
+          CrudHandler.onLoad(transaction =>
           {
             return Promise.all([
               ModelProvider.models.TimeShift.findAll({
@@ -132,9 +132,9 @@ angular.module('time-shift-registry')
         }
         
         /**
-         * Bootstraps this controller with CrudHelper that handles the basic CRUD controller routines.
+         * Bootstraps this controller with CrudHandler that handles the basic CRUD controller routines.
          */
-        CrudHelper.bootstrap(this, $scope, {
+        CrudHandler.bootstrap(this, $scope, {
           masterProperty: 'timeShifts',
           detailProperty: 'TimeFrames',
           selectedMasterItemProperty: 'selectedTimeShift',

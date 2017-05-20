@@ -1,7 +1,6 @@
 /**
  * A simple CRUD framework.
  */
-require('./crud_helper.service');
 const process = require('process');
 
 /**
@@ -42,7 +41,7 @@ const OPERATIONS = {
 /**
  * Handles master-detail CRUD with lifecycle listeners.
  */
-class CrudHelper {
+class CrudHandler {
   /**
    * Model Provider and $mdDialog are injected for creating transactions and creating confirmation dialogs respectively.
    * @param ModelProvider
@@ -276,5 +275,5 @@ class CrudHelper {
   }
 }
 
-angular.module('crud-helper')
-  .service('CrudHelper', ['ModelProvider', '$mdDialog', CrudHelper]);
+angular.module('crud-handler')
+  .service('CrudHandler', ['ModelProvider', '$mdDialog', CrudHandler]);
