@@ -2,8 +2,7 @@
 <md-toolbar>
     <div class="md-toolbar-tools">
         <!-- Title -->
-        <h2 md-truncate flex>Grandsler Payroll System</h2>
-
+        <h2 flex>{{$ctrl.title}}</h2>
         <!-- Menu -->
         <md-menu md-position-mode="target-right target" md-offset="-10 45">
             <!-- Trigger element is a md-button with an icon -->
@@ -12,19 +11,19 @@
             </md-button>
             <md-menu-content>
                 <md-menu-item>
-                    <md-button ng-click="openChangePasswordDialog()">
+                    <md-button ng-click="$ctrl.openChangePasswordDialog()">
                         <md-icon md-svg-icon="action:ic_account_circle_24px"></md-icon>
                         <span>Change Password</span>
                     </md-button>
                 </md-menu-item>
                 <md-menu-item>
-                    <md-button ng-click="openSalaryCriteriaDialog()">
+                    <md-button ng-click="$ctrl.openSalaryCriteriaDialog()">
                         <md-icon md-svg-icon="action:ic_assignment_24px"></md-icon>
                         <span>Salary Criteria</span>
                     </md-button>
                 </md-menu-item>
                 <md-menu-item>
-                        <md-button ng-click="openTimeShiftRegistryDialog()">
+                    <md-button ng-click="$ctrl.openTimeShiftRegistryDialog()">
                         <md-icon md-svg-icon="action:ic_alarm_add_24px"></md-icon>
                         <span>Time-shift Registry</span>
                     </md-button>
