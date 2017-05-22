@@ -42,6 +42,7 @@ const OPERATIONS = {
  * Handles master-detail CRUD with lifecycle listeners.
  */
 class CrudHandler {
+
   /**
    * Model Provider and $mdDialog are injected for creating transactions and creating confirmation dialogs respectively.
    * @param ModelProvider
@@ -77,7 +78,7 @@ class CrudHandler {
      * Used to only allow one delete/save at a time.
      * @type {boolean}
      */
-    this._isWriteIdle = true;
+    controller._isWriteIdle = true;
 
     // Initialize view models.
     controller[controller._options.masterProperty] = [];
@@ -85,14 +86,15 @@ class CrudHandler {
     controller[controller._options.disableDeleteButtonProperty] = true;
 
     // Initialize commands
-    this._setCommands(controller, controller._options);
+    this._setCommands(controller);
   }
 
   /**
    * Initializes commands.
    */
-  _setCommands(controller, options)
+  _setCommands(controller)
   {
+    const options = controller._options;
     /**
      * Creates a new item to the master list.
      * @LifeCycle: onAfterCreateMasterItem.
@@ -133,7 +135,7 @@ class CrudHandler {
      * @param transaction
      * @LifeCycle: onBeforeSaveSelectedMasterItem and onSaveSelectedMasterItem
      */
-    controller.saveSelectedMasterItem = transaction => this._write(controller, options, transaction, 'save');
+    controller.saveSelectedMasterItem = transaction => this._write(controller, transaction, 'save');
 
     /**
      * Deletes the selected master item including its details.
@@ -150,7 +152,7 @@ class CrudHandler {
       else
         transaction = transactionOrMessage;
 
-      return promise.then(() => this._write(controller, options, transaction, 'delete'), () => (0));
+      return promise.then(() => this._write(controller, transaction, 'delete'), () => (0));
     };
 
     /**
@@ -166,7 +168,7 @@ class CrudHandler {
         promise = this._confirmation(message);
 
       return promise.then(() => controller[options.selectedMasterItemProperty][options.detailProperty]
-        .splice(controller[options.selectedMasterItemProperty][options.detailProperty].indexOf(detailItem), 1),
+          .splice(controller[options.selectedMasterItemProperty][options.detailProperty].indexOf(detailItem), 1),
         () => (0));
     };
 
@@ -175,17 +177,17 @@ class CrudHandler {
      * @param transaction
      */
     controller.load = transaction =>
-    controller._lifeCycles.onLoad && controller._lifeCycles.onLoad(transaction)
-      .then(masterList =>
-      {
-        if (masterList.length > 0)
+      controller._lifeCycles.onLoad && controller._lifeCycles.onLoad(transaction)
+        .then(masterList =>
         {
-          controller[options.selectedMasterItemProperty] = masterList[0];
-          controller[options.disableDeleteButtonProperty] = false;
-        }
-      })
-      .catch(error => controller.load_error = error)
-      .then(() => controller._$scope.$apply());
+          if (masterList.length > 0)
+          {
+            controller[options.selectedMasterItemProperty] = masterList[0];
+            controller[options.disableDeleteButtonProperty] = false;
+          }
+        })
+        .catch(error => controller.load_error = error)
+        .then(() => controller._$scope.$apply());
 
 
     /**
@@ -247,11 +249,12 @@ class CrudHandler {
    * @returns {*}
    * @private
    */
-  _write(controller, options, transaction, operation)
+  _write(controller, transaction, operation)
   {
-    if (this._isWriteIdle)
+    const options = controller._options;
+    if (controller._isWriteIdle)
     {
-      this._isWriteIdle = false;
+      controller._isWriteIdle = false;
 
       // Initialization
       const event = controller._lifeCycles[OPERATIONS[operation].event];
@@ -270,7 +273,7 @@ class CrudHandler {
       return transactionPromise.then(() => controller.write_error = null)
         .catch(error => controller.write_error = error)
         .then(() => controller._$scope.$apply())
-        .then(() => this._isWriteIdle = true);
+        .then(() => controller._isWriteIdle = true);
     }
   }
 
