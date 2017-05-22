@@ -1,3 +1,7 @@
+<!-- Load error message; hides the content and saveSelectedMasterItem button if loading error occurs. -->
+<div id="load-error-message" class="alert alert-danger" ng-hide="!$ctrl.load_error">
+    <strong>{{$ctrl.load_error.name}}:</strong> {{$ctrl.load_error.message}}
+</div>
 <!-- Query Parameters -->
 <form>
     <md-card flex>
