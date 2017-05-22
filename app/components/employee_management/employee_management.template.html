@@ -1,5 +1,6 @@
+<!-- Query Parameters -->
 <form>
-    <md-card class="query-parameters" flex>
+    <md-card flex>
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <span flex>Query Parameters</span>
@@ -8,41 +9,46 @@
                 </md-button>
             </div>
         </md-toolbar>
-        <md-input-container>
-            <label>Employee Type</label>
-            <md-select ng-model="$ctrl.query.employee_type">
-                <md-option ng-value="0" selected>All</md-option>
-                <md-option ng-value="'Time-based'">Time-based</md-option>
-                <md-option ng-value="'Output-based'">Output-based</md-option>
-            </md-select>
-        </md-input-container>
-        <md-input-container>
-            <label>Status</label>
-            <md-select ng-model="$ctrl.query.is_active">
-                <md-option ng-value="0" selected>All</md-option>
-                <md-option ng-value="true">Active</md-option>
-                <md-option ng-value="false">Inactive</md-option>
-            </md-select>
-        </md-input-container>
-        <md-input-container>
-            <label>Position</label>
-            <md-select ng-model="$ctrl.query.position_id">
-                <md-option ng-value="0" selected>All</md-option>
-                <md-option ng-value="position.id" ng-repeat="position in $ctrl.data.positions">{{position.name}}
-                </md-option>
-            </md-select>
-        </md-input-container>
-        <md-input-container flex>
-            <label>Name</label>
-            <input ng-model="$ctrl.query.name" md-auto-focus="true" autofocus>
-        </md-input-container>
+        <div class="query-parameters" layout="column">
+            <md-input-container>
+                <label>Employee Type</label>
+                <md-select ng-model="$ctrl.query.employee_type">
+                    <md-option ng-value="0" selected>All</md-option>
+                    <md-option ng-value="'Time-based'">Time-based</md-option>
+                    <md-option ng-value="'Output-based'">Output-based</md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container>
+                <label>Status</label>
+                <md-select ng-model="$ctrl.query.is_active">
+                    <md-option ng-value="0" selected>All</md-option>
+                    <md-option ng-value="true">Active</md-option>
+                    <md-option ng-value="false">Inactive</md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container>
+                <label>Position</label>
+                <md-select ng-model="$ctrl.query.position_id">
+                    <md-option ng-value="0" selected>All</md-option>
+                    <md-option ng-value="position.id" ng-repeat="position in $ctrl.data.positions">{{position.name}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container flex>
+                <label>Name</label>
+                <input ng-model="$ctrl.query.name" md-auto-focus="true" autofocus>
+            </md-input-container>
+        </div>
     </md-card>
 </form>
 <!-- Data Table -->
 <md-card flex>
     <md-toolbar>
         <div class="md-toolbar-tools">
-            Employee Records
+            <span flex>Employee Records</span>
+            <md-button class="md-icon-button" ng-click="$ctrl.commands.create()">
+                <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
+            </md-button>
         </div>
     </md-toolbar>
     <md-table-container>
@@ -75,10 +81,3 @@
                          md-on-paginate="$ctrl.commands.load" md-page-select>
     </md-table-pagination>
 </md-card>
-
-<!-- Add Button -->
-<div class="add-button" layout="row" layout-align="end end" flex>
-    <md-button class="md-fab md-primary" ng-click="$ctrl.commands.create()">
-        <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
-    </md-button>
-</div>

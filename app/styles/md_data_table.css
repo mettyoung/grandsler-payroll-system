@@ -5,5 +5,9 @@ md-table-pagination .label {
 }
 
 .query-parameters md-input-container {
-  margin: 24px;
+  margin: 16px 24px;
+}
+
+.query-parameters md-input-container:first-child {
+  margin-top: 30px;
 }
