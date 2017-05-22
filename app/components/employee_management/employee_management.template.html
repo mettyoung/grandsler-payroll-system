@@ -1,0 +1,39 @@
+<!-- Data Table -->
+<md-card flex>
+    <md-table-container>
+        <table md-table md-row-select ng-model="$ctrl.data.selected" md-progress="$ctrl.data.progress">
+            <thead md-head md-order="$ctrl.query.order" md-on-reorder="$ctrl.commands.load">
+            <tr md-row>
+                <th md-column md-order-by="id">ID</th>
+                <th md-column md-order-by="last_name">Name</th>
+                <th md-column md-order-by="employee_type">Employee Type</th>
+                <th md-column md-order-by="Position.name">Position</th>
+                <th md-column md-order-by="TimeShift.name">Time-shift</th>
+                <th md-column>Granted Access</th>
+            </tr>
+            </thead>
+            <tbody md-body>
+            <tr class="table-row" md-row ng-repeat="employee in $ctrl.data.selected">
+                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.id}}</td>
+                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.getFullName()}}</td>
+                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.employee_type}}</td>
+                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.Position.name}}</td>
+                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.TimeShift.name}}</td>
+                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.hasSystemAccess()}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+
+    <md-table-pagination md-limit="$ctrl.query.limit" md-limit-options="$ctrl.preset.limitOptions"
+                         md-page="$ctrl.query.page" md-total="{{$ctrl.data.total_count}}"
+                         md-on-paginate="$ctrl.commands.load" md-page-select>
+    </md-table-pagination>
+</md-card>
+
+<!-- Add Button -->
+<div class="add-button" layout="row" layout-align="end end" flex>
+    <md-button class="md-fab md-primary" ng-click="$ctrl.commands.create()">
+        <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
+    </md-button>
+</div>

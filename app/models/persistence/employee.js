@@ -57,6 +57,27 @@ module.exports = function(sequelize, DataTypes) {
         });
       }
     },
+    instanceMethods: {
+
+      /**
+       * Gets the last name, first name.
+       * @returns {string}
+       */
+      getFullName() 
+      {
+        return this.last_name + ", " + this.first_name;  
+      },
+      
+      /**
+       * Returns a formatted string if the employee has access to the system. (e.g. The Employee instance must include
+       * User in the query.
+       * @returns {string}
+       */
+      hasSystemAccess()
+      {
+        return this.User? 'Yes': 'No';
+      }
+    },
     tableName: "employees"
   });
   return Employee;
