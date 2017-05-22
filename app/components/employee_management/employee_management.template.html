@@ -1,5 +1,50 @@
+<form>
+    <md-card class="query-parameters" flex>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <span flex>Query Parameters</span>
+                <md-button class="md-icon-button" type="submit" ng-click="$ctrl.commands.load()">
+                    <md-icon md-svg-icon="action:ic_search_24px"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-input-container>
+            <label>Employee Type</label>
+            <md-select ng-model="$ctrl.query.employee_type">
+                <md-option ng-value="0" selected>All</md-option>
+                <md-option ng-value="1">Time-based</md-option>
+                <md-option ng-value="2">Output-based</md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container>
+            <label>Status</label>
+            <md-select ng-model="$ctrl.query.is_hired">
+                <md-option ng-value="0" selected>All</md-option>
+                <md-option ng-value="1">Active</md-option>
+                <md-option ng-value="2">Inactive</md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container>
+            <label>Position</label>
+            <md-select ng-model="$ctrl.query.position">
+                <md-option ng-value="0" selected>All</md-option>
+                <md-option ng-value="position.id" ng-repeat="position in $ctrl.data.positions">{{position.name}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Name</label>
+            <input ng-model="$ctrl.query.name" md-auto-focus="true" autofocus>
+        </md-input-container>
+    </md-card>
+</form>
 <!-- Data Table -->
 <md-card flex>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            Employee Records
+        </div>
+    </md-toolbar>
     <md-table-container>
         <table md-table md-row-select ng-model="$ctrl.data.selected" md-progress="$ctrl.data.progress">
             <thead md-head md-order="$ctrl.query.order" md-on-reorder="$ctrl.commands.load">

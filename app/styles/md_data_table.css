@@ -3,3 +3,7 @@ md-table-pagination .label {
   font-weight: normal;
   font-size: inherit;
 }
+
+.query-parameters md-input-container {
+  margin: 24px;
+}
