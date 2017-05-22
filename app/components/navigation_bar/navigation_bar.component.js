@@ -29,7 +29,7 @@ angular.module('navigation-bar')
       this.selectModule = module => 
       {
         $state.go(module.state_name);
-        this.onMenuItemPressed();
+        this.onMenuItemPressed({value: module});
       }
     }]
   });

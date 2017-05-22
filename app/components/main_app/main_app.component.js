@@ -9,8 +9,9 @@ angular.module('main-app')
         $mdSidenav('left').open();
       };
       
-      this.closeNavigationBar = () => 
+      this.onMenuItemPressed = module =>
       {
+        this.title = module.name;
         $mdSidenav('left').close();
       }
     }]
