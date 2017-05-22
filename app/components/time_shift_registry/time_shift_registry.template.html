@@ -22,7 +22,7 @@
                 <md-button id="delete-time-shift" class="md-icon-button"
                            ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this time-shift?')"
                            ng-hide="$ctrl.load_error"
-                           ng-disabled="$ctrl.disableDeleteButton"
+                           ng-disabled="$ctrl.is_delete_disabled"
                            aria-label="Delete selected time-shift">
                     <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
                 </md-button>
