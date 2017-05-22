@@ -62,11 +62,10 @@ class CrudHandler {
   bootstrap(controller, $scope, options)
   {
     /**
-     * Embedded $scope to controller.
+     * Embedded $scope and processed options to controller.
      */
     controller._$scope = $scope;
-
-    this._options = Object.assign({}, DEFAULT_OPTIONS, options);
+    controller._options = Object.assign({}, DEFAULT_OPTIONS, options);
 
     /**
      * Initialize life cycles object if not existing.
@@ -81,18 +80,18 @@ class CrudHandler {
     this._isWriteIdle = true;
 
     // Initialize view models.
-    controller[this._options.masterProperty] = [];
-    controller[this._options.selectedMasterItemProperty] = null;
-    controller[this._options.disableDeleteButtonProperty] = true;
+    controller[controller._options.masterProperty] = [];
+    controller[controller._options.selectedMasterItemProperty] = null;
+    controller[controller._options.disableDeleteButtonProperty] = true;
 
     // Initialize commands
-    this._setCommands(controller);
+    this._setCommands(controller, controller._options);
   }
 
   /**
    * Initializes commands.
    */
-  _setCommands(controller)
+  _setCommands(controller, options)
   {
     /**
      * Creates a new item to the master list.
@@ -100,9 +99,9 @@ class CrudHandler {
      */
     controller.createMasterItem = () =>
     {
-      controller[this._options.disableDeleteButtonProperty] = true;
-      controller[this._options.selectedMasterItemProperty] = {
-        [this._options.detailProperty]: []
+      controller[options.disableDeleteButtonProperty] = true;
+      controller[options.selectedMasterItemProperty] = {
+        [options.detailProperty]: []
       };
       controller._lifeCycles.onAfterCreateMasterItem && controller._lifeCycles.onAfterCreateMasterItem();
     };
@@ -118,8 +117,8 @@ class CrudHandler {
       return masterItem.reload({transaction: transaction})
         .then(() =>
         {
-          controller[this._options.disableDeleteButtonProperty] = false;
-          controller[this._options.selectedMasterItemProperty] = masterItem;
+          controller[options.disableDeleteButtonProperty] = false;
+          controller[options.selectedMasterItemProperty] = masterItem;
           controller._$scope.$apply();
         });
     };
@@ -127,14 +126,14 @@ class CrudHandler {
     /**
      * Creates a detail item under the selected master item.
      */
-    controller.createDetailItem = () => controller[this._options.selectedMasterItemProperty][this._options.detailProperty].push({});
+    controller.createDetailItem = () => controller[options.selectedMasterItemProperty][options.detailProperty].push({});
 
     /**
      * Saves the selected master item including its details.
      * @param transaction
      * @LifeCycle: onBeforeSaveSelectedMasterItem and onSaveSelectedMasterItem
      */
-    controller.saveSelectedMasterItem = transaction => this._write(controller, transaction, 'save');
+    controller.saveSelectedMasterItem = transaction => this._write(controller, options, transaction, 'save');
 
     /**
      * Deletes the selected master item including its details.
@@ -151,7 +150,7 @@ class CrudHandler {
       else
         transaction = transactionOrMessage;
 
-      return promise.then(() => this._write(controller, transaction, 'delete'), () => (0));
+      return promise.then(() => this._write(controller, options, transaction, 'delete'), () => (0));
     };
 
     /**
@@ -166,8 +165,8 @@ class CrudHandler {
       if (typeof message === 'string')
         promise = this._confirmation(message);
 
-      return promise.then(() => controller[this._options.selectedMasterItemProperty][this._options.detailProperty]
-        .splice(controller[this._options.selectedMasterItemProperty][this._options.detailProperty].indexOf(detailItem), 1),
+      return promise.then(() => controller[options.selectedMasterItemProperty][options.detailProperty]
+        .splice(controller[options.selectedMasterItemProperty][options.detailProperty].indexOf(detailItem), 1),
         () => (0));
     };
 
@@ -181,8 +180,8 @@ class CrudHandler {
       {
         if (masterList.length > 0)
         {
-          controller[this._options.selectedMasterItemProperty] = masterList[0];
-          controller[this._options.disableDeleteButtonProperty] = false;
+          controller[options.selectedMasterItemProperty] = masterList[0];
+          controller[options.disableDeleteButtonProperty] = false;
         }
       })
       .catch(error => controller.load_error = error)
@@ -248,7 +247,7 @@ class CrudHandler {
    * @returns {*}
    * @private
    */
-  _write(controller, transaction, operation)
+  _write(controller, options, transaction, operation)
   {
     if (this._isWriteIdle)
     {
@@ -257,7 +256,7 @@ class CrudHandler {
       // Initialization
       const event = controller._lifeCycles[OPERATIONS[operation].event];
       const onBeforeEvent = controller._lifeCycles[OPERATIONS[operation].onBeforeEvent];
-      const selectedMaster = controller[this._options.selectedMasterItemProperty];
+      const selectedMaster = controller[options.selectedMasterItemProperty];
 
       // Execute onBeforeEvent.
       const onBeforePromise = onBeforeEvent ? onBeforeEvent(selectedMaster) : Promise.resolve();
