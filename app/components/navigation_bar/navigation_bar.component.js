@@ -11,11 +11,6 @@ angular.module('navigation-bar')
        */
       this.modules = [
         {
-          name: 'User Management',
-          icon: "social:ic_person_24px",
-          state_name: 'main_app.user_management'
-        },
-        {
           name: 'Employee Management',
           icon: "social:ic_group_24px",
           state_name: 'main_app.employee_management'
