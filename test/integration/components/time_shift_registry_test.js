@@ -143,7 +143,7 @@ describe('Time Shift Registry Component', function ()
 
     it("should load the time-shifts from the database", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         const $listItems = $services.$dom.find('#master-container md-list md-list-item');
         expect($listItems.length).to.equal(2);
@@ -182,7 +182,7 @@ describe('Time Shift Registry Component', function ()
         }
       };
 
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         expect($services.$dom.find('#load-error-message').text()).to.contain('Mock Error')
           .and.contain('Error Message');
@@ -196,7 +196,7 @@ describe('Time Shift Registry Component', function ()
 
     it("should load the time-frames of the first entry on load from the database", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         const $header = $services.$dom.find('#detail-container .panel-heading');
         const $details = $services.$dom.find('#detail-container md-list-item');
@@ -226,9 +226,9 @@ describe('Time Shift Registry Component', function ()
 
     it("should be able to switch detail view based on master list item of choice", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
-        return $services.$controller.selectMasterItem($services.$controller.timeShifts[1], transaction)
+        return $services.$controller.commands.selectMasterItem($services.$controller.timeShifts[1], transaction)
           .then(() =>
           {
             const $header = $services.$dom.find('#detail-container .panel-heading');
@@ -261,9 +261,9 @@ describe('Time Shift Registry Component', function ()
 
     it("should reload the time shifts when selected", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
-        return $services.$controller.selectMasterItem($services.$controller.timeShifts[1], transaction)
+        return $services.$controller.commands.selectMasterItem($services.$controller.timeShifts[1], transaction)
           .then(() =>
           {
             $services.$dom.find('#create-new-time-frame').click();
@@ -271,7 +271,7 @@ describe('Time Shift Registry Component', function ()
             expect($details.length).to.equal(2);
 
             // Must reload
-            return $services.$controller.selectMasterItem($services.$controller.timeShifts[1], transaction)
+            return $services.$controller.commands.selectMasterItem($services.$controller.timeShifts[1], transaction)
               .then(() =>
               {
                 const $details = $services.$dom.find('#detail-container md-list-item');
@@ -286,7 +286,7 @@ describe('Time Shift Registry Component', function ()
   {
     it("should require text for all fields for the headers", () =>
     {
-      return $services.$controller.load().then(() =>
+      return $services.$controller.commands.load().then(() =>
       {
         $services.$dom.find('#create-new-time-shift').click();
 
@@ -302,7 +302,7 @@ describe('Time Shift Registry Component', function ()
 
     it("should disable the save button if there's a validation error", function ()
     {
-      return $services.$controller.load().then(() =>
+      return $services.$controller.commands.load().then(() =>
       {
         $services.$dom.find('#create-new-time-shift').click();
         expect($services.$dom.find('button#save-button').is(':disabled')).to.be.true;
@@ -315,7 +315,7 @@ describe('Time Shift Registry Component', function ()
 
     it("should require text and selection of fixed time in time frames", function ()
     {
-      return $services.$controller.load().then(() =>
+      return $services.$controller.commands.load().then(() =>
       {
         $services.$dom.find('#create-new-time-shift').click();
         $services.$dom.find('#create-new-time-frame').click();
@@ -345,7 +345,7 @@ describe('Time Shift Registry Component', function ()
 
     it("should validate the time frames before saving", function ()
     {
-      return $services.$controller.load().then(() =>
+      return $services.$controller.commands.load().then(() =>
       {
         $services.$dom.find('#create-new-time-shift').click();
 
@@ -372,7 +372,7 @@ describe('Time Shift Registry Component', function ()
           ]
         };
 
-        return $services.$controller.saveSelectedMasterItem(transaction).then(() =>
+        return $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
         {
           expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.false;
           expect($services.$dom.find('div#save-error-message').text()).to.contain('Validation Error')
@@ -436,11 +436,11 @@ describe('Time Shift Registry Component', function ()
 
     it("should delete the selectedTimeShift from the database", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
-        return $services.$controller.deleteSelectedMasterItem(transaction).then(() =>
+        return $services.$controller.commands.deleteSelectedMasterItem(transaction).then(() =>
         {
-          return $services.$controller.load(transaction).then(() =>
+          return $services.$controller.commands.load(transaction).then(() =>
           {
             const $listItems = $services.$dom.find('#master-container md-list md-list-item');
             expect($listItems.length).to.equal(1);
@@ -452,7 +452,7 @@ describe('Time Shift Registry Component', function ()
 
     it("should disable the delete button if creating new", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         expect($services.$dom.find('#delete-time-shift').is(":disabled")).to.be.false;
         $services.$dom.find('#create-new-time-shift').click();
@@ -462,7 +462,7 @@ describe('Time Shift Registry Component', function ()
 
     it("should be able to delete time-frame", function()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         $services.$dom.find('#create-new-time-shift').click();
         $services.$dom.find('#create-new-time-frame').click();
@@ -488,7 +488,7 @@ describe('Time Shift Registry Component', function ()
         $services.$scope.$digest();
 
         expect($services.$controller.selectedTimeShift.TimeFrames.length).to.equal(2);
-        return $services.$controller.deleteDetailItem($services.$controller.selectedTimeShift.TimeFrames[0]).then(() =>
+        return $services.$controller.commands.deleteDetailItem($services.$controller.selectedTimeShift.TimeFrames[0]).then(() =>
         {
           expect($services.$controller.selectedTimeShift.TimeFrames.length).to.equal(1);
           expect($services.$controller.selectedTimeShift.TimeFrames[0].flex_in_from).to.deep.equal(moment('08:00 PM', 'hh:mm A').toDate());
@@ -528,7 +528,7 @@ describe('Time Shift Registry Component', function ()
 
     it("should replace the detail view with a form of blank fields when creating new", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         $services.$dom.find('#create-new-time-shift').click();
 
@@ -547,7 +547,7 @@ describe('Time Shift Registry Component', function ()
 
     it("should be able to add a new time frame", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         $services.$dom.find('#create-new-time-shift').click();
         $services.$dom.find('#create-new-time-frame').click();
@@ -572,10 +572,10 @@ describe('Time Shift Registry Component', function ()
 
     it("should be able to create a new time-shift to the database", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         $services.$controller.selectedTimeShift = selectedTimeShift;
-        return $services.$controller.saveSelectedMasterItem(transaction).then(() =>
+        return $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
           $services.ModelProvider.models.TimeShift.findOne({
             transaction: transaction,
             include: [$services.ModelProvider.models.TimeFrame]
@@ -608,11 +608,11 @@ describe('Time Shift Registry Component', function ()
       return $services.ModelProvider.models.TimeShift.create(selectedTimeShift, {
         transaction: transaction,
         include: [$services.ModelProvider.models.TimeFrame]
-      }).then(() => $services.$controller.load(transaction))
+      }).then(() => $services.$controller.commands.load(transaction))
         .then(() =>
         {
           $services.$controller.selectedTimeShift.name = 'Hello';
-          return $services.$controller.saveSelectedMasterItem(transaction).then(() =>
+          return $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
             $services.ModelProvider.models.TimeShift.findOne({
               transaction: transaction,
               include: [$services.ModelProvider.models.TimeFrame]
@@ -642,23 +642,23 @@ describe('Time Shift Registry Component', function ()
 
     it("should only call the save operation one at a time", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         $services.$controller.selectedTimeShift = selectedTimeShift;
 
-        expect(typeof $services.$controller.saveSelectedMasterItem(transaction)).to.not.equal('undefined');
-        expect(typeof $services.$controller.saveSelectedMasterItem(transaction)).to.equal('undefined');
+        expect(typeof $services.$controller.commands.saveSelectedMasterItem(transaction)).to.not.equal('undefined');
+        expect(typeof $services.$controller.commands.saveSelectedMasterItem(transaction)).to.equal('undefined');
       });
     });
 
     it("should format and show the error message when saving failed", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         $services.$controller.selectedTimeShift = selectedTimeShift;
         $services.$controller.selectedTimeShift.name = null;
         expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.true;
-        return $services.$controller.saveSelectedMasterItem(transaction).then(() =>
+        return $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
         {
           $services.$controller.selectedTimeShift.name = 'Regular';
           expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.false;
@@ -670,16 +670,16 @@ describe('Time Shift Registry Component', function ()
 
     it('should hide error message if the error is resolved', function ()
     {
-      return $services.$controller.load().then(() =>
+      return $services.$controller.commands.load().then(() =>
       {
         $services.$controller.selectedTimeShift = selectedTimeShift;
         $services.$controller.selectedTimeShift.name = null;
         expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.true;
-        return $services.$controller.saveSelectedMasterItem(transaction).then(() =>
+        return $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
         {
           expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.false;
           $services.$controller.selectedTimeShift.name = 'Regular';
-          return $services.$controller.saveSelectedMasterItem(transaction).then(() =>
+          return $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
           {
             expect($services.$dom.find('div#save-error-message').hasClass('ng-hide')).to.be.true;
           });
@@ -719,13 +719,13 @@ describe('Time Shift Registry Component', function ()
 
     it("should not hide the dialog if saving failed", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         $services.$controller.selectedTimeShift = selectedTimeShift;
 
         $services.$controller.selectedTimeShift.name = null;
 
-        return $services.$controller.saveSelectedMasterItem(transaction).then(() =>
+        return $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
         {
           expect($services.$mdDialog.isHideCalled).to.be.false;
         });
@@ -734,11 +734,11 @@ describe('Time Shift Registry Component', function ()
 
     it("should hide the dialog if saving is successful", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         $services.$controller.selectedTimeShift = selectedTimeShift;
 
-        return $services.$controller.saveSelectedMasterItem(transaction).then(() =>
+        return $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
         {
           expect($services.$mdDialog.isHideCalled).to.be.true;
         });
@@ -747,11 +747,11 @@ describe('Time Shift Registry Component', function ()
 
     it("should not hide the dialog if deleting failed", function ()
     {
-      return $services.$controller.load(transaction).then(() =>
+      return $services.$controller.commands.load(transaction).then(() =>
       {
         $services.$controller.selectedTimeShift = selectedTimeShift;
 
-        return $services.$controller.deleteSelectedMasterItem(transaction).then(() =>
+        return $services.$controller.commands.deleteSelectedMasterItem(transaction).then(() =>
         {
           expect($services.$mdDialog.isHideCalled).to.be.false;
         });
@@ -765,9 +765,9 @@ describe('Time Shift Registry Component', function ()
         include: [$services.ModelProvider.models.TimeFrame]
       }).then(() =>
       {
-        return $services.$controller.load(transaction).then(() =>
+        return $services.$controller.commands.load(transaction).then(() =>
         {
-          return $services.$controller.deleteSelectedMasterItem(transaction).then(() =>
+          return $services.$controller.commands.deleteSelectedMasterItem(transaction).then(() =>
           {
             expect($services.$mdDialog.isHideCalled).to.be.true;
           });
@@ -800,11 +800,11 @@ describe('Time Shift Registry Component', function ()
 
     it("should propagate the created message to the Notifier if time-shift is successfully created", function ()
     {
-      return $services.$controller.load().then(() =>
+      return $services.$controller.commands.load().then(() =>
       {
         $services.$controller.selectedTimeShift = selectedTimeShift;
         const date = new Date();
-        return $services.$controller.saveSelectedMasterItem(transaction).then(() =>
+        return $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
         {
           let s = Object.assign(EXPECTED_MESSAGE.created, {
             created_at: {
@@ -825,12 +825,12 @@ describe('Time Shift Registry Component', function ()
 
     it("should propagate the modified message to the Notifier if time-shift is successfully created", function ()
     {
-      return $services.$controller.load().then(() =>
+      return $services.$controller.commands.load().then(() =>
       {
         $services.$controller.selectedTimeShift = selectedTimeShift;
         const date = new Date();
-        return $services.$controller.saveSelectedMasterItem(transaction).then(() =>
-          $services.$controller.saveSelectedMasterItem(transaction).then(() =>
+        return $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
+          $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
           {
             return $services.ModelProvider.models.UserLog.findOne({
               where: Object.assign(EXPECTED_MESSAGE.modified, {
@@ -848,13 +848,13 @@ describe('Time Shift Registry Component', function ()
     it("should propagate the deleted message to the Notifier if time-shift is successfully created", function ()
     {
       $services.$controller.selectedTimeShift = selectedTimeShift;
-      return $services.$controller.load().then(() =>
+      return $services.$controller.commands.load().then(() =>
       {
         const date = new Date();
-        return $services.$controller.saveSelectedMasterItem(transaction)
-          .then(() => $services.$controller.load())
+        return $services.$controller.commands.saveSelectedMasterItem(transaction)
+          .then(() => $services.$controller.commands.load())
           .then(() =>
-            $services.$controller.deleteSelectedMasterItem(transaction).then(() =>
+            $services.$controller.commands.deleteSelectedMasterItem(transaction).then(() =>
             {
               return $services.ModelProvider.models.UserLog.findOne({
                 where: Object.assign(EXPECTED_MESSAGE.deleted, {
@@ -871,12 +871,12 @@ describe('Time Shift Registry Component', function ()
 
     it("should not propagate the message to the Notifier if operation failed", function ()
     {
-      return $services.$controller.load().then(() =>
+      return $services.$controller.commands.load().then(() =>
       {
         const date = new Date();
         $services.$controller.selectedTimeShift = selectedTimeShift;
         $services.$controller.selectedTimeShift.name = null;
-        return $services.$controller.saveSelectedMasterItem(transaction).then(() =>
+        return $services.$controller.commands.saveSelectedMasterItem(transaction).then(() =>
         {
           return $services.ModelProvider.models.UserLog.findOne({
             where: Object.assign(EXPECTED_MESSAGE.created, {

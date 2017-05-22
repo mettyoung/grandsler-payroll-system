@@ -4,6 +4,18 @@
 const process = require('process');
 
 /**
+ *
+ * Commands
+ * - createMasterItem
+ * - selectMasterItem
+ * - createDetailItem
+ * - saveSelectedMasterItem
+ * - deleteSelectedMasterItem
+ * - deleteDetailItem
+ * - load
+ */
+
+/**
  * Constants
  */
 const DEFAULT_OPTIONS = {
@@ -26,7 +38,6 @@ const DEFAULT_OPTIONS = {
     }
   }
 };
-
 const OPERATIONS = {
   delete: {
     event: 'onDeleteSelectedMasterItem',
@@ -95,109 +106,120 @@ class CrudHandler {
   _setCommands(controller)
   {
     const options = controller._options;
-    /**
-     * Creates a new item to the master list.
-     * @LifeCycle: onAfterCreateMasterItem.
-     */
-    controller.createMasterItem = () =>
-    {
-      controller[options.disableDeleteButtonProperty] = true;
-      controller[options.selectedMasterItemProperty] = {
-        [options.detailProperty]: []
-      };
-      controller._lifeCycles.onAfterCreateMasterItem && controller._lifeCycles.onAfterCreateMasterItem();
-    };
+    const self = this;
 
     /**
-     * Selects an item from the master list.
-     * @param masterItem the masterItem to be selected.
-     * @param transaction
-     * @returns {Promise}
+     * Collect all commands into an object.
      */
-    controller.selectMasterItem = (masterItem, transaction) =>
-    {
-      return masterItem.reload({transaction: transaction})
-        .then(() =>
-        {
-          controller[options.disableDeleteButtonProperty] = false;
-          controller[options.selectedMasterItemProperty] = masterItem;
-          controller._$scope.$apply();
-        });
-    };
+    controller.commands = {
+      /**
+       * Creates a new item to the master list.
+       * @LifeCycle: onAfterCreateMasterItem.
+       */
+      createMasterItem()
+      {
+        controller[options.disableDeleteButtonProperty] = true;
+        controller[options.selectedMasterItemProperty] = {
+          [options.detailProperty]: []
+        };
+        controller._lifeCycles.onAfterCreateMasterItem && controller._lifeCycles.onAfterCreateMasterItem();
+      },
 
-    /**
-     * Creates a detail item under the selected master item.
-     */
-    controller.createDetailItem = () => controller[options.selectedMasterItemProperty][options.detailProperty].push({});
-
-    /**
-     * Saves the selected master item including its details.
-     * @param transaction
-     * @LifeCycle: onBeforeSaveSelectedMasterItem and onSaveSelectedMasterItem
-     */
-    controller.saveSelectedMasterItem = transaction => this._write(controller, transaction, 'save');
-
-    /**
-     * Deletes the selected master item including its details.
-     * @param transactionOrMessage If this parameter is a string, then it will ask for confirmation before deleting.
-     * @returns {Promise}
-     * @LifeCycle: onBeforeDeleteSelectedMasterItem and onDeleteSelectedMasterItem
-     */
-    controller.deleteSelectedMasterItem = (transactionOrMessage) =>
-    {
-      let promise = Promise.resolve();
-      let transaction;
-      if (typeof transactionOrMessage === 'string')
-        promise = this._confirmation(transactionOrMessage);
-      else
-        transaction = transactionOrMessage;
-
-      return promise.then(() => this._write(controller, transaction, 'delete'), () => (0));
-    };
-
-    /**
-     * Delete detail item from the detail list under the selected master item.
-     * @param detailItem
-     * @param message
-     * @returns {Promise}
-     */
-    controller.deleteDetailItem = (detailItem, message) =>
-    {
-      let promise = Promise.resolve();
-      if (typeof message === 'string')
-        promise = this._confirmation(message);
-
-      return promise.then(() => controller[options.selectedMasterItemProperty][options.detailProperty]
-          .splice(controller[options.selectedMasterItemProperty][options.detailProperty].indexOf(detailItem), 1),
-        () => (0));
-    };
-
-    /**
-     * Load master-detail data from the database.
-     * @param transaction
-     */
-    controller.load = transaction =>
-      controller._lifeCycles.onLoad && controller._lifeCycles.onLoad(transaction)
-        .then(masterList =>
-        {
-          if (masterList.length > 0)
+      /**
+       * Selects an item from the master list.
+       * @param masterItem the masterItem to be selected.
+       * @param transaction
+       * @returns {Promise}
+       */
+      selectMasterItem(masterItem, transaction)
+      {
+        return masterItem.reload({transaction: transaction})
+          .then(() =>
           {
-            controller[options.selectedMasterItemProperty] = masterList[0];
             controller[options.disableDeleteButtonProperty] = false;
-          }
-        })
-        .catch(error => controller.load_error = error)
-        .then(() => controller._$scope.$apply());
+            controller[options.selectedMasterItemProperty] = masterItem;
+            controller._$scope.$apply();
+          });
+      },
 
+      /**
+       * Creates a detail item under the selected master item.
+       */
+      createDetailItem()
+      {
+        return controller[options.selectedMasterItemProperty][options.detailProperty].push({});
+      },
+
+      /**
+       * Saves the selected master item including its details.
+       * @param transaction
+       * @LifeCycle: onBeforeSaveSelectedMasterItem and onSaveSelectedMasterItem
+       */
+      saveSelectedMasterItem(transaction)
+      {
+        return self._write(controller, transaction, 'save');
+      },
+
+      /**
+       * Deletes the selected master item including its details.
+       * @param transactionOrMessage If this parameter is a string, then it will ask for confirmation before deleting.
+       * @returns {Promise}
+       * @LifeCycle: onBeforeDeleteSelectedMasterItem and onDeleteSelectedMasterItem
+       */
+      deleteSelectedMasterItem(transactionOrMessage)
+      {
+        let promise = Promise.resolve();
+        let transaction;
+        if (typeof transactionOrMessage === 'string')
+          promise = self._confirmation(transactionOrMessage);
+        else
+          transaction = transactionOrMessage;
+
+        return promise.then(() => self._write(controller, transaction, 'delete'), () => (0));
+      },
+
+      /**
+       * Delete detail item from the detail list under the selected master item.
+       * @param detailItem
+       * @param message
+       * @returns {Promise}
+       */
+      deleteDetailItem(detailItem, message)
+      {
+        let promise = Promise.resolve();
+        if (typeof message === 'string')
+          promise = self._confirmation(message);
+
+        return promise.then(() => controller[options.selectedMasterItemProperty][options.detailProperty]
+            .splice(controller[options.selectedMasterItemProperty][options.detailProperty].indexOf(detailItem), 1),
+          () => (0));
+      },
+
+      /**
+       * Load master-detail data from the database.
+       * @param transaction
+       */
+      load(transaction)
+      {
+        return controller._lifeCycles.onLoad && controller._lifeCycles.onLoad(transaction)
+          .then(masterList =>
+          {
+            if (masterList.length > 0)
+            {
+              controller[options.selectedMasterItemProperty] = masterList[0];
+              controller[options.disableDeleteButtonProperty] = false;
+            }
+          })
+          .catch(error => controller.load_error = error)
+          .then(() => controller._$scope.$apply());
+      }
+    };
 
     /**
-     * Preload the component.
-     */
-    /**
-     * If environment is not production or dev, then preload the module.
+     * If environment is production or dev, then preload the module.
      */
     if (process.env.NODE_ENV !== 'test')
-      controller.load();
+      controller.commands.load();
   }
 
   onAfterCreateMasterItem(controller, onAfterCreateMasterItem)

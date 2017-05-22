@@ -10,17 +10,17 @@
                 <md-button type='submit' id='save-button' class="md-icon-button" aria-label="Save"
                            ng-hide="$ctrl.load_error"
                            ng-disabled="!$ctrl.Form.$valid"
-                           ng-click="$ctrl.saveSelectedMasterItem()">
+                           ng-click="$ctrl.commands.saveSelectedMasterItem()">
                     <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
                 </md-button>
                 <md-button id="create-new-time-shift" class="md-icon-button"
-                           ng-click="$ctrl.createMasterItem()"
+                           ng-click="$ctrl.commands.createMasterItem()"
                            ng-hide="$ctrl.load_error"
                            aria-label="Create new time-shift">
                     <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
                 </md-button>
                 <md-button id="delete-time-shift" class="md-icon-button"
-                           ng-click="$ctrl.deleteSelectedMasterItem('Are you sure you want to delete this time-shift?')"
+                           ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this time-shift?')"
                            ng-hide="$ctrl.load_error"
                            ng-disabled="$ctrl.disableDeleteButton"
                            aria-label="Delete selected time-shift">
@@ -43,7 +43,7 @@
                 <md-content flex>
                     <md-list>
                         <md-list-item ng-repeat="timeShift in $ctrl.timeShifts"
-                                      ng-click="$ctrl.selectMasterItem(timeShift)">
+                                      ng-click="$ctrl.commands.selectMasterItem(timeShift)">
                             <h4 class="name">{{ timeShift.name }}</h4>
                             <md-divider ng-if="!$last"></md-divider>
                         </md-list-item>
@@ -169,7 +169,7 @@
                                     </div>
                                     <div layout="column" layout-align="center end">
                                         <md-button id="delete-time-frame" class="md-icon-button"
-                                                   ng-click="$ctrl.deleteDetailItem(timeFrame, 'Are you sure you want to delete this time frame?')"
+                                                   ng-click="$ctrl.commands.deleteDetailItem(timeFrame, 'Are you sure you want to delete this time frame?')"
                                                    aria-label="Delete time-frame">
                                             <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
                                         </md-button>
@@ -180,7 +180,7 @@
                         </md-list>
                         <div layout="row" layout-align="center center">
                             <md-button id="create-new-time-frame" class="md-primary"
-                                       ng-click="$ctrl.createDetailItem()">Add time frame
+                                       ng-click="$ctrl.commands.createDetailItem()">Add time frame
                             </md-button>
                         </div>
                     </div>
