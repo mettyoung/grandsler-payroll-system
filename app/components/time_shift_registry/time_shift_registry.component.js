@@ -28,7 +28,7 @@ angular.module('time-shift-registry')
          * Lifecycles
          */
         {
-          CrudHandler.onAfterCreateMasterItem(() =>
+          CrudHandler.onAfterCreateMasterItem(this, () =>
           {
             // Set it to untouched to reset validations.
             this.Form.$setUntouched();
@@ -37,7 +37,7 @@ angular.module('time-shift-registry')
           /**
            * Validation logic before saving.
            */
-          CrudHandler.onBeforeSaveSelectedMasterItem(timeShift =>
+          CrudHandler.onBeforeSaveSelectedMasterItem(this, timeShift =>
           {
             const timeFrames = [];
             for (let timeFrame of timeShift.TimeFrames)
@@ -61,7 +61,7 @@ angular.module('time-shift-registry')
             return Promise.resolve();
           });
 
-          CrudHandler.onSaveSelectedMasterItem(transaction =>
+          CrudHandler.onSaveSelectedMasterItem(this, transaction =>
           {
             let action = 'modified';
             if (this.selectedTimeShift.constructor === Object)
@@ -83,7 +83,7 @@ angular.module('time-shift-registry')
               }), transaction);
           });
           
-          CrudHandler.onDeleteSelectedMasterItem(transaction =>
+          CrudHandler.onDeleteSelectedMasterItem(this, transaction =>
           {
             if (this.selectedTimeShift.constructor === Object)
               return Promise.reject('Cannot delete a new record.');
@@ -107,7 +107,7 @@ angular.module('time-shift-registry')
             }, transaction);
           });
 
-          CrudHandler.onLoad(transaction =>
+          CrudHandler.onLoad(this, transaction =>
           {
             return Promise.all([
               ModelProvider.models.TimeShift.findAll({

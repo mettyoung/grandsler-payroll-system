@@ -51,7 +51,6 @@ class CrudHandler {
   {
     this._ModelProvider = ModelProvider;
     this._$mdDialog = $mdDialog;
-    this._lifeCycles = {};
   }
 
   /**
@@ -68,6 +67,12 @@ class CrudHandler {
     this._controller = controller;
     this._$scope = $scope;
     this._options = Object.assign({}, DEFAULT_OPTIONS, options);
+
+    /**
+     * Initialize life cycles object if not existing.
+     */
+    if (!this._controller._lifeCycles)
+      this._controller._lifeCycles = {};
 
     /**
      * Used to only allow one delete/save at a time.
@@ -99,7 +104,7 @@ class CrudHandler {
       this._controller[this._options.selectedMasterItemProperty] = {
         [this._options.detailProperty]: []
       };
-      this._lifeCycles.onAfterCreateMasterItem && this._lifeCycles.onAfterCreateMasterItem();
+      this._controller._lifeCycles.onAfterCreateMasterItem && this._controller._lifeCycles.onAfterCreateMasterItem();
     };
 
     /**
@@ -171,7 +176,7 @@ class CrudHandler {
      * @param transaction
      */
     this._controller.load = transaction =>
-    this._lifeCycles.onLoad && this._lifeCycles.onLoad(transaction)
+    this._controller._lifeCycles.onLoad && this._controller._lifeCycles.onLoad(transaction)
       .then(masterList =>
       {
         if (masterList.length > 0)
@@ -194,34 +199,46 @@ class CrudHandler {
       this._controller.load();
   }
 
-  onAfterCreateMasterItem(onAfterCreateMasterItem)
+  onAfterCreateMasterItem(controller, onAfterCreateMasterItem)
   {
-    this._lifeCycles.onAfterCreateMasterItem = onAfterCreateMasterItem;
+    if (!controller._lifeCycles)
+      controller._lifeCycles = {};
+    controller._lifeCycles.onAfterCreateMasterItem = onAfterCreateMasterItem;
   }
 
-  onBeforeSaveSelectedMasterItem(onBeforeSaveSelectedMasterItem)
+  onBeforeSaveSelectedMasterItem(controller, onBeforeSaveSelectedMasterItem)
   {
-    this._lifeCycles.onBeforeSaveSelectedMasterItem = onBeforeSaveSelectedMasterItem;
+    if (!controller._lifeCycles)
+      controller._lifeCycles = {};
+    controller._lifeCycles.onBeforeSaveSelectedMasterItem = onBeforeSaveSelectedMasterItem;
   }
 
-  onSaveSelectedMasterItem(onSaveSelectedMasterItem)
+  onSaveSelectedMasterItem(controller, onSaveSelectedMasterItem)
   {
-    this._lifeCycles.onSaveSelectedMasterItem = onSaveSelectedMasterItem;
+    if (!controller._lifeCycles)
+      controller._lifeCycles = {};
+    controller._lifeCycles.onSaveSelectedMasterItem = onSaveSelectedMasterItem;
   }
 
-  onBeforeDeleteSelectedMasterItem(onBeforeDeleteSelectedMasterItem)
+  onBeforeDeleteSelectedMasterItem(controller, onBeforeDeleteSelectedMasterItem)
   {
-    this._lifeCycles.onBeforeDeleteSelectedMasterItem = onBeforeDeleteSelectedMasterItem;
+    if (!controller._lifeCycles)
+      controller._lifeCycles = {};
+    controller._lifeCycles.onBeforeDeleteSelectedMasterItem = onBeforeDeleteSelectedMasterItem;
   }
 
-  onDeleteSelectedMasterItem(onDeleteSelectedMasterItem)
+  onDeleteSelectedMasterItem(controller, onDeleteSelectedMasterItem)
   {
-    this._lifeCycles.onDeleteSelectedMasterItem = onDeleteSelectedMasterItem;
+    if (!controller._lifeCycles)
+      controller._lifeCycles = {};
+    controller._lifeCycles.onDeleteSelectedMasterItem = onDeleteSelectedMasterItem;
   }
 
-  onLoad(onLoad)
+  onLoad(controller, onLoad)
   {
-    this._lifeCycles.onLoad = onLoad;
+    if (!controller._lifeCycles)
+      controller._lifeCycles = {};
+    controller._lifeCycles.onLoad = onLoad;
   }
 
   /**
@@ -238,8 +255,8 @@ class CrudHandler {
       this._isWriteIdle = false;
 
       // Initialization
-      const event = this._lifeCycles[OPERATIONS[operation].event];
-      const onBeforeEvent = this._lifeCycles[OPERATIONS[operation].onBeforeEvent];
+      const event = this._controller._lifeCycles[OPERATIONS[operation].event];
+      const onBeforeEvent = this._controller._lifeCycles[OPERATIONS[operation].onBeforeEvent];
       const selectedMaster = this._controller[this._options.selectedMasterItemProperty];
 
       // Execute onBeforeEvent.
