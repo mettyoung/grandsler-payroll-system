@@ -18,10 +18,10 @@
         </md-input-container>
         <md-input-container>
             <label>Status</label>
-            <md-select ng-model="$ctrl.query.is_hired">
+            <md-select ng-model="$ctrl.query.is_active">
                 <md-option ng-value="0" selected>All</md-option>
-                <md-option ng-value="1">Active</md-option>
-                <md-option ng-value="2">Inactive</md-option>
+                <md-option ng-value="true">Active</md-option>
+                <md-option ng-value="false">Inactive</md-option>
             </md-select>
         </md-input-container>
         <md-input-container>

@@ -17,24 +17,46 @@ angular.module('employee-management')
             // Add associations
             Object.assign(options, {
               include: [ModelProvider.models.User, ModelProvider.models.TimeShift, ModelProvider.models.Position],
-              where: {
-                $and: {}
-              }
+              where: {}
             });
 
             // Add filters
             if (this.query.employee_type !== 0)
-              Object.assign(options.where.$and, {
+              Object.assign(options.where, {
                 employee_type: this.query.employee_type
               });
-            
+
             if (this.query.position_id > 0)
-              Object.assign(options.where.$and, {
+              Object.assign(options.where, {
                 position_id: this.query.position_id
               });
 
+            if (this.query.is_active !== 0)
+            {
+              const isActive = {
+                date_hired: {
+                  $lte: ModelProvider.Sequelize.fn('CURDATE')
+                },
+                date_released: {
+                  $or: {
+                    $gte: ModelProvider.Sequelize.fn('CURDATE'),
+                    $eq: null
+                  }
+                }
+              };
+
+              const where = this.query.is_active ? isActive : {
+                $not: isActive
+              };
+
+              options.include.push({
+                model: ModelProvider.models.Employment,
+                where: where
+              });
+            }
+
             if (this.query.name && this.query.name.length > 0)
-              Object.assign(options.where.$and, {
+              Object.assign(options.where, {
                 $or: {
                   first_name: {
                     $like: '%' + this.query.name + '%'
