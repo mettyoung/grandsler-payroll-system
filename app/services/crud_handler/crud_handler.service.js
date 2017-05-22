@@ -62,10 +62,10 @@ class CrudHandler {
   bootstrap(controller, $scope, options)
   {
     /**
-     * Initialize internal properties.
+     * Embedded $scope to controller.
      */
+    this._controller._$scope = $scope;
     this._controller = controller;
-    this._$scope = $scope;
     this._options = Object.assign({}, DEFAULT_OPTIONS, options);
 
     /**
@@ -120,7 +120,7 @@ class CrudHandler {
         {
           this._controller[this._options.disableDeleteButtonProperty] = false;
           this._controller[this._options.selectedMasterItemProperty] = masterItem;
-          this._$scope.$apply();
+          this._controller._$scope.$apply();
         });
     };
 
@@ -186,7 +186,7 @@ class CrudHandler {
         }
       })
       .catch(error => this._controller.load_error = error)
-      .then(() => this._$scope.$apply());
+      .then(() => this._controller._$scope.$apply());
 
 
     /**
@@ -270,7 +270,7 @@ class CrudHandler {
 
       return transactionPromise.then(() => this._controller.write_error = null)
         .catch(error => this._controller.write_error = error)
-        .then(() => this._$scope.$apply())
+        .then(() => this._controller._$scope.$apply())
         .then(() => this._isWriteIdle = true);
     }
   }
