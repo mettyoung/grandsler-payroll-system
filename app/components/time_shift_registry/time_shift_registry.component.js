@@ -116,10 +116,18 @@ angular.module('time-shift-registry')
             })
               .then(salary_criteria => this.SALARY_CRITERIA = salary_criteria));
           
-          CrudHandler.onLoad(this, transaction => ModelProvider.models.TimeShift.findAll({
-              include: [ModelProvider.models.TimeFrame],
-              transaction: transaction
-            }));
+          CrudHandler.onLoad(this, options =>
+          {
+            Object.assign(options, {
+              include: [ModelProvider.models.TimeFrame]
+            });
+            
+            return ModelProvider.models.TimeShift.findAll(options).then(timeShifts => {
+              return {
+                data: timeShifts
+              };
+            });
+          });
         }
         
         /**

@@ -120,7 +120,7 @@ class CrudHandler {
     controller[options.masterProperty] = [];
     controller[options.selectedMasterItemProperty] = null;
     controller.is_delete_disabled = true;
-    
+
     /**
      * Set the limit options of the pagination.
      * @type {{limitOptions: number[]}}
@@ -251,18 +251,28 @@ class CrudHandler {
        */
       load(transaction)
       {
-        return controller._lifeCycles.onLoad && controller._lifeCycles.onLoad(transaction)
-          .then(masterList =>
-          {
-            controller[options.masterProperty] = masterList;
-            if (masterList.length > 0)
+        const queryOptions = self._getPaginationQuery(controller.query);
+
+        if (transaction && transaction.sequelize)
+          Object.assign(queryOptions, {
+            transaction: transaction
+          });
+
+        return controller.data.progress = controller._lifeCycles.onLoad &&
+          controller._lifeCycles.onLoad(queryOptions)
+            .then(result =>
             {
-              controller[options.selectedMasterItemProperty] = masterList[0];
-              controller.is_delete_disabled = false;
-            }
-          })
-          .catch(error => controller.load_error = error)
-          .then(() => controller._$scope.$apply());
+              controller.data.selected = result.data;
+              controller.data.total_count = result.total_count;
+              controller[options.masterProperty] = result.data;
+              if (result.data.length > 0)
+              {
+                controller[options.selectedMasterItemProperty] = result.data[0];
+                controller.is_delete_disabled = false;
+              }
+            })
+            .catch(error => controller.load_error = error)
+            .then(() => controller._$scope.$apply());
       },
 
       /**
@@ -379,6 +389,30 @@ class CrudHandler {
     confirmationDialog._options.multiple = true;
 
     return this._$mdDialog.show(confirmationDialog);
+  }
+
+  _getPaginationQuery(query)
+  {
+    // Extract column name with direction
+    let directionToken = query.order.split('-');
+    let orderBy = directionToken.pop();
+    let direction = directionToken.length > 0 ? 'DESC' : 'ASC';
+
+    // Get the N-1 tokens as association tokens.
+    let associationTokens = orderBy.split('.');
+    // Take the last token as the column name.
+    let columnName = associationTokens.pop();
+
+    let associations = associationTokens.map(token =>
+    {
+      return this._ModelProvider.models[token];
+    });
+
+    return {
+      order: [[...associations, columnName, direction]],
+      limit: query.limit,
+      offset: query.limit * (query.page - 1)
+    };
   }
 }
 
