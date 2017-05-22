@@ -12,8 +12,8 @@
             <label>Employee Type</label>
             <md-select ng-model="$ctrl.query.employee_type">
                 <md-option ng-value="0" selected>All</md-option>
-                <md-option ng-value="1">Time-based</md-option>
-                <md-option ng-value="2">Output-based</md-option>
+                <md-option ng-value="'Time-based'">Time-based</md-option>
+                <md-option ng-value="'Output-based'">Output-based</md-option>
             </md-select>
         </md-input-container>
         <md-input-container>
@@ -26,7 +26,7 @@
         </md-input-container>
         <md-input-container>
             <label>Position</label>
-            <md-select ng-model="$ctrl.query.position">
+            <md-select ng-model="$ctrl.query.position_id">
                 <md-option ng-value="0" selected>All</md-option>
                 <md-option ng-value="position.id" ng-repeat="position in $ctrl.data.positions">{{position.name}}
                 </md-option>
