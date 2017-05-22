@@ -107,28 +107,19 @@ angular.module('time-shift-registry')
             }, transaction);
           });
 
-          CrudHandler.onLoad(this, transaction =>
-          {
-            return Promise.all([
-              ModelProvider.models.TimeShift.findAll({
-                include: [ModelProvider.models.TimeFrame],
-                transaction: transaction
-              }),
-              ModelProvider.models.SALARY_CRITERION.findAll({
-                transaction: transaction,
-                where: {
-                  name: ['Regular', 'Night-differential']
-                },
-                order: [['name', 'DESC']]
-              })
-            ]).then(values =>
-            {
-              this.timeShifts = values[0];
-              this.SALARY_CRITERIA = values[1];
-
-              return this.timeShifts;
+          CrudHandler.onPreload(this, transaction => ModelProvider.models.SALARY_CRITERION.findAll({
+              transaction: transaction,
+              where: {
+                name: ['Regular', 'Night-differential']
+              },
+              order: [['name', 'DESC']]
             })
-          });
+              .then(salary_criteria => this.SALARY_CRITERIA = salary_criteria));
+          
+          CrudHandler.onLoad(this, transaction => ModelProvider.models.TimeShift.findAll({
+              include: [ModelProvider.models.TimeFrame],
+              transaction: transaction
+            }));
         }
         
         /**
@@ -140,6 +131,12 @@ angular.module('time-shift-registry')
           selectedMasterItemProperty: 'selectedTimeShift',
           message: MESSAGE
         });
+
+        /**
+         * If environment is production or dev, then auto-load.
+         */
+        if (process.env.NODE_ENV !== 'test')
+          this.commands.load();
 
         /**
          * Additional command for dialog.

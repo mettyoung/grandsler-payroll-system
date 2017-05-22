@@ -218,6 +218,7 @@ class CrudHandler {
         return controller._lifeCycles.onLoad && controller._lifeCycles.onLoad(transaction)
           .then(masterList =>
           {
+            controller[options.masterProperty] = masterList;
             if (masterList.length > 0)
             {
               controller[options.selectedMasterItemProperty] = masterList[0];
@@ -226,14 +227,22 @@ class CrudHandler {
           })
           .catch(error => controller.load_error = error)
           .then(() => controller._$scope.$apply());
+      },
+
+      /**
+       * Pre-loads data from the database; runs only once upon bootstrap call.
+       * @param transaction
+       * @returns {Promise}
+       */
+      preload(transaction)
+      {
+        return controller._lifeCycles.onPreload && controller._lifeCycles.onPreload(transaction)
+            .catch(error => controller.load_error = error)
+            .then(() => controller._$scope.$apply());
       }
     };
-
-    /**
-     * If environment is production or dev, then preload the module.
-     */
-    if (process.env.NODE_ENV !== 'test')
-      controller.commands.load();
+    
+    controller.commands.preload();
   }
 
   onAfterCreateMasterItem(controller, onAfterCreateMasterItem)
@@ -276,6 +285,13 @@ class CrudHandler {
     if (!controller._lifeCycles)
       controller._lifeCycles = {};
     controller._lifeCycles.onLoad = onLoad;
+  }
+
+  onPreload(controller, onPreload)
+  {
+    if (!controller._lifeCycles)
+      controller._lifeCycles = {};
+    controller._lifeCycles.onPreload = onPreload;
   }
 
   /**
