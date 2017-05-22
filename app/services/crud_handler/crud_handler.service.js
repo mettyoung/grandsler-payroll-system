@@ -10,6 +10,9 @@ const process = require('process');
  * - is_delete_disabled
  * - [items.[details]]
  * - [selected_item]
+ * - preset {limitOptions}
+ * - data {selected, progress, total_count}
+ * - query {order, limit, page}
  *
  * Commands
  * - createMasterItem
@@ -41,7 +44,11 @@ const DEFAULT_OPTIONS = {
       module: 'Module',
       description: 'Modified an entry successfully!'
     }
-  }
+  },
+  limitOptions: [5, 10, 15],
+  order: 'id',
+  limit: 10,
+  page: 1
 };
 const OPERATIONS = {
   delete: {
@@ -109,9 +116,38 @@ class CrudHandler {
    */
   _setViewModels(controller)
   {
-    controller[controller._options.masterProperty] = [];
-    controller[controller._options.selectedMasterItemProperty] = null;
+    const options = controller._options;
+    controller[options.masterProperty] = [];
+    controller[options.selectedMasterItemProperty] = null;
     controller.is_delete_disabled = true;
+    
+    /**
+     * Set the limit options of the pagination.
+     * @type {{limitOptions: number[]}}
+     */
+    controller.preset = {
+      limitOptions: options.limitOptions
+    };
+
+    /**
+     * Initialize the default data object structure.
+     * @type {{selected: Array, progress: null, total_count: number}}
+     */
+    controller.data = {
+      selected: [],
+      progress: null,
+      total_count: 0
+    };
+
+    /**
+     * Initialize default query options
+     * @type {{order: string, limit: number, page: number, initialize: (function())}}
+     */
+    controller.query = {
+      order: options.order,
+      limit: options.limit,
+      page: options.page
+    };
   }
 
   /**
@@ -241,7 +277,7 @@ class CrudHandler {
             .then(() => controller._$scope.$apply());
       }
     };
-    
+
     controller.commands.preload();
   }
 
