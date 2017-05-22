@@ -4,6 +4,12 @@
 const process = require('process');
 
 /**
+ * View Models
+ * - load_error
+ * - write_error
+ * - is_delete_disabled
+ * - [items.[details]]
+ * - [selected_item]
  *
  * Commands
  * - createMasterItem
@@ -19,10 +25,9 @@ const process = require('process');
  * Constants
  */
 const DEFAULT_OPTIONS = {
-  masterProperty: 'masterItems',
-  detailProperty: 'Details',
-  selectedMasterItemProperty: 'masterItem',
-  disableDeleteButtonProperty: 'disableDeleteButton',
+  masterProperty: 'items',
+  detailProperty: 'details',
+  selectedMasterItemProperty: 'selected_item',
   message: {
     created: {
       module: 'Module',
@@ -92,12 +97,21 @@ class CrudHandler {
     controller._isWriteIdle = true;
 
     // Initialize view models.
-    controller[controller._options.masterProperty] = [];
-    controller[controller._options.selectedMasterItemProperty] = null;
-    controller[controller._options.disableDeleteButtonProperty] = true;
-
+    this._setViewModels(controller);
     // Initialize commands
     this._setCommands(controller);
+  }
+
+  /**
+   * Initializes view models.
+   * @param controller
+   * @private
+   */
+  _setViewModels(controller)
+  {
+    controller[controller._options.masterProperty] = [];
+    controller[controller._options.selectedMasterItemProperty] = null;
+    controller.is_delete_disabled = true;
   }
 
   /**
@@ -118,7 +132,7 @@ class CrudHandler {
        */
       createMasterItem()
       {
-        controller[options.disableDeleteButtonProperty] = true;
+        controller.is_delete_disabled = true;
         controller[options.selectedMasterItemProperty] = {
           [options.detailProperty]: []
         };
@@ -136,7 +150,7 @@ class CrudHandler {
         return masterItem.reload({transaction: transaction})
           .then(() =>
           {
-            controller[options.disableDeleteButtonProperty] = false;
+            controller.is_delete_disabled = false;
             controller[options.selectedMasterItemProperty] = masterItem;
             controller._$scope.$apply();
           });
@@ -207,7 +221,7 @@ class CrudHandler {
             if (masterList.length > 0)
             {
               controller[options.selectedMasterItemProperty] = masterList[0];
-              controller[options.disableDeleteButtonProperty] = false;
+              controller.is_delete_disabled = false;
             }
           })
           .catch(error => controller.load_error = error)
