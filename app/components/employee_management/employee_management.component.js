@@ -12,22 +12,24 @@ angular.module('employee-management')
             transaction: transaction
           }).then(positions => this.data.positions = positions));
 
-          CrudHandler.onLoad(this, options =>
+          CrudHandler.onLoad(this, pageOptions =>
           {
+            const selectionOptions = {};
+
             // Add associations
-            Object.assign(options, {
+            Object.assign(selectionOptions, {
               include: [ModelProvider.models.User, ModelProvider.models.TimeShift, ModelProvider.models.Position],
               where: {}
             });
 
             // Add filters
             if (this.query.employee_type !== 0)
-              Object.assign(options.where, {
+              Object.assign(selectionOptions.where, {
                 employee_type: this.query.employee_type
               });
 
-            if (this.query.position_id > 0)
-              Object.assign(options.where, {
+            if (this.query.position_id !== 0)
+              Object.assign(selectionOptions.where, {
                 position_id: this.query.position_id
               });
 
@@ -49,14 +51,14 @@ angular.module('employee-management')
                 $not: isActive
               };
 
-              options.include.push({
+              selectionOptions.include.push({
                 model: ModelProvider.models.Employment,
                 where: where
               });
             }
 
             if (this.query.name && this.query.name.length > 0)
-              Object.assign(options.where, {
+              Object.assign(selectionOptions.where, {
                 $or: {
                   first_name: {
                     $like: '%' + this.query.name + '%'
@@ -72,10 +74,10 @@ angular.module('employee-management')
 
             // Execute the query.
             return Promise.all([
-              ModelProvider.models.Employee.findAll(options),
-              ModelProvider.models.Employee.findAll({
+              ModelProvider.models.Employee.findAll(Object.assign(pageOptions, selectionOptions)),
+              ModelProvider.models.Employee.findAll(Object.assign({
                 attributes: [[ModelProvider.models.sequelize.fn('COUNT', ModelProvider.models.sequelize.col('*')), 'total_count']],
-              })])
+              }, selectionOptions))])
               .then(values =>
               {
                 return {
