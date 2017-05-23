@@ -1,13 +1,25 @@
-#detail-content {
+#detail-container md-content {
   padding: 24px;
+  background-color: transparent;
 }
 
-#detail-content img {
+#detail-container img {
   width: 200px;
   height: 200px;
   margin: 24px;
 }
 
-#detail-content md-input-container {
+#detail-container md-input-container {
   margin: 8px 24px;
+}
+
+#detail-container md-autocomplete md-autocomplete-wrap {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+#detail-container md-autocomplete button,
+#detail-container md-autocomplete md-icon {
+  display: none;
 }

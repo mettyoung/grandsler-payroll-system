@@ -128,7 +128,8 @@
                         <div id="write-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
                             <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
                         </div>
-                        <md-content id="detail-content" ng-hide="$ctrl.detail_load_error" layout="column" flex>
+                        <md-content ng-hide="$ctrl.detail_load_error" layout="column" flex>
+                            <!-- Personal Information -->
                             <div layout="row">
                                 <img ng-src="./assets/employee_placeholder.jpg">
                                 <div layout="column" layout-align="center" flex>
@@ -167,6 +168,52 @@
                                         </md-input-container>
                                     </div>
                                 </div>
+                            </div>
+                            <!-- Contact Information -->
+                            <div layout="row">
+                                <md-input-container flex="60">
+                                    <label>Address</label>
+                                    <input ng-model="$ctrl.selected_item.address">
+                                </md-input-container>
+                                <md-input-container flex>
+                                    <label>Contact Number</label>
+                                    <input ng-model="$ctrl.selected_item.contact_number">
+                                </md-input-container>
+                            </div>
+                            <!-- Employee Information -->
+                            <div layout="row">
+                                <md-input-container flex>
+                                    <label>Position</label>
+                                    <md-autocomplete
+                                            md-min-length="0"
+                                            md-items="position in $ctrl.queryPositions($ctrl.search_position)"
+                                            md-item-text="position.name"
+                                            md-selected-item="$ctrl.selected_position"
+                                            md-search-text="$ctrl.search_position">
+                                        <md-item-template>
+                                            <span md-highlight-text="$ctrl.search_position" md-highlight-flags="^i">{{position.name}}</span>
+                                        </md-item-template>
+                                        <md-not-found>
+                                            <span>'{{$ctrl.search_position}}' will be created.</span>
+                                        </md-not-found>
+                                    </md-autocomplete>
+                                </md-input-container>
+                                <md-input-container flex>
+                                    <label>Employee Type</label>
+                                    <md-select ng-model="$ctrl.selected_item.employee_type">
+                                        <md-option ng-value="'Time-based'">Time-based</md-option>
+                                        <md-option ng-value="'Output-based'">Output-based</md-option>
+                                    </md-select>
+                                </md-input-container>
+                                <md-input-container flex>
+                                    <label>Time-shift</label>
+                                    <md-select ng-model="$ctrl.selected_item.time_shift_id">
+                                        <md-option ng-value="timeShift.id"
+                                                   ng-repeat="timeShift in $ctrl.data.time_shifts">
+                                            {{timeShift.name}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
                             </div>
                         </md-content>
                     </div>
