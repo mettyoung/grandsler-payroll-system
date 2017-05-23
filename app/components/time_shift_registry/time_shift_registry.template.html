@@ -9,7 +9,7 @@
                 <h3 flex><span>Time-shift Registry</span></h3>
                 <md-button type='submit' id='save-button' class="md-icon-button" aria-label="Save"
                            ng-hide="$ctrl.load_error"
-                           ng-disabled="!$ctrl.Form.$valid"
+                           ng-disabled="!$ctrl.Form.$valid || $ctrl.detail_load_error"
                            ng-click="$ctrl.commands.saveSelectedMasterItem()">
                     <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
                 </md-button>
@@ -19,10 +19,10 @@
                            aria-label="Create new time-shift">
                     <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
                 </md-button>
-                <md-button id="delete-time-shift" class="md-icon-button"
+                <md-button id="delete-button" class="md-icon-button"
                            ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this time-shift?')"
                            ng-hide="$ctrl.load_error"
-                           ng-disabled="$ctrl.is_delete_disabled"
+                           ng-disabled="$ctrl.is_delete_disabled || $ctrl.detail_load_error"
                            aria-label="Delete selected time-shift">
                     <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
                 </md-button>
@@ -53,6 +53,10 @@
 
             <!-- Detail Content-->
             <div id="detail-container" ng-hide="!$ctrl.selectedTimeShift" flex layout="column">
+                <!-- This error occurs on saving -->
+                <div id="detail-load-error-message" class="alert alert-danger" ng-hide="!$ctrl.detail_load_error">
+                    <strong>{{$ctrl.detail_load_error.name}}:</strong> {{$ctrl.detail_load_error.message}}
+                </div>
                 <!-- This error occurs on saving -->
                 <div id="save-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
                     <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}

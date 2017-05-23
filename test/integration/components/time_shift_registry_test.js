@@ -280,7 +280,53 @@ describe('Time Shift Registry Component', function ()
           });
       });
     });
-  });
+
+    it("should display the error message and disable save and delete button if reloading selected time-shift error", function ()
+    {
+      return $services.$controller.commands.load(transaction).then(() =>
+      {
+        $services.$controller.data.items[1].reload = () =>
+        {
+          return Promise.reject({
+            name: 'Mock Error',
+            message: 'Error Message'
+          });
+        };
+
+        return $services.$controller.commands.selectMasterItem($services.$controller.data.items[1], transaction)
+          .then(() =>
+          {
+            expect($services.$dom.find('#detail-load-error-message').text()).to.contain('Mock Error')
+              .and.contain('Error Message');
+            expect($services.$dom.find('#detail-load-error-message').hasClass('ng-hide')).to.be.false;
+            expect($services.$dom.find('#save-button').is(":disabled")).to.be.true;
+            expect($services.$dom.find('#delete-button').is(":disabled")).to.be.true;
+          });
+      });
+    });
+
+    it("should clear the detail error message if creating a new record", function ()
+    {
+      return $services.$controller.commands.load(transaction).then(() =>
+      {
+        $services.$controller.data.items[1].reload = () =>
+        {
+          return Promise.reject({
+            name: 'Mock Error',
+            message: 'Error Message'
+          });
+        };
+
+        return $services.$controller.commands.selectMasterItem($services.$controller.data.items[1], transaction)
+          .then(() =>
+          {
+            $services.$dom.find('#create-new-time-shift').click();
+            expect($services.$dom.find('#detail-load-error-message').hasClass('ng-hide')).to.be.true;
+          });
+      });
+    });
+  })
+  ;
 
   describe("Validations", function ()
   {
@@ -454,13 +500,13 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load(transaction).then(() =>
       {
-        expect($services.$dom.find('#delete-time-shift').is(":disabled")).to.be.false;
+        expect($services.$dom.find('#delete-button').is(":disabled")).to.be.false;
         $services.$dom.find('#create-new-time-shift').click();
-        expect($services.$dom.find('#delete-time-shift').is(":disabled")).to.be.true;
+        expect($services.$dom.find('#delete-button').is(":disabled")).to.be.true;
       });
     });
 
-    it("should be able to delete time-frame", function()
+    it("should be able to delete time-frame", function ()
     {
       return $services.$controller.commands.load(transaction).then(() =>
       {

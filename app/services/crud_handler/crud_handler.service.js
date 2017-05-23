@@ -169,6 +169,7 @@ class CrudHandler {
         controller[options.selectedMasterItemProperty] = {
           [options.detailProperty]: []
         };
+        controller.detail_load_error = null;
         controller._lifeCycles.onAfterCreateMasterItem && controller._lifeCycles.onAfterCreateMasterItem();
       },
 
@@ -184,9 +185,11 @@ class CrudHandler {
           .then(() =>
           {
             controller.is_delete_disabled = false;
+            controller.detail_load_error = null;
             controller[options.selectedMasterItemProperty] = masterItem;
-            controller._$scope.$apply();
-          });
+          })
+          .catch(error => controller.detail_load_error = error)
+          .then(() => controller._$scope.$apply());
       },
 
       /**
