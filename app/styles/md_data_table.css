@@ -11,3 +11,23 @@ md-table-pagination .label {
 .query-parameters md-input-container:first-child {
   margin-top: 30px;
 }
+
+.md-table-toolbar input[type=text] {
+  width: 100%;
+  margin: 0;
+  border: none;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.md-table-toolbar input[type=text]:focus {
+  outline: none;
+}
+
+md-toolbar.md-table-toolbar .md-toolbar-tools md-icon {
+  color: rgba(0,0,0,.54) !important;
+  fill: rgba(0,0,0,.54) !important;
+}
+
+md-toolbar .query-parameters {
+  font-size: 14px;
+}

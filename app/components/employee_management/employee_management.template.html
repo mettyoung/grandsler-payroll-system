@@ -2,18 +2,26 @@
 <div id="load-error-message" class="alert alert-danger" ng-hide="!$ctrl.load_error">
     <strong>{{$ctrl.load_error.name}}:</strong> {{$ctrl.load_error.message}}
 </div>
-<!-- Query Parameters -->
-<form>
-    <md-card flex>
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <span flex>Query Parameters</span>
+
+<md-card flex>
+    <!-- Query Parameters -->
+    <md-toolbar class="md-table-toolbar md-default" flex>
+        <div class="md-toolbar-tools" flex>
+            <form layout="row" flex>
+                <input flex type="text" ng-model="$ctrl.query.name" md-auto-focus="true"
+                       placeholder="Search Employee Name">
+                <md-button class="md-icon-button" ng-click="$ctrl.showFilter = !$ctrl.showFilter">
+                    <md-icon md-svg-icon="content:ic_filter_list_24px"></md-icon>
+                </md-button>
                 <md-button class="md-icon-button" type="submit" ng-click="$ctrl.commands.load()">
                     <md-icon md-svg-icon="action:ic_search_24px"></md-icon>
                 </md-button>
-            </div>
-        </md-toolbar>
-        <div class="query-parameters" layout="column">
+                <md-button class="md-icon-button" ng-click="$ctrl.commands.create()">
+                    <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
+                </md-button>
+            </form>
+        </div>
+        <div class="query-parameters" layout="column" ng-show="$ctrl.showFilter">
             <md-input-container>
                 <label>Employee Type</label>
                 <md-select ng-model="$ctrl.query.employee_type">
@@ -38,23 +46,10 @@
                     </md-option>
                 </md-select>
             </md-input-container>
-            <md-input-container flex>
-                <label>Name</label>
-                <input ng-model="$ctrl.query.name" md-auto-focus="true" autofocus>
-            </md-input-container>
-        </div>
-    </md-card>
-</form>
-<!-- Data Table -->
-<md-card flex>
-    <md-toolbar>
-        <div class="md-toolbar-tools">
-            <span flex>Employee Records</span>
-            <md-button class="md-icon-button" ng-click="$ctrl.commands.create()">
-                <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
-            </md-button>
         </div>
     </md-toolbar>
+    
+    <!-- Data Table -->
     <md-table-container>
         <table md-table md-row-select ng-model="$ctrl.data.selected" md-progress="$ctrl.data.progress">
             <thead md-head md-order="$ctrl.query.order" md-on-reorder="$ctrl.commands.load">
