@@ -48,10 +48,10 @@
             </md-input-container>
         </div>
     </md-toolbar>
-    
+
     <!-- Data Table -->
     <md-table-container>
-        <table md-table md-row-select ng-model="$ctrl.data.selected" md-progress="$ctrl.data.progress">
+        <table md-table md-row-select ng-model="$ctrl.data.items" md-progress="$ctrl.data.progress">
             <thead md-head md-order="$ctrl.query.order" md-on-reorder="$ctrl.commands.load">
             <tr md-row>
                 <th md-column md-order-by="id">ID</th>
@@ -63,7 +63,7 @@
             </tr>
             </thead>
             <tbody md-body>
-            <tr class="table-row" md-row ng-repeat="employee in $ctrl.data.selected">
+            <tr class="table-row" md-row ng-repeat="employee in $ctrl.data.items">
                 <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.id}}</td>
                 <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.getFullName()}}</td>
                 <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.employee_type}}</td>
