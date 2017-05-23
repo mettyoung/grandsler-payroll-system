@@ -93,12 +93,29 @@ angular.module('employee-management')
               contentElement: '#detail-dialog',
               parent: angular.element(document.body)
             });
-          })
+          });
+
+          CrudHandler.onAfterCreateMasterItem(this, () =>
+          {
+            $mdDialog.show({
+              contentElement: '#detail-dialog',
+              parent: angular.element(document.body)
+            });
+          });
         }
 
         /**
          * Bootstraps this controller with CrudHandler that handles the basic CRUD controller routines.
          */
         CrudHandler.bootstrap(this, $scope);
+        
+        /**
+         * Hides the dialog.
+         * @returns {Promise}
+         */
+        this.close = function ()
+        {
+          return $mdDialog.hide();
+        };
       }]
   });

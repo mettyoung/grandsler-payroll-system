@@ -16,7 +16,7 @@
                 <md-button class="md-icon-button" type="submit" ng-click="$ctrl.commands.load()">
                     <md-icon md-svg-icon="action:ic_search_24px"></md-icon>
                 </md-button>
-                <md-button class="md-icon-button" ng-click="$ctrl.commands.create()">
+                <md-button class="md-icon-button" ng-click="$ctrl.commands.createMasterItem()">
                     <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
                 </md-button>
             </form>
@@ -64,12 +64,12 @@
             </thead>
             <tbody md-body>
             <tr class="table-row" md-row ng-repeat="employee in $ctrl.data.selected">
-                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.id}}</td>
-                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.getFullName()}}</td>
-                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.employee_type}}</td>
-                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.Position.name}}</td>
-                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.TimeShift.name}}</td>
-                <td md-cell ng-click="$ctrl.commands.modify(employee)">{{employee.hasSystemAccess()}}</td>
+                <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.id}}</td>
+                <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.getFullName()}}</td>
+                <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.employee_type}}</td>
+                <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.Position.name}}</td>
+                <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.TimeShift.name}}</td>
+                <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.hasSystemAccess()}}</td>
             </tr>
             </tbody>
         </table>
@@ -80,3 +80,45 @@
                          md-on-paginate="$ctrl.commands.load" md-page-select>
     </md-table-pagination>
 </md-card>
+
+<!-- Detail -->
+<div style="visibility: hidden">
+    <div class="md-dialog-container" id="detail-dialog">
+        <md-dialog flex="80">
+            <!-- Accept enter key -->
+            <form name="$ctrl.Form" ng-cloak>
+                <!-- 1st sibling: Contains the content of the dialog -->
+                <md-dialog-content layout="column">
+                    <!-- Title bar -->
+                    <md-toolbar>
+                        <div class="md-toolbar-tools">
+                            <h3 flex>Employee Record</h3>
+                            <!-- Action buttons -->
+                            <!-- In create mode, save button is always visible. -->
+                            <!-- In edit mode, save button may be hidden if detail_load_error occurred. -->
+                            <!-- In both modes, save button's disability depends on validation rules. -->
+                            <md-button id='save-button' class="md-icon-button"
+                                       type='submit' aria-label="Save"
+                                       ng-hide="$ctrl.detail_load_error"
+                                       ng-disabled="!$ctrl.Form.$valid"
+                                       ng-click="$ctrl.commands.saveSelectedMasterItem()">
+                                <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
+                            </md-button>
+                            <!-- In create mode, delete button is not visible. -->
+                            <!-- In edit mode, delete button may be hidden if detail_load_error occurred. -->
+                            <md-button id="delete-button" class="md-icon-button"
+                                       ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this employee record?')"
+                                       ng-hide="$ctrl.is_delete_disabled || $ctrl.detail_load_error">
+                                <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
+                            </md-button>
+                            <md-button id='close-button' ng-click="$ctrl.close()" class="md-icon-button"
+                                       aria-label="Close dialog">
+                                <md-icon md-svg-icon="content:ic_clear_24px"></md-icon>
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+                </md-dialog-content>
+            </form>
+        </md-dialog>
+    </div>
+</div>
