@@ -299,8 +299,8 @@ describe('Time Shift Registry Component', function ()
             expect($services.$dom.find('#detail-load-error-message').text()).to.contain('Mock Error')
               .and.contain('Error Message');
             expect($services.$dom.find('#detail-load-error-message').hasClass('ng-hide')).to.be.false;
-            expect($services.$dom.find('#save-button').is(":disabled")).to.be.true;
-            expect($services.$dom.find('#delete-button').is(":disabled")).to.be.true;
+            expect($services.$dom.find('#save-button').hasClass('ng-hide')).to.be.true;
+            expect($services.$dom.find('#delete-button').hasClass('ng-hide')).to.be.true;
           });
       });
     });
