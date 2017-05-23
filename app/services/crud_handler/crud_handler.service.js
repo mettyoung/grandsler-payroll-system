@@ -8,10 +8,9 @@ const process = require('process');
  * - load_error
  * - write_error
  * - is_delete_disabled
- * - [items.[details]]
  * - [selected_item]
  * - preset {limitOptions}
- * - data {selected, progress, total_count}
+ * - data {[selected.[details], progress, total_count}
  * - query {order, limit, page}
  *
  * Commands
@@ -28,7 +27,6 @@ const process = require('process');
  * Constants
  */
 const DEFAULT_OPTIONS = {
-  masterProperty: 'items',
   detailProperty: 'details',
   selectedMasterItemProperty: 'selected_item',
   message: {
@@ -117,7 +115,6 @@ class CrudHandler {
   _setViewModels(controller)
   {
     const options = controller._options;
-    controller[options.masterProperty] = [];
     controller[options.selectedMasterItemProperty] = null;
     controller.is_delete_disabled = true;
 
@@ -264,7 +261,6 @@ class CrudHandler {
             {
               controller.data.selected = result.data;
               controller.data.total_count = result.total_count;
-              controller[options.masterProperty] = result.data;
               if (result.data.length > 0)
               {
                 controller[options.selectedMasterItemProperty] = result.data[0];

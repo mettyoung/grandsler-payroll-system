@@ -138,7 +138,6 @@ angular.module('time-shift-registry')
          * Bootstraps this controller with CrudHandler that handles the basic CRUD controller routines.
          */
         CrudHandler.bootstrap(this, $scope, {
-          masterProperty: 'timeShifts',
           detailProperty: 'TimeFrames',
           selectedMasterItemProperty: 'selectedTimeShift',
           message: MESSAGE

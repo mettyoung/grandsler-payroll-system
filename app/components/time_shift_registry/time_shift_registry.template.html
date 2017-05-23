@@ -42,7 +42,7 @@
             <md-sidenav id="master-container" layout="column" flex="40" md-whiteframe="4" md-is-locked-open="true">
                 <md-content flex>
                     <md-list>
-                        <md-list-item ng-repeat="timeShift in $ctrl.timeShifts"
+                        <md-list-item ng-repeat="timeShift in $ctrl.data.selected"
                                       ng-click="$ctrl.commands.selectMasterItem(timeShift)">
                             <h4 class="name">{{ timeShift.name }}</h4>
                             <md-divider ng-if="!$last"></md-divider>
