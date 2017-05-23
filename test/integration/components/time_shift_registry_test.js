@@ -228,7 +228,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load(transaction).then(() =>
       {
-        return $services.$controller.commands.selectMasterItem($services.$controller.data.items[1], transaction)
+        return $services.$controller.commands.selectMasterItem($services.$controller.data.selected[1], transaction)
           .then(() =>
           {
             const $header = $services.$dom.find('#detail-container .panel-heading');
@@ -263,7 +263,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load(transaction).then(() =>
       {
-        return $services.$controller.commands.selectMasterItem($services.$controller.data.items[1], transaction)
+        return $services.$controller.commands.selectMasterItem($services.$controller.data.selected[1], transaction)
           .then(() =>
           {
             $services.$dom.find('#create-new-time-frame').click();
@@ -271,7 +271,7 @@ describe('Time Shift Registry Component', function ()
             expect($details.length).to.equal(2);
 
             // Must reload
-            return $services.$controller.commands.selectMasterItem($services.$controller.data.items[1], transaction)
+            return $services.$controller.commands.selectMasterItem($services.$controller.data.selected[1], transaction)
               .then(() =>
               {
                 const $details = $services.$dom.find('#detail-container md-list-item');
@@ -285,7 +285,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load(transaction).then(() =>
       {
-        $services.$controller.data.items[1].reload = () =>
+        $services.$controller.data.selected[1].reload = () =>
         {
           return Promise.reject({
             name: 'Mock Error',
@@ -293,7 +293,7 @@ describe('Time Shift Registry Component', function ()
           });
         };
 
-        return $services.$controller.commands.selectMasterItem($services.$controller.data.items[1], transaction)
+        return $services.$controller.commands.selectMasterItem($services.$controller.data.selected[1], transaction)
           .then(() =>
           {
             expect($services.$dom.find('#detail-load-error-message').text()).to.contain('Mock Error')
@@ -309,7 +309,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load(transaction).then(() =>
       {
-        $services.$controller.data.items[1].reload = () =>
+        $services.$controller.data.selected[1].reload = () =>
         {
           return Promise.reject({
             name: 'Mock Error',
@@ -317,7 +317,7 @@ describe('Time Shift Registry Component', function ()
           });
         };
 
-        return $services.$controller.commands.selectMasterItem($services.$controller.data.items[1], transaction)
+        return $services.$controller.commands.selectMasterItem($services.$controller.data.selected[1], transaction)
           .then(() =>
           {
             $services.$dom.find('#create-new-time-shift').click();

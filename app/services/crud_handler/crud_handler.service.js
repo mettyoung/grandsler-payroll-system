@@ -262,7 +262,7 @@ class CrudHandler {
           controller._lifeCycles.onLoad(pageOptions)
             .then(result =>
             {
-              controller.data.items = result.data;
+              controller.data.selected = result.data;
               controller.data.total_count = result.total_count;
               if (result.data.length > 0)
               {
