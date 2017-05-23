@@ -8,9 +8,19 @@ angular.module('employee-management')
          * Life cycles
          */
         {
-          CrudHandler.onPreload(this, transaction => ModelProvider.models.Position.findAll({
-            transaction: transaction
-          }).then(positions => this.data.positions = positions));
+          CrudHandler.onPreload(this, transaction => Promise.all([
+            ModelProvider.models.Position.findAll({
+              transaction: transaction
+            }),
+            ModelProvider.models.TimeShift.findAll({
+                transaction: transaction
+              }
+            )])
+            .then(values =>
+            {
+              this.data.positions = values[0];
+              this.data.time_shifts = values[1];
+            }));
 
           CrudHandler.onLoad(this, pageOptions =>
           {
@@ -108,7 +118,7 @@ angular.module('employee-management')
          * Bootstraps this controller with CrudHandler that handles the basic CRUD controller routines.
          */
         CrudHandler.bootstrap(this, $scope);
-        
+
         /**
          * Hides the dialog.
          * @returns {Promise}
@@ -117,5 +127,26 @@ angular.module('employee-management')
         {
           return $mdDialog.hide();
         };
+
+        /**
+         * Query positions for md-autocomplete.
+         * @param search_position
+         * @returns {*|Promise.<*>}
+         */
+        this.queryPositions = search_position => {
+          return ModelProvider.models.Position.findAll({
+            where: {
+              name: {
+                $like: '%' + search_position + '%'
+              }
+            }
+          }).then(positions => positions.map(function (position) {
+              return {
+                value: position.id,
+                name: position.name
+              };
+            }));
+        };
+
       }]
   });
