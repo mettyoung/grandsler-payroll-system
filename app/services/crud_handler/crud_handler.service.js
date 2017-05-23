@@ -251,15 +251,15 @@ class CrudHandler {
        */
       load(transaction)
       {
-        const queryOptions = self._getPaginationQuery(controller.query);
+        const pageOptions = self._getPaginationQuery(controller.query);
 
         if (transaction && transaction.sequelize)
-          Object.assign(queryOptions, {
+          Object.assign(pageOptions, {
             transaction: transaction
           });
 
         return controller.data.progress = controller._lifeCycles.onLoad &&
-          controller._lifeCycles.onLoad(queryOptions)
+          controller._lifeCycles.onLoad(pageOptions)
             .then(result =>
             {
               controller.data.selected = result.data;
