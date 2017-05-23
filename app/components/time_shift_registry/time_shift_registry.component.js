@@ -28,12 +28,6 @@ angular.module('time-shift-registry')
          * Lifecycles
          */
         {
-          CrudHandler.onAfterCreateMasterItem(this, () =>
-          {
-            // Set it to untouched to reset validations.
-            this.Form.$setUntouched();
-          });
-
           /**
            * Validation logic before saving.
            */

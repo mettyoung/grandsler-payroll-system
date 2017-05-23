@@ -9,6 +9,7 @@ const process = require('process');
  * - write_error
  * - detail_load_error
  * - is_delete_disabled
+ * - Form
  * - [selected_item]
  * - preset {limitOptions}
  * - data {[items.[details], progress, total_count}
@@ -30,6 +31,7 @@ const process = require('process');
 const DEFAULT_OPTIONS = {
   detailProperty: 'details',
   selectedMasterItemProperty: 'selected_item',
+  formProperty: 'Form',
   message: {
     created: {
       module: 'Module',
@@ -171,6 +173,9 @@ class CrudHandler {
           [options.detailProperty]: []
         };
         controller.detail_load_error = null;
+
+        // Set it to untouched to reset validations.
+        controller[options.formProperty] && controller[options.formProperty].$setUntouched();
         controller._lifeCycles.onAfterCreateMasterItem && controller._lifeCycles.onAfterCreateMasterItem();
       },
 
