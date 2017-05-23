@@ -1,8 +1,8 @@
 angular.module('employee-management')
   .component('employeeManagement', {
     templateUrl: './components/employee_management/employee_management.template.html',
-    controller: ['$scope', 'CrudHandler', 'ModelProvider',
-      function ($scope, CrudHandler, ModelProvider)
+    controller: ['$scope', '$mdDialog', 'CrudHandler', 'ModelProvider',
+      function ($scope, $mdDialog, CrudHandler, ModelProvider)
       {
         /**
          * Life cycles
@@ -86,6 +86,14 @@ angular.module('employee-management')
                 };
               });
           });
+
+          CrudHandler.onAfterSelectMasterItem(this, () =>
+          {
+            $mdDialog.show({
+              contentElement: '#detail-dialog',
+              parent: angular.element(document.body)
+            });
+          })
         }
 
         /**

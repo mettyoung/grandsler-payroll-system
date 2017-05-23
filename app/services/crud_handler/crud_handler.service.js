@@ -7,6 +7,7 @@ const process = require('process');
  * View Models
  * - load_error
  * - write_error
+ * - detail_load_error
  * - is_delete_disabled
  * - [selected_item]
  * - preset {limitOptions}
@@ -177,19 +178,25 @@ class CrudHandler {
        * Selects an item from the master list.
        * @param masterItem the masterItem to be selected.
        * @param transaction
+       * @LifeCycle: onAfterSelectMasterItem.
        * @returns {Promise}
        */
       selectMasterItem(masterItem, transaction)
       {
-        return masterItem.reload({transaction: transaction})
-          .then(() =>
-          {
-            controller.is_delete_disabled = false;
-            controller.detail_load_error = null;
-            controller[options.selectedMasterItemProperty] = masterItem;
-          })
-          .catch(error => controller.detail_load_error = error)
-          .then(() => controller._$scope.$apply());
+        let promise = Promise.resolve();
+        if (masterItem)
+          promise = promise.then(() =>
+            masterItem.reload({transaction: transaction})
+              .then(() =>
+              {
+                controller.is_delete_disabled = false;
+                controller.detail_load_error = null;
+                controller[options.selectedMasterItemProperty] = masterItem;
+              })
+              .catch(error => controller.detail_load_error = error)
+              .then(() => controller._$scope.$apply()));
+
+        return promise.then(() => controller._lifeCycles.onAfterSelectMasterItem && controller._lifeCycles.onAfterSelectMasterItem());
       },
 
       /**
@@ -295,6 +302,13 @@ class CrudHandler {
     if (!controller._lifeCycles)
       controller._lifeCycles = {};
     controller._lifeCycles.onAfterCreateMasterItem = onAfterCreateMasterItem;
+  }
+
+  onAfterSelectMasterItem(controller, onAfterSelectMasterItem)
+  {
+    if (!controller._lifeCycles)
+      controller._lifeCycles = {};
+    controller._lifeCycles.onAfterSelectMasterItem = onAfterSelectMasterItem;
   }
 
   onBeforeSaveSelectedMasterItem(controller, onBeforeSaveSelectedMasterItem)
