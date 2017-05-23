@@ -10,7 +10,7 @@ const process = require('process');
  * - is_delete_disabled
  * - [selected_item]
  * - preset {limitOptions}
- * - data {[selected.[details], progress, total_count}
+ * - data {[items.[details], progress, total_count}
  * - query {order, limit, page}
  *
  * Commands
@@ -259,7 +259,7 @@ class CrudHandler {
           controller._lifeCycles.onLoad(pageOptions)
             .then(result =>
             {
-              controller.data.selected = result.data;
+              controller.data.items = result.data;
               controller.data.total_count = result.total_count;
               if (result.data.length > 0)
               {
