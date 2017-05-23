@@ -251,12 +251,12 @@ describe('Time Shift Registry Component', function ()
       });
     });
 
-    it("should hide the detail content if there's no selected time shift.", function ()
+    it("should hide the detail content if there's detail load error`.", function ()
     {
-      expect($services.$dom.find('#detail-container').hasClass('ng-hide')).to.be.true;
-      $services.$controller.selectedTimeShift = {};
+      expect($services.$dom.find('#detail-container md-content').hasClass('ng-hide')).to.be.false;
+      $services.$controller.detail_load_error = {};
       $services.$scope.$digest();
-      expect($services.$dom.find('#detail-container').hasClass('ng-hide')).to.be.false;
+      expect($services.$dom.find('#detail-container md-content').hasClass('ng-hide')).to.be.true;
     });
 
     it("should reload the time shifts when selected", function ()
