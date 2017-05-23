@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="./components/employee_management/employee_management.template.css">
 <!-- Load error message; hides the content and saveSelectedMasterItem button if loading error occurs. -->
 <div id="load-error-message" class="alert alert-danger" ng-hide="!$ctrl.load_error">
     <strong>{{$ctrl.load_error.name}}:</strong> {{$ctrl.load_error.message}}
@@ -84,9 +85,9 @@
 <!-- Detail -->
 <div style="visibility: hidden">
     <div class="md-dialog-container" id="detail-dialog">
-        <md-dialog flex="80">
+        <md-dialog flex="60" ng-cloak>
             <!-- Accept enter key -->
-            <form name="$ctrl.Form" ng-cloak>
+            <form name="$ctrl.Form">
                 <!-- 1st sibling: Contains the content of the dialog -->
                 <md-dialog-content layout="column">
                     <!-- Title bar -->
@@ -119,14 +120,54 @@
                     </md-toolbar>
                     <div id="detail-container" flex layout="column">
                         <!-- This error occurs on saving -->
-                        <div id="detail-load-error-message" class="alert alert-danger" ng-hide="!$ctrl.detail_load_error">
+                        <div id="detail-load-error-message" class="alert alert-danger"
+                             ng-hide="!$ctrl.detail_load_error">
                             <strong>{{$ctrl.detail_load_error.name}}:</strong> {{$ctrl.detail_load_error.message}}
                         </div>
                         <!-- This error occurs on saving -->
                         <div id="write-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
                             <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
                         </div>
-                        <md-content ng-hide="$ctrl.detail_load_error" class="panel panel-default" layout="column" flex>
+                        <md-content id="detail-content" ng-hide="$ctrl.detail_load_error" layout="column" flex>
+                            <div layout="row">
+                                <img ng-src="./assets/employee_placeholder.jpg">
+                                <div layout="column" layout-align="center" flex>
+                                    <div layout="row">
+                                        <md-input-container flex>
+                                            <label>Employee Number</label>
+                                            <input type="number" ng-model="$ctrl.selected_item.id">
+                                        </md-input-container>
+                                        <md-input-container flex>
+                                            <label>Last name</label>
+                                            <input ng-model="$ctrl.selected_item.last_name">
+                                        </md-input-container>
+                                    </div>
+                                    <div layout="row">
+                                        <md-input-container flex>
+                                            <label>First name</label>
+                                            <input ng-model="$ctrl.selected_item.first_name">
+                                        </md-input-container>
+                                        <md-input-container flex>
+                                            <label>Middle name</label>
+                                            <input ng-model="$ctrl.selected_item.middle_name">
+                                        </md-input-container>
+                                    </div>
+                                    <div layout="row">
+                                        <md-input-container flex>
+                                            <label>Gender</label>
+                                            <md-select ng-model="$ctrl.selected_item.gender">
+                                                <md-option value="'Male'">Male</md-option>
+                                                <md-option value="'Female'">Female</md-option>
+                                            </md-select>
+                                        </md-input-container>
+                                        <md-input-container flex>
+                                            <label>Birthday</label>
+                                            <md-datepicker ng-model="$ctrl.selected_item.birthday"
+                                                           md-placeholder="Birthday" md-open-on-focus></md-datepicker>
+                                        </md-input-container>
+                                    </div>
+                                </div>
+                            </div>
                         </md-content>
                     </div>
                 </md-dialog-content>

@@ -1,0 +1,13 @@
+#detail-content {
+  padding: 24px;
+}
+
+#detail-content img {
+  width: 200px;
+  height: 200px;
+  margin: 24px;
+}
+
+#detail-content md-input-container {
+  margin: 8px 24px;
+}
