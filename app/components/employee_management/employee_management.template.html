@@ -181,23 +181,19 @@
                                 </md-input-container>
                             </div>
                             <!-- Employee Information -->
-                            <div layout="row">
+                            <div layout="row" id="position">
                                 <md-input-container flex>
                                     <label>Position</label>
-                                    <md-autocomplete
-                                            md-min-length="0"
-                                            md-items="position in $ctrl.queryPositions($ctrl.search_position)"
-                                            md-item-text="position.name"
-                                            md-selected-item="$ctrl.selected_position"
-                                            md-search-text="$ctrl.search_position">
-                                        <md-item-template>
-                                            <span md-highlight-text="$ctrl.search_position" md-highlight-flags="^i">{{position.name}}</span>
-                                        </md-item-template>
-                                        <md-not-found>
-                                            <span>'{{$ctrl.search_position}}' will be created.</span>
-                                        </md-not-found>
-                                    </md-autocomplete>
+                                    <md-select ng-model="$ctrl.selected_item.position_id">
+                                        <md-option ng-value="position.id"
+                                                   ng-repeat="position in $ctrl.data.positions">
+                                            {{position.name}}
+                                        </md-option>
+                                    </md-select>
                                 </md-input-container>
+                                <md-button class="md-icon-button" ng-click="$ctrl.commands.openPositionRegistry()">
+                                    <md-icon md-svg-icon="image:ic_edit_24px"></md-icon>
+                                </md-button>
                                 <md-input-container flex>
                                     <label>Employee Type</label>
                                     <md-select ng-model="$ctrl.selected_item.employee_type">

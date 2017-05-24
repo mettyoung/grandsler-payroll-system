@@ -148,7 +148,7 @@ angular.module('employee-management')
             }));
         };
 
-        this.openPositionRegistry = () =>
+        this.commands.openPositionRegistry = () =>
         {
           $mdDialog.show({
             template:

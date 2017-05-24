@@ -23,3 +23,7 @@
 #detail-container md-autocomplete md-icon {
   display: none;
 }
+
+#detail-container #position md-input-container {
+  margin-right: 0px;
+}
