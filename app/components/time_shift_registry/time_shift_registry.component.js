@@ -93,7 +93,13 @@ angular.module('time-shift-registry')
                   transaction: transaction
                 }));
 
-              return promise.then(() =>
+              return promise.catch(error => {
+                if (error.name === 'SequelizeForeignKeyConstraintError')
+                  return Promise.reject({
+                    name: 'Reference Error',
+                    message: 'Time-shift is in used.'
+                  });
+              }).then(() =>
               {
                 this.close();
                 return MESSAGE.deleted;
