@@ -108,6 +108,8 @@ class CrudHandler {
     this._setViewModels(controller);
     // Initialize commands
     this._setCommands(controller);
+
+    return controller.commands.preload();
   }
 
   /**
@@ -301,8 +303,6 @@ class CrudHandler {
             .then(() => controller._$scope.$apply());
       }
     };
-
-    controller.commands.preload();
   }
 
   onAfterCreateMasterItem(controller, onAfterCreateMasterItem)

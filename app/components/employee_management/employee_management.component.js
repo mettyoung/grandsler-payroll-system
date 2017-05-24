@@ -179,44 +179,33 @@ angular.module('employee-management')
         /**
          * Bootstraps this controller with CrudHandler that handles the basic CRUD controller routines.
          */
-        CrudHandler.bootstrap(this, $scope);
+        CrudHandler.bootstrap(this, $scope).then(() => {
+          /**
+           * If environment is production or dev, then auto-load.
+           */
+          if (process.env.NODE_ENV !== 'test')
+            this.commands.load()
+        });
 
         /**
          * Hides the dialog.
          * @returns {Promise}
          */
-        this.commands.close = function ()
+        this.commands.close = () =>
         {
-          return $mdDialog.hide();
+          return $mdDialog.hide().then(() => this.commands.load());
         };
 
         /**
-         * Query positions for md-autocomplete.
-         * @param search_position
-         * @returns {*|Promise.<*>}
+         * Opens position registry.
          */
-        this.queryPositions = search_position => {
-          return ModelProvider.models.Position.findAll({
-            where: {
-              name: {
-                $like: '%' + search_position + '%'
-              }
-            }
-          }).then(positions => positions.map(function (position) {
-              return {
-                value: position.id,
-                name: position.name
-              };
-            }));
-        };
-
         this.commands.openPositionRegistry = () =>
         {
           $mdDialog.show({
             template:
-              '<md-dialog flex="40">' +
-                '<position-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column" style="height: 400px;"></position-registry>' +
-              '</md-dialog>',
+            '<md-dialog flex="40">' +
+            '<position-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column" style="height: 400px;"></position-registry>' +
+            '</md-dialog>',
             multiple: true,
             locals: {parent: this},
             controller: angular.noop,
@@ -224,6 +213,5 @@ angular.module('employee-management')
             bindToController: true
           });
         };
-
       }]
   });
