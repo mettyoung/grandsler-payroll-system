@@ -1,8 +1,10 @@
 'use strict';
+const moment = require('moment');
+
 module.exports = function(sequelize, DataTypes) {
   var EmployeeMemo = sequelize.define('EmployeeMemo', {
     employee_id: DataTypes.INTEGER,
-    memo: DataTypes.TEXT,
+    description: DataTypes.TEXT,
     created_by: DataTypes.INTEGER
   }, {
     classMethods: {
@@ -21,7 +23,13 @@ module.exports = function(sequelize, DataTypes) {
         });
       }
     },
-    tableName: "employee_memos"
+    instanceMethods: {
+      getCreatedDate() {
+        return moment(this.created_at).format('MMMM Do YYYY, h:mm a');
+      }
+    },
+    tableName: "employee_memos",
+    updatedAt: false
   });
   return EmployeeMemo;
 };

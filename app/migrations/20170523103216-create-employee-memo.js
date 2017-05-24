@@ -16,7 +16,7 @@ module.exports = {
           key: 'id'
         }
       },
-      memo: {
+      description: {
         type: Sequelize.TEXT
       },
       created_by: {

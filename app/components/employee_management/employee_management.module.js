@@ -7,4 +7,7 @@ require('../../services/model_provider/model_provider.module');
 require('../../services/model_provider/model_provider.service');
 require('../../components/position_registry/position_registry.module');
 require('../../components/position_registry/position_registry.component');
-angular.module('employee-management', ['front-end-validations', 'notifier', 'crud-handler', 'model-provider', 'md.data.table', 'position-registry']);
+require('../../components/employee_memos/employee_memos.module');
+require('../../components/employee_memos/employee_memos.component');
+angular.module('employee-management', ['front-end-validations', 'notifier', 'crud-handler', 
+  'model-provider', 'md.data.table', 'position-registry', 'employee-memos']);

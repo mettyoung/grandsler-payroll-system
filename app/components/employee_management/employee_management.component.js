@@ -220,5 +220,23 @@ angular.module('employee-management')
             bindToController: true
           });
         };
+
+        /**
+         * Opens memos.
+         */
+        this.commands.openMemos = employee =>
+        {
+          $mdDialog.show({
+            template:
+            '<md-dialog flex="60">' +
+            '<employee-memos selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></employee-memos>' +
+            '</md-dialog>',
+            multiple: true,
+            locals: {selected_employee: employee},
+            controller: angular.noop,
+            controllerAs: '$ctrl',
+            bindToController: true
+          });
+        };
       }]
   });
