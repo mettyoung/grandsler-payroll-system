@@ -22,10 +22,6 @@ angular.module('employee-memos')
               module: 'Employee Memos',
               description: 'Deleted an employee memo successfully!',
               toast: 'Deleted an employee memo!'
-            },
-            modified: {
-              module: 'Employee Memos',
-              description: 'Modified an employee memo successfully!'
             }
           };
 
@@ -36,13 +32,7 @@ angular.module('employee-memos')
             CrudHandler.onSaveSelectedMasterItem(this, transaction =>
             {
               this.selected_item.employee_id = this.selectedEmployee.id;
-
-              let action = 'modified';
-              if (this.selected_item.constructor === Object)
-              {
-                this.selected_item = ModelProvider.models.EmployeeMemo.build(this.selected_item);
-                action = 'created';
-              }
+              this.selected_item = ModelProvider.models.EmployeeMemo.build(this.selected_item);
 
               return Notifier.perform(() =>
                 this.selected_item.save({
@@ -50,7 +40,7 @@ angular.module('employee-memos')
                 }).then(() =>
                 {
                   this.commands.close();
-                  return MESSAGE[action];
+                  return MESSAGE.created;
                 }), transaction);
             });
 
