@@ -148,5 +148,20 @@ angular.module('employee-management')
             }));
         };
 
+        this.openPositionRegistry = () =>
+        {
+          $mdDialog.show({
+            template:
+              '<md-dialog flex="40">' +
+                '<position-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column" style="height: 400px;"></position-registry>' +
+              '</md-dialog>',
+            multiple: true,
+            locals: {parent: this},
+            controller: angular.noop,
+            controllerAs: '$ctrl',
+            bindToController: true
+          });
+        };
+
       }]
   });
