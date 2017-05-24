@@ -172,7 +172,7 @@ class CrudHandler {
         controller[options.selectedMasterItemProperty] = {
           [options.detailProperty]: []
         };
-        controller.detail_load_error = null;
+        controller.detail_load_error = controller.write_error = null;
 
         // Set it to untouched to reset validations.
         controller[options.formProperty] && controller[options.formProperty].$setUntouched();
@@ -195,7 +195,7 @@ class CrudHandler {
               .then(() =>
               {
                 controller.is_delete_disabled = false;
-                controller.detail_load_error = null;
+                controller.detail_load_error = controller.write_error = null;
                 controller[options.selectedMasterItemProperty] = masterItem;
               })
               .catch(error => {
