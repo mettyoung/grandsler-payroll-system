@@ -198,7 +198,10 @@ class CrudHandler {
                 controller.detail_load_error = null;
                 controller[options.selectedMasterItemProperty] = masterItem;
               })
-              .catch(error => controller.detail_load_error = error)
+              .catch(error => {
+                controller.detail_load_error = error;
+                controller.is_delete_disabled = true;
+              })
               .then(() => controller._$scope.$apply()));
 
         return promise.then(() => controller._lifeCycles.onAfterSelectMasterItem && controller._lifeCycles.onAfterSelectMasterItem());
