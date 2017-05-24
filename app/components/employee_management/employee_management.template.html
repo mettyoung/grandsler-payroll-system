@@ -137,14 +137,14 @@
                                         <md-input-container flex>
                                             <label>Employee Number</label>
                                             <input required name="id" type="number" ng-model="$ctrl.selected_item.id">
-                                            <div ng-messages="$ctrl.Form.id.$error">
+                                            <div ng-messages="$ctrl.Form.id.$error" ng-show="$ctrl.Form.id.$touched">
                                                 <div ng-message="required">This is required.</div>
                                             </div>
                                         </md-input-container>
                                         <md-input-container flex>
                                             <label>Last name</label>
                                             <input required name="last_name" ng-model="$ctrl.selected_item.last_name">
-                                            <div ng-messages="$ctrl.Form.last_name.$error">
+                                            <div ng-messages="$ctrl.Form.last_name.$error" ng-show="$ctrl.Form.last_name.$touched">
                                                 <div ng-message="required">This is required.</div>
                                             </div>
                                         </md-input-container>
@@ -153,7 +153,7 @@
                                         <md-input-container flex>
                                             <label>First name</label>
                                             <input required name="first_name" ng-model="$ctrl.selected_item.first_name">
-                                            <div ng-messages="$ctrl.Form.first_name.$error">
+                                            <div ng-messages="$ctrl.Form.first_name.$error" ng-show="$ctrl.Form.first_name.$touched">
                                                 <div ng-message="required">This is required.</div>
                                             </div>
                                         </md-input-container>
@@ -169,7 +169,7 @@
                                                 <md-option value="'Male'">Male</md-option>
                                                 <md-option value="'Female'">Female</md-option>
                                             </md-select>
-                                            <div ng-messages="$ctrl.Form.gender.$error">
+                                            <div ng-messages="$ctrl.Form.gender.$error" ng-show="$ctrl.Form.gender.$touched">
                                                 <div ng-message="required">This is required.</div>
                                             </div>
                                         </md-input-container>
@@ -202,7 +202,7 @@
                                             {{position.name}}
                                         </md-option>
                                     </md-select>
-                                    <div ng-messages="$ctrl.Form.position.$error">
+                                    <div ng-messages="$ctrl.Form.position.$error" ng-show="$ctrl.Form.position.$touched">
                                         <div ng-message="required">This is required.</div>
                                     </div>
                                 </md-input-container>
@@ -215,7 +215,7 @@
                                         <md-option ng-value="'Time-based'">Time-based</md-option>
                                         <md-option ng-value="'Output-based'">Output-based</md-option>
                                     </md-select>
-                                    <div ng-messages="$ctrl.Form.employee_type.$error">
+                                    <div ng-messages="$ctrl.Form.employee_type.$error" ng-show="$ctrl.Form.employee_type.$touched">
                                         <div ng-message="required">This is required.</div>
                                     </div>
                                 </md-input-container>
@@ -227,7 +227,7 @@
                                             {{timeShift.name}}
                                         </md-option>
                                     </md-select>
-                                    <div ng-messages="$ctrl.Form.time_shift.$error">
+                                    <div ng-messages="$ctrl.Form.time_shift.$error" ng-show="$ctrl.Form.time_shift.$touched">
                                         <div ng-message="required">This is required.</div>
                                     </div>
                                 </md-input-container>
