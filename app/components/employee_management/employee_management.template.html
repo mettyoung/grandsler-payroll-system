@@ -99,7 +99,7 @@
                             <!-- In edit mode, save button may be hidden if detail_load_error occurred. -->
                             <!-- In both modes, save button's disability depends on validation rules. -->
                             <md-button id='save-button' class="md-icon-button"
-                                       type='submit' aria-label="Save"
+                                       type='submit'
                                        ng-hide="$ctrl.detail_load_error"
                                        ng-disabled="!$ctrl.Form.$valid"
                                        ng-click="$ctrl.commands.saveSelectedMasterItem()">
@@ -109,11 +109,10 @@
                             <!-- In edit mode, delete button may be hidden if detail_load_error occurred. -->
                             <md-button id="delete-button" class="md-icon-button"
                                        ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this employee record?')"
-                                       ng-hide="$ctrl.is_delete_disabled || $ctrl.detail_load_error">
+                                       ng-hide="$ctrl.is_delete_disabled">
                                 <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
                             </md-button>
-                            <md-button id='close-button' ng-click="$ctrl.close()" class="md-icon-button"
-                                       aria-label="Close dialog">
+                            <md-button id='close-button' ng-click="$ctrl.commands.close()" class="md-icon-button">
                                 <md-icon md-svg-icon="content:ic_clear_24px"></md-icon>
                             </md-button>
                         </div>
@@ -166,8 +165,8 @@
                                         <md-input-container flex>
                                             <label>Gender</label>
                                             <md-select required name="gender" ng-model="$ctrl.selected_item.gender">
-                                                <md-option value="'Male'">Male</md-option>
-                                                <md-option value="'Female'">Female</md-option>
+                                                <md-option value="Male">Male</md-option>
+                                                <md-option value="Female">Female</md-option>
                                             </md-select>
                                             <div ng-messages="$ctrl.Form.gender.$error" ng-show="$ctrl.Form.gender.$touched">
                                                 <div ng-message="required">This is required.</div>

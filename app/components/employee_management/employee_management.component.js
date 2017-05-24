@@ -1,9 +1,29 @@
 angular.module('employee-management')
   .component('employeeManagement', {
     templateUrl: './components/employee_management/employee_management.template.html',
-    controller: ['$scope', '$mdDialog', 'CrudHandler', 'ModelProvider',
-      function ($scope, $mdDialog, CrudHandler, ModelProvider)
+    controller: ['$scope', '$mdDialog', 'Notifier', 'CrudHandler', 'ModelProvider',
+      function ($scope, $mdDialog, Notifier, CrudHandler, ModelProvider)
       {
+        /**
+         * This is used for the Notifier module.
+         * @type {{created: {module: string, description: string}, deleted: {module: string, description: string, toast: string}, modified: {module: string, description: string}}}
+         */
+        const MESSAGE = {
+          created: {
+            module: 'Employee Management',
+            description: 'Created an employee record successfully!'
+          },
+          deleted: {
+            module: 'Employee Management',
+            description: 'Deleted an employee record successfully!',
+            toast: 'Deleted an employee record!'
+          },
+          modified: {
+            module: 'Employee Management',
+            description: 'Modified an employee record successfully!'
+          }
+        };
+
         /**
          * Life cycles
          */
@@ -112,6 +132,48 @@ angular.module('employee-management')
               parent: angular.element(document.body)
             });
           });
+
+          CrudHandler.onSaveSelectedMasterItem(this, transaction =>
+          {
+            let action = 'modified';
+            if (this.selected_item.constructor === Object)
+            {
+              this.selected_item = ModelProvider.models.Employee.build(this.selected_item);
+              action = 'created';
+            }
+
+            return Notifier.perform(() =>
+              this.selected_item.save({
+                transaction: transaction
+              }).then(() =>
+              {
+                this.commands.close();
+                return MESSAGE[action];
+              }), transaction);
+          });
+
+          CrudHandler.onDeleteSelectedMasterItem(this, transaction =>
+          {
+            if (this.selected_item.constructor === Object)
+              return Promise.reject('Cannot delete a new record.');
+
+            return Notifier.perform(() =>
+            {
+              return this.selected_item.destroy({
+                transaction: transaction
+              }).catch(error => {
+                if (error.name === 'SequelizeForeignKeyConstraintError')
+                  return Promise.reject({
+                    name: 'Reference Error',
+                    message: 'Employee is in used.'
+                  });
+              }).then(() =>
+              {
+                this.commands.close();
+                return MESSAGE.deleted;
+              });
+            }, transaction);
+          });
         }
 
         /**
@@ -123,7 +185,7 @@ angular.module('employee-management')
          * Hides the dialog.
          * @returns {Promise}
          */
-        this.close = function ()
+        this.commands.close = function ()
         {
           return $mdDialog.hide();
         };
