@@ -136,14 +136,15 @@ angular.module('employee-management')
           CrudHandler.onSaveSelectedMasterItem(this, transaction =>
           {
             let action = 'modified';
+            let selectedItem = this.selected_item;
             if (this.selected_item.constructor === Object)
             {
-              this.selected_item = ModelProvider.models.Employee.build(this.selected_item);
+              selectedItem = ModelProvider.models.Employee.build(selectedItem);
               action = 'created';
             }
 
             return Notifier.perform(() =>
-              this.selected_item.save({
+              selectedItem.save({
                 transaction: transaction
               }).catch(error => {
                 if (error.name === 'SequelizeUniqueConstraintError')
