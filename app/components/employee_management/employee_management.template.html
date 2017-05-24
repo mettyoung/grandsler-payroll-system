@@ -136,17 +136,26 @@
                                     <div layout="row">
                                         <md-input-container flex>
                                             <label>Employee Number</label>
-                                            <input type="number" ng-model="$ctrl.selected_item.id">
+                                            <input required name="id" type="number" ng-model="$ctrl.selected_item.id">
+                                            <div ng-messages="$ctrl.Form.id.$error">
+                                                <div ng-message="required">This is required.</div>
+                                            </div>
                                         </md-input-container>
                                         <md-input-container flex>
                                             <label>Last name</label>
-                                            <input ng-model="$ctrl.selected_item.last_name">
+                                            <input required name="last_name" ng-model="$ctrl.selected_item.last_name">
+                                            <div ng-messages="$ctrl.Form.last_name.$error">
+                                                <div ng-message="required">This is required.</div>
+                                            </div>
                                         </md-input-container>
                                     </div>
                                     <div layout="row">
                                         <md-input-container flex>
                                             <label>First name</label>
-                                            <input ng-model="$ctrl.selected_item.first_name">
+                                            <input required name="first_name" ng-model="$ctrl.selected_item.first_name">
+                                            <div ng-messages="$ctrl.Form.first_name.$error">
+                                                <div ng-message="required">This is required.</div>
+                                            </div>
                                         </md-input-container>
                                         <md-input-container flex>
                                             <label>Middle name</label>
@@ -156,10 +165,13 @@
                                     <div layout="row">
                                         <md-input-container flex>
                                             <label>Gender</label>
-                                            <md-select ng-model="$ctrl.selected_item.gender">
+                                            <md-select required name="gender" ng-model="$ctrl.selected_item.gender">
                                                 <md-option value="'Male'">Male</md-option>
                                                 <md-option value="'Female'">Female</md-option>
                                             </md-select>
+                                            <div ng-messages="$ctrl.Form.gender.$error">
+                                                <div ng-message="required">This is required.</div>
+                                            </div>
                                         </md-input-container>
                                         <md-input-container flex>
                                             <label>Birthday</label>
@@ -184,31 +196,40 @@
                             <div layout="row" id="position">
                                 <md-input-container flex>
                                     <label>Position</label>
-                                    <md-select ng-model="$ctrl.selected_item.position_id">
+                                    <md-select required name="position" ng-model="$ctrl.selected_item.position_id">
                                         <md-option ng-value="position.id"
                                                    ng-repeat="position in $ctrl.data.positions">
                                             {{position.name}}
                                         </md-option>
                                     </md-select>
+                                    <div ng-messages="$ctrl.Form.position.$error">
+                                        <div ng-message="required">This is required.</div>
+                                    </div>
                                 </md-input-container>
                                 <md-button class="md-icon-button" ng-click="$ctrl.commands.openPositionRegistry()">
                                     <md-icon md-svg-icon="image:ic_edit_24px"></md-icon>
                                 </md-button>
                                 <md-input-container flex>
                                     <label>Employee Type</label>
-                                    <md-select ng-model="$ctrl.selected_item.employee_type">
+                                    <md-select required name="employee_type" ng-model="$ctrl.selected_item.employee_type">
                                         <md-option ng-value="'Time-based'">Time-based</md-option>
                                         <md-option ng-value="'Output-based'">Output-based</md-option>
                                     </md-select>
+                                    <div ng-messages="$ctrl.Form.employee_type.$error">
+                                        <div ng-message="required">This is required.</div>
+                                    </div>
                                 </md-input-container>
                                 <md-input-container flex>
                                     <label>Time-shift</label>
-                                    <md-select ng-model="$ctrl.selected_item.time_shift_id">
+                                    <md-select required name="time_shift" ng-model="$ctrl.selected_item.time_shift_id">
                                         <md-option ng-value="timeShift.id"
                                                    ng-repeat="timeShift in $ctrl.data.time_shifts">
                                             {{timeShift.name}}
                                         </md-option>
                                     </md-select>
+                                    <div ng-messages="$ctrl.Form.time_shift.$error">
+                                        <div ng-message="required">This is required.</div>
+                                    </div>
                                 </md-input-container>
                             </div>
                         </md-content>
