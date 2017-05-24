@@ -1,29 +1,25 @@
-<link rel="stylesheet" href="components/time_shift_registry/time_shift_registry.template.css">
-<!-- Accept enter key -->
+<link rel="stylesheet" href="./components/time_shift_registry/time_shift_registry.template.css">
 <form name="$ctrl.Form" ng-cloak>
-    <!-- 1st sibling: Contains the content of the dialog -->
+    <!-- Column: Action bar, load error message and main content -->
     <md-dialog-content layout="column">
-        <!-- Title bar -->
+        <!-- Row: Title, create button, save button, delete button and close button. -->
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <h3 flex><span>Time-shift Registry</span></h3>
+                <md-button id="create-button" class="md-icon-button"
+                           ng-hide="$ctrl.load_error"
+                           ng-click="$ctrl.commands.createMasterItem()">
+                    <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
+                </md-button>
                 <md-button type='submit' id='save-button' class="md-icon-button" aria-label="Save"
                            ng-hide="$ctrl.load_error || $ctrl.detail_load_error"
                            ng-disabled="!$ctrl.Form.$valid"
                            ng-click="$ctrl.commands.saveSelectedMasterItem()">
                     <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
                 </md-button>
-                <md-button id="create-new-time-shift" class="md-icon-button"
-                           ng-click="$ctrl.commands.createMasterItem()"
-                           ng-hide="$ctrl.load_error"
-                           aria-label="Create new time-shift">
-                    <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
-                </md-button>
                 <md-button id="delete-button" class="md-icon-button"
-                           ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this time-shift?')"
-                           ng-hide="$ctrl.load_error || $ctrl.detail_load_error"
-                           ng-disabled="$ctrl.is_delete_disabled"
-                           aria-label="Delete selected time-shift">
+                           ng-hide="$ctrl.load_error || $ctrl.is_delete_disabled"
+                           ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this time-shift?')">
                     <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
                 </md-button>
                 <md-button id='close-button' ng-click="$ctrl.close()" class="md-icon-button" aria-label="Close dialog">

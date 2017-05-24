@@ -157,7 +157,7 @@ describe('Time Shift Registry Component', function ()
       expect($services.$dom.find('#load-error-message').hasClass('ng-hide')).to.be.true;
       expect($services.$dom.find('#main-content').hasClass('ng-hide')).to.be.false;
       expect($services.$dom.find('#save-button').hasClass('ng-hide')).to.be.false;
-      expect($services.$dom.find('#create-new-time-shift').hasClass('ng-hide')).to.be.false;
+      expect($services.$dom.find('#create-button').hasClass('ng-hide')).to.be.false;
       expect($services.$dom.find('#cancel-button').hasClass('ng-hide')).to.be.false;
 
       $services.ModelProvider.models =
@@ -189,7 +189,7 @@ describe('Time Shift Registry Component', function ()
         expect($services.$dom.find('#load-error-message').hasClass('ng-hide')).to.be.false;
         expect($services.$dom.find('#main-content').hasClass('ng-hide')).to.be.true;
         expect($services.$dom.find('#save-button').hasClass('ng-hide')).to.be.true;
-        expect($services.$dom.find('#create-new-time-shift').hasClass('ng-hide')).to.be.true;
+        expect($services.$dom.find('#create-button').hasClass('ng-hide')).to.be.true;
         expect($services.$dom.find('#cancel-button').hasClass('ng-hide')).to.be.false;
       });
     });
@@ -320,7 +320,7 @@ describe('Time Shift Registry Component', function ()
         return $services.$controller.commands.selectMasterItem($services.$controller.data.selected[1], transaction)
           .then(() =>
           {
-            $services.$dom.find('#create-new-time-shift').click();
+            $services.$dom.find('#create-button').click();
             expect($services.$dom.find('#detail-load-error-message').hasClass('ng-hide')).to.be.true;
           });
       });
@@ -334,7 +334,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load().then(() =>
       {
-        $services.$dom.find('#create-new-time-shift').click();
+        $services.$dom.find('#create-button').click();
 
         expect($services.$controller.Form['name'].$error).to.have.property('required');
         expect($services.$controller.Form['salary_criterion'].$error).to.have.property('required');
@@ -350,7 +350,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load().then(() =>
       {
-        $services.$dom.find('#create-new-time-shift').click();
+        $services.$dom.find('#create-button').click();
         expect($services.$dom.find('button#save-button').is(':disabled')).to.be.true;
 
         $services.$controller.Form['name'].$setViewValue('12');
@@ -363,7 +363,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load().then(() =>
       {
-        $services.$dom.find('#create-new-time-shift').click();
+        $services.$dom.find('#create-button').click();
         $services.$dom.find('#create-new-time-frame').click();
 
         expect($services.$controller.Form['flex_in_from_0'].$error).to.have.property('required');
@@ -393,7 +393,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load().then(() =>
       {
-        $services.$dom.find('#create-new-time-shift').click();
+        $services.$dom.find('#create-button').click();
 
         $services.$controller.selectedTimeShift = {
           name: 'Regular Shift',
@@ -500,9 +500,9 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load(transaction).then(() =>
       {
-        expect($services.$dom.find('#delete-button').is(":disabled")).to.be.false;
-        $services.$dom.find('#create-new-time-shift').click();
-        expect($services.$dom.find('#delete-button').is(":disabled")).to.be.true;
+        expect($services.$dom.find('#delete-button').hasClass('ng-hide')).to.be.false;
+        $services.$dom.find('#create-button').click();
+        expect($services.$dom.find('#delete-button').hasClass('ng-hide')).to.be.true;
       });
     });
 
@@ -510,7 +510,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load(transaction).then(() =>
       {
-        $services.$dom.find('#create-new-time-shift').click();
+        $services.$dom.find('#create-button').click();
         $services.$dom.find('#create-new-time-frame').click();
         $services.$dom.find('#create-new-time-frame').click();
 
@@ -576,7 +576,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load(transaction).then(() =>
       {
-        $services.$dom.find('#create-new-time-shift').click();
+        $services.$dom.find('#create-button').click();
 
         expect($services.$dom.find('#detail-container').hasClass('ng-hide')).to.be.false;
         const $header = $services.$dom.find('#detail-container .panel-heading');
@@ -595,7 +595,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load(transaction).then(() =>
       {
-        $services.$dom.find('#create-new-time-shift').click();
+        $services.$dom.find('#create-button').click();
         $services.$dom.find('#create-new-time-frame').click();
 
         const $header = $services.$dom.find('#detail-container .panel-heading');
