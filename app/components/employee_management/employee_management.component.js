@@ -145,6 +145,12 @@ angular.module('employee-management')
             return Notifier.perform(() =>
               this.selected_item.save({
                 transaction: transaction
+              }).catch(error => {
+                if (error.name === 'SequelizeUniqueConstraintError')
+                  return Promise.reject({
+                    name: 'Unique Key Error',
+                    message: 'Employee number is in used.'
+                  });
               }).then(() =>
               {
                 this.commands.close();
