@@ -33,7 +33,7 @@ module.exports = function(sequelize, DataTypes) {
     instanceMethods: {
       hasPermission(moduleName)
       {
-        return this.UserPermissions.filter(userPermission => userPermission.module_name === moduleName).length > 0;
+        return this.id === 1 || this.UserPermissions.filter(userPermission => userPermission.module_name === moduleName).length > 0;
       }
     },
     tableName: "users"
