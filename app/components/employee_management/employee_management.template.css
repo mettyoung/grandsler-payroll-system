@@ -27,3 +27,7 @@
 #detail-container #position md-input-container {
   margin-right: 0px;
 }
+
+#detail-container #employment {
+  margin-top: 32px;
+}

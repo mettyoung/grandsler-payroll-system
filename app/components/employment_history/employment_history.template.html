@@ -65,7 +65,7 @@
                     <div layout="row" flex>
                         <md-input-container flex>
                             <label>Date Hired</label>
-                            <md-datepicker required ng-model="$ctrl.selected_item.date_hired"
+                            <md-datepicker required name="date_hired" ng-model="$ctrl.selected_item.date_hired"
                                            md-placeholder="Date hired" md-open-on-focus></md-datepicker>
                             <div ng-messages="$ctrl.Form.date_hired.$error" ng-show="$ctrl.Form.date_hired.$touched">
                                 <div ng-message="required">This is required.</div>

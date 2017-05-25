@@ -190,7 +190,7 @@
                                         </md-input-container>
                                     </div>
                                     <div layout="row">
-                                        <md-input-container flex>
+                                        <md-input-container>
                                             <label>Gender</label>
                                             <md-select required name="gender" ng-model="$ctrl.selected_item.gender">
                                                 <md-option value="Male">Male</md-option>
@@ -257,6 +257,31 @@
                                     <div ng-messages="$ctrl.Form.time_shift.$error" ng-show="$ctrl.Form.time_shift.$touched">
                                         <div ng-message="required">This is required.</div>
                                     </div>
+                                </md-input-container>
+                            </div>
+                            <!-- Employment Information -->
+                            <div layout="row" ng-if="$ctrl.is_delete_disabled" id="employment"
+                                 layout-align="center center" flex>
+                                <md-input-container flex>
+                                    <label>Date Hired</label>
+                                    <md-datepicker required name="date_hired"
+                                                   ng-model="$ctrl.selected_item.Employment.date_hired"
+                                                   md-placeholder="Date hired" md-open-on-focus></md-datepicker>
+                                    <div ng-messages="$ctrl.Form.date_hired.$error"
+                                         ng-show="$ctrl.Form.date_hired.$touched">
+                                        <div ng-message="required">This is required.</div>
+                                    </div>
+                                </md-input-container>
+                                <md-input-container flex>
+                                    <label>Date Released</label>
+                                    <md-datepicker ng-model="$ctrl.selected_item.Employment.date_released"
+                                                   md-placeholder="Date released" md-open-on-focus></md-datepicker>
+                                </md-input-container>
+                            </div>
+                            <div layout="row" ng-if="$ctrl.is_delete_disabled">
+                                <md-input-container flex>
+                                    <label>Memo</label>
+                                    <textarea name="memo" ng-model="$ctrl.selected_item.Employment.memo"></textarea>
                                 </md-input-container>
                             </div>
                         </md-content>

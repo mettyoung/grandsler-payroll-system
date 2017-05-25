@@ -152,7 +152,10 @@ angular.module('employee-management')
             let selectedItem = this.selected_item;
             if (this.selected_item.constructor === Object)
             {
-              selectedItem = ModelProvider.models.Employee.build(selectedItem);
+              selectedItem.Employments = [selectedItem.Employment];
+              selectedItem = ModelProvider.models.Employee.build(selectedItem, {
+                include: [ModelProvider.models.Employment]
+              });
               action = 'created';
             }
 
