@@ -22,6 +22,12 @@ module.exports = function(sequelize, DataTypes) {
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });
+
+        User.hasMany(models.UserPermission, {
+          foreignKey: "user_id",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
       }
     },
     tableName: "users"
