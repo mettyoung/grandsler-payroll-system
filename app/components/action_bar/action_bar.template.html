@@ -19,13 +19,13 @@
                         <span>Change Password</span>
                     </md-button>
                 </md-menu-item>
-                <md-menu-item>
+                <md-menu-item ng-show="$ctrl.auth.user.hasPermission('Salary Criteria Registry')">
                     <md-button ng-click="$ctrl.openSalaryCriteriaDialog()">
                         <md-icon md-svg-icon="action:ic_assignment_24px"></md-icon>
                         <span>Salary Criteria</span>
                     </md-button>
                 </md-menu-item>
-                <md-menu-item>
+                <md-menu-item ng-show="$ctrl.auth.user.hasPermission('Time-shift Registry')">
                     <md-button ng-click="$ctrl.openTimeShiftRegistryDialog()">
                         <md-icon md-svg-icon="action:ic_alarm_add_24px"></md-icon>
                         <span>Time-shift Registry</span>

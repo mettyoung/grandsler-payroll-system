@@ -4,7 +4,7 @@ angular.module('navigation-bar')
     bindings: {
       onMenuItemPressed: '&'
     },
-    controller: ['$state', function($state)
+    controller: ['$state', 'ModelProvider', function($state, ModelProvider)
     {
       /**
        * Modules
@@ -17,6 +17,11 @@ angular.module('navigation-bar')
         }
       ];
 
+      this.modules = this.modules.map(module => {
+        module.is_authorized = ModelProvider.auth.user.hasPermission(module.name);
+        return module;
+      });
+      
       /**
        * Change the state.
        * @param module

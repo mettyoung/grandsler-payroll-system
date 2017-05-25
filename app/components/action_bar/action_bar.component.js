@@ -5,8 +5,10 @@ angular.module('action-bar')
       title: '<',
       onMenuPressed: '&'
     },
-    controller: ['$mdDialog', function ($mdDialog)
+    controller: ['$mdDialog', 'ModelProvider', function ($mdDialog, ModelProvider)
     {
+      this.auth = ModelProvider.auth;
+
       this.openChangePasswordDialog = () =>
       {
         $mdDialog.show({

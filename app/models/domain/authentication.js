@@ -1,7 +1,7 @@
 /**
  * Singleton authentication module.
  */
-const {User, Employee, Employment, Sequelize, sequelize} = require('../persistence/index');
+const {User, Employee, Employment, UserPermission, Sequelize, sequelize} = require('../persistence/index');
 
 let auth = {
   /**
@@ -58,7 +58,7 @@ let auth = {
           },
           required: false
         }]
-      }]
+      }, UserPermission]
     }, _options);
 
     return User.findOne(options).then(user => {

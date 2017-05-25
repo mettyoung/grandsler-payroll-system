@@ -20,6 +20,7 @@ class ModelProvider {
     this.models = require('../../models/persistence/index');
     this.sequelize = this.models.sequelize;
     this.Sequelize = this.models.Sequelize;
+    this.auth = require('../../models/domain/authentication');
   }
 }
 
