@@ -1,4 +1,5 @@
 'use strict';
+const moment = require('moment');
 module.exports = function(sequelize, DataTypes) {
   var Employment = sequelize.define('Employment', {
     employee_id: DataTypes.INTEGER,
@@ -29,6 +30,14 @@ module.exports = function(sequelize, DataTypes) {
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });
+      }
+    },
+    instanceMethods: {
+      getDateHired() {
+        return moment(this.date_hired).format('MMMM Do YYYY');
+      },
+      getDateReleased() {
+        return moment(this.date_released).format('MMMM Do YYYY');
       }
     },
     tableName: "employments"

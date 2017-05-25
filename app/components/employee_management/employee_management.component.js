@@ -238,5 +238,22 @@ angular.module('employee-management')
             bindToController: true
           });
         };
+
+        /**
+         * Opens employment history.
+         */
+        this.commands.openEmploymentHistories = employee =>
+        {
+          $mdDialog.show({
+            template: '<md-dialog flex="60">' +
+            '<employment-history selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></employment-history>' +
+            '</md-dialog>',
+            multiple: true,
+            locals: {selected_employee: employee},
+            controller: angular.noop,
+            controllerAs: '$ctrl',
+            bindToController: true
+          });
+        };
       }]
   });

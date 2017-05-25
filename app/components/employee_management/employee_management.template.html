@@ -60,6 +60,7 @@
                 <th md-column md-order-by="employee_type">Employee Type</th>
                 <th md-column md-order-by="Position.name">Position</th>
                 <th md-column md-order-by="TimeShift.name">Time-shift</th>
+                <th md-column>Employment</th>
                 <th md-column>Memos</th>
             </tr>
             </thead>
@@ -70,6 +71,11 @@
                 <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.employee_type}}</td>
                 <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.Position.name}}</td>
                 <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.TimeShift.name}}</td>
+                <td md-cell>
+                    <md-button class="md-icon-button" ng-click="$ctrl.commands.openEmploymentHistories(employee)">
+                        <md-icon md-svg-icon="action:ic_assignment_24px"></md-icon>
+                    </md-button>
+                </td>
                 <td md-cell>
                     <md-button class="md-icon-button" ng-click="$ctrl.commands.openMemos(employee)">
                         <md-icon md-svg-icon="communication:ic_comment_24px"></md-icon>
