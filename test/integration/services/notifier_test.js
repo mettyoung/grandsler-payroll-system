@@ -4,7 +4,7 @@
 const {ngModule, inject} = require('../../helpers/angular_test_setup');
 require('../../helpers/chai_with_promised');
 const transactionScope = require('../../helpers/transaction_scope');
-const {User, UserLog, Employee} = require('../../../app/models/persistence/index');
+const {User, UserLog, Employee, UserPermission} = require('../../../app/models/persistence/index');
 const moment = require('moment');
 const auth = require('../../../app/models/domain/authentication');
 
@@ -96,7 +96,7 @@ describe('Notifier Angular Service', function ()
         where: ORIGINAL_MESSAGE,
         include: [{
           model: User,
-          include: [Employee]
+          include: [Employee, UserPermission]
         }],
         transaction: transaction
       }).then(newUserLog => expect(newUserLog.get({plain: true})).to.deep.equal(userLog));
