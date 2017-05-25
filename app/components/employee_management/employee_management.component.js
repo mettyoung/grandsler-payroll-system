@@ -87,6 +87,19 @@ angular.module('employee-management')
               });
             }
 
+            if (this.query.has_user_access !== 0)
+            {
+              const hasNoUserAccess = {
+                user_id: null
+              };
+
+              const where = this.query.has_user_access ? {
+                $not: hasNoUserAccess
+              } : hasNoUserAccess;
+
+              Object.assign(selectionOptions.where, where);
+            }
+
             if (this.query.name && this.query.name.length > 0)
               Object.assign(selectionOptions.where, {
                 $or: {
@@ -146,7 +159,8 @@ angular.module('employee-management')
             return Notifier.perform(() =>
               selectedItem.save({
                 transaction: transaction
-              }).catch(error => {
+              }).catch(error =>
+              {
                 if (error.name === 'SequelizeUniqueConstraintError')
                   return Promise.reject({
                     name: 'Unique Key Error',
@@ -169,7 +183,8 @@ angular.module('employee-management')
             {
               return this.selected_item.destroy({
                 transaction: transaction
-              }).catch(error => {
+              }).catch(error =>
+              {
                 if (error.name === 'SequelizeForeignKeyConstraintError')
                   return Promise.reject({
                     name: 'Reference Error',
@@ -188,7 +203,8 @@ angular.module('employee-management')
         /**
          * Bootstraps this controller with CrudHandler that handles the basic CRUD controller routines.
          */
-        CrudHandler.bootstrap(this, $scope).then(() => {
+        CrudHandler.bootstrap(this, $scope).then(() =>
+        {
           /**
            * If environment is production or dev, then auto-load.
            */
@@ -211,8 +227,7 @@ angular.module('employee-management')
         this.commands.openPositionRegistry = () =>
         {
           $mdDialog.show({
-            template:
-            '<md-dialog flex="40">' +
+            template: '<md-dialog flex="40">' +
             '<position-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column" style="height: 400px;"></position-registry>' +
             '</md-dialog>',
             multiple: true,
@@ -229,8 +244,7 @@ angular.module('employee-management')
         this.commands.openMemos = employee =>
         {
           $mdDialog.show({
-            template:
-            '<md-dialog flex="60">' +
+            template: '<md-dialog flex="60">' +
             '<employee-memos selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></employee-memos>' +
             '</md-dialog>',
             locals: {selected_employee: employee},

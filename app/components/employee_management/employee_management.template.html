@@ -47,6 +47,15 @@
                     </md-option>
                 </md-select>
             </md-input-container>
+            <md-input-container>
+                <label>Has User Access</label>
+                <md-select ng-model="$ctrl.query.has_user_access">
+                    <md-option ng-value="0" selected>All</md-option>
+                    <md-option ng-value="true">Yes</md-option>
+                    <md-option ng-value="false">No</md-option>
+                    </md-option>
+                </md-select>
+            </md-input-container>
         </div>
     </md-toolbar>
 
