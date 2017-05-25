@@ -126,6 +126,11 @@ class CrudHandler {
     controller.is_delete_disabled = true;
 
     /**
+     * Set auth service.
+     * @type {null|*}
+     */
+    controller.auth = this._ModelProvider.auth;
+    /**
      * Set the limit options of the pagination.
      * @type {{limitOptions: number[]}}
      */
