@@ -1,7 +1,8 @@
 angular.module('user-account')
   .component('userAccount', {
     bindings: {
-      'selectedEmployee': '<'
+      selectedEmployee: '<',
+      onDialogClosed: '&'
     },
     templateUrl: './components/user_account/user_account.template.html',
     controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', 'CrudHandler',
@@ -195,7 +196,7 @@ angular.module('user-account')
            */
           this.commands.close = () =>
           {
-            return $mdDialog.hide();
+            return $mdDialog.hide().then(() => this.onDialogClosed());
           };
         }
         ;

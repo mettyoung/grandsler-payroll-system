@@ -263,9 +263,12 @@ angular.module('employee-management')
         {
           $mdDialog.show({
             template: '<md-dialog flex="60">' +
-            '<user-account selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></user-account>' +
+            '<user-account on-dialog-closed="$ctrl.parent.commands.load()" selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></user-account>' +
             '</md-dialog>',
-            locals: {selected_employee: employee},
+            locals: {
+              parent: this,
+              selected_employee: employee
+            },
             controller: angular.noop,
             controllerAs: '$ctrl',
             bindToController: true
