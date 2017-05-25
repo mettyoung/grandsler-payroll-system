@@ -1,0 +1,75 @@
+<link rel="stylesheet" href="./components/user_account/user_account.template.css">
+<!-- Accepts enter key -->
+<form name="$ctrl.Form" layout="column" flex ng-cloak>
+    <!-- Column: Action bar, load error message and main content -->
+    <md-dialog-content layout="column" flex>
+        <!-- Row: Title, create button, save button, delete button and close button. -->
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h3 flex><strong>User Management: </strong>{{$ctrl.selectedEmployee.getFullName()}}</h3>
+                <md-button id='save-button' class="md-icon-button" type='submit'
+                           ng-hide="$ctrl.load_error"
+                           ng-disabled="!$ctrl.Form.$valid"
+                           ng-click="$ctrl.commands.saveSelectedMasterItem()">
+                    <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
+                </md-button>
+                <md-button id="delete-button" class="md-icon-button"
+                           ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this user record?')"
+                           ng-hide="$ctrl.load_error || $ctrl.is_delete_disabled">
+                    <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
+                </md-button>
+                <md-button id='close-button' ng-click="$ctrl.commands.close()" class="md-icon-button">
+                    <md-icon md-svg-icon="content:ic_clear_24px"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <!-- Load error message; hides the content and only show close button if loading error occurs. -->
+        <div id="load-error-message" class="alert alert-danger" ng-hide="!$ctrl.load_error">
+            <strong>{{$ctrl.load_error.name}}:</strong> {{$ctrl.load_error.message}}
+        </div>
+        <!-- Row: Master list and detail content. -->
+        <div id="main-content" layout="row" flex ng-hide="$ctrl.load_error">
+            <!-- Column: write error and content.. -->
+            <div id="detail-container" flex layout="column">
+                <!-- This error occurs on saving -->
+                <div id="save-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
+                    <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
+                </div>
+                <md-content layout="column" flex>
+                    <md-input-container flex>
+                        <md-checkbox ng-model="$ctrl.selectedEmployee.User.is_enabled">Enabled</md-checkbox>
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label>Username</label>
+                        <input required ng-model="$ctrl.selectedEmployee.User.username"
+                               md-placeholder="username" md-open-on-focus></input>
+                        <div ng-messages="$ctrl.Form.username.$error" ng-show="$ctrl.Form.username.$touched">
+                            <div ng-message="required">This is required.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label>Password</label>
+                        <input required ng-model="$ctrl.selectedEmployee.User.password"
+                               md-placeholder="password" md-open-on-focus></input>
+                        <div ng-messages="$ctrl.Form.password.$error" ng-show="$ctrl.Form.password.$touched">
+                            <div ng-message="required">This is required.</div>
+                        </div>
+                    </md-input-container>
+                </md-content>
+            </div>
+
+            <!-- Master List -->
+            <div id="master-container" layout="column" flex="50" md-whiteframe="4">
+                <md-content flex>
+                    <md-list flex>
+                        <md-list-item ng-repeat="module in $ctrl.modules">
+                            <md-checkbox ng-model="module.is_checked"></md-checkbox>
+                            {{module.name}}
+                            <md-divider ng-if="!$last"></md-divider>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+            </div>
+        </div>
+    </md-dialog-content>
+</form>

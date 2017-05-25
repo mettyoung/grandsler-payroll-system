@@ -152,6 +152,7 @@ angular.module('employee-management')
                     name: 'Unique Key Error',
                     message: 'Employee number is in used.'
                   });
+                return Promise.reject(error);
               }).then(() =>
               {
                 this.commands.close();
@@ -174,6 +175,7 @@ angular.module('employee-management')
                     name: 'Reference Error',
                     message: 'Employee is in used.'
                   });
+                return Promise.reject(error);
               }).then(() =>
               {
                 this.commands.close();
@@ -231,7 +233,6 @@ angular.module('employee-management')
             '<md-dialog flex="60">' +
             '<employee-memos selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></employee-memos>' +
             '</md-dialog>',
-            multiple: true,
             locals: {selected_employee: employee},
             controller: angular.noop,
             controllerAs: '$ctrl',
@@ -248,7 +249,22 @@ angular.module('employee-management')
             template: '<md-dialog flex="60">' +
             '<employment-history selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></employment-history>' +
             '</md-dialog>',
-            multiple: true,
+            locals: {selected_employee: employee},
+            controller: angular.noop,
+            controllerAs: '$ctrl',
+            bindToController: true
+          });
+        };
+
+        /**
+         * Opens employment history.
+         */
+        this.commands.openUserAccount = employee =>
+        {
+          $mdDialog.show({
+            template: '<md-dialog flex="60">' +
+            '<user-account selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></user-account>' +
+            '</md-dialog>',
             locals: {selected_employee: employee},
             controller: angular.noop,
             controllerAs: '$ctrl',

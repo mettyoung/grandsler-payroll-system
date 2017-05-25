@@ -120,7 +120,9 @@ class CrudHandler {
   _setViewModels(controller)
   {
     const options = controller._options;
-    controller[options.selectedMasterItemProperty] = null;
+    controller[options.selectedMasterItemProperty] = {
+      [options.detailProperty]: []
+    };
     controller.is_delete_disabled = true;
 
     /**

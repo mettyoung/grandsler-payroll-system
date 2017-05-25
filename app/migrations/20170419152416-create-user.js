@@ -21,7 +21,7 @@ module.exports = {
       is_enabled: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
-        defaultValue: true
+        defaultValue: false
       },
       updated_by: {
         allowNull: false,

@@ -1,0 +1,8 @@
+#detail-container md-content {
+  padding: 16px;
+  background-color: transparent;
+}
+
+#detail-container md-input-container {
+  margin: 16px 0px;
+}

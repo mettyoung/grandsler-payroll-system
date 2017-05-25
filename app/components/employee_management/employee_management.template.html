@@ -62,6 +62,7 @@
                 <th md-column md-order-by="TimeShift.name">Time-shift</th>
                 <th md-column>Employment</th>
                 <th md-column>Memos</th>
+                <th md-column>User Access</th>
             </tr>
             </thead>
             <tbody md-body>
@@ -79,6 +80,14 @@
                 <td md-cell>
                     <md-button class="md-icon-button" ng-click="$ctrl.commands.openMemos(employee)">
                         <md-icon md-svg-icon="communication:ic_comment_24px"></md-icon>
+                    </md-button>
+                </td>
+                <td md-cell>
+                    <md-button class="md-icon-button" ng-show="employee.User" ng-click="$ctrl.commands.openUserAccount(employee)">
+                        <md-icon md-svg-icon="social:ic_person_24px"></md-icon>
+                    </md-button>
+                    <md-button class="md-icon-button" ng-hide="employee.User" ng-click="$ctrl.commands.openUserAccount(employee)">
+                        <md-icon md-svg-icon="social:ic_person_add_24px"></md-icon>
                     </md-button>
                 </td>
             </tr>
