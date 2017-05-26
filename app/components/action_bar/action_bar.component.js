@@ -22,12 +22,5 @@ angular.module('action-bar')
           template: '<md-dialog aria-label="Salary criteria registry dialog." flex="40"><salary-criteria-registry></salary-criteria-registry></md-dialog>'
         });
       };
-
-      this.openTimeShiftRegistryDialog = function ()
-      {
-        $mdDialog.show({
-          template: '<md-dialog aria-label="Time-shift registry dialog." flex="80"><time-shift-registry></time-shift-registry></md-dialog>'
-        });
-      };
     }]
   });
