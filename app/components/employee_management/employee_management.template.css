@@ -28,6 +28,6 @@
   margin-right: 0px;
 }
 
-#detail-container #employment {
+#detail-container #employment, #detail-container #employee-type {
   margin-top: 32px;
 }

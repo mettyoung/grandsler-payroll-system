@@ -62,6 +62,9 @@ module.exports = {
       contact_number: {
         type: Sequelize.STRING
       },
+      day_rate: {
+        type: Sequelize.DECIMAL
+      },
       created_by: {
         allowNull: false,
         type: Sequelize.INTEGER,

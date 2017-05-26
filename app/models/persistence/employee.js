@@ -13,6 +13,7 @@ module.exports = function(sequelize, DataTypes) {
     birthday: DataTypes.DATEONLY,
     address: DataTypes.TEXT,
     contact_number: DataTypes.STRING,
+    day_rate: DataTypes.DECIMAL,
     created_by: DataTypes.INTEGER,
     updated_by: DataTypes.INTEGER
   }, {

@@ -238,6 +238,20 @@
                                         <md-icon md-svg-icon="image:ic_edit_24px"></md-icon>
                                     </md-button>
                                     <md-input-container flex>
+                                        <label>Time-shift</label>
+                                        <md-select required name="time_shift" ng-model="$ctrl.selected_item.time_shift_id">
+                                            <md-option ng-value="timeShift.id"
+                                                       ng-repeat="timeShift in $ctrl.data.time_shifts">
+                                                {{timeShift.name}}
+                                            </md-option>
+                                        </md-select>
+                                        <div ng-messages="$ctrl.Form.time_shift.$error" ng-show="$ctrl.Form.time_shift.$touched">
+                                            <div ng-message="required">This is required.</div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div id="employee-type" layout="row">
+                                    <md-input-container flex>
                                         <label>Employee Type</label>
                                         <md-select required name="employee_type" ng-model="$ctrl.selected_item.employee_type">
                                             <md-option ng-value="'Time-based'">Time-based</md-option>
@@ -247,15 +261,10 @@
                                             <div ng-message="required">This is required.</div>
                                         </div>
                                     </md-input-container>
-                                    <md-input-container flex>
-                                        <label>Time-shift</label>
-                                        <md-select required name="time_shift" ng-model="$ctrl.selected_item.time_shift_id">
-                                            <md-option ng-value="timeShift.id"
-                                                       ng-repeat="timeShift in $ctrl.data.time_shifts">
-                                                {{timeShift.name}}
-                                            </md-option>
-                                        </md-select>
-                                        <div ng-messages="$ctrl.Form.time_shift.$error" ng-show="$ctrl.Form.time_shift.$touched">
+                                    <md-input-container flex ng-if="$ctrl.selected_item.employee_type == 'Time-based'">
+                                        <label>Day rate</label>
+                                        <input required name="day_rate" type="number" ng-model="$ctrl.selected_item.day_rate">
+                                        <div ng-messages="$ctrl.Form.day_rate.$error" ng-show="$ctrl.Form.day_rate.$touched">
                                             <div ng-message="required">This is required.</div>
                                         </div>
                                     </md-input-container>
