@@ -22,8 +22,8 @@ angular.module('authentication')
 
       if (process.env.NODE_ENV === 'development')
       {
-        require('../../models/domain/authentication').attempt("admin", "admin");
-        $state.go('main_app');
+        require('../../models/domain/authentication').attempt("admin", "admin")
+          .then(() => $state.go('main_app'));
       }
     }]
   });

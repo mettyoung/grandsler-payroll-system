@@ -3,7 +3,8 @@ angular.module('main-app')
     templateUrl: './components/main_app/main_app.template.html',
     controller: ['$mdSidenav', function($mdSidenav)
     {
-      this.title = 'Hello Foo Bar';
+      this.title = 'Grandsler Payroll System';
+
       this.openNavigationBar = () =>
       {
         $mdSidenav('left').open();

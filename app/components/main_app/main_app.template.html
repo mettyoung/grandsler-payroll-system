@@ -13,12 +13,18 @@
 
         <!-- Main Content -->
         <md-content flex layout-padding layout="column">
-            <ui-view></ui-view>
+            <ui-view layout="column" flex>
+                <div layout="column" flex layout-align="center center">
+                    <h3>To modify payroll settings, click the settings button at the top-right corner.</h3>
+                    <h3>To access different modules, click the menu button at the top-left corner.</h3>
+                </div>
+            </ui-view>
         </md-content>
     </div>
 
     <!-- Activity Logs -->
-    <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right" md-is-locked-open="$mdMedia('gt-sm')">
+    <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right"
+                md-is-locked-open="$mdMedia('gt-sm')">
         <activity-logs flex></activity-logs>
     </md-sidenav>
 </div>
