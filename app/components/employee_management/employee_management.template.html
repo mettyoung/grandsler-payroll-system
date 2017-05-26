@@ -159,7 +159,10 @@
                             <md-content ng-hide="$ctrl.detail_load_error" layout="column" flex>
                                 <!-- Personal Information -->
                                 <div layout="row">
-                                    <img ng-src="./assets/employee_placeholder.jpg">
+                                    <div layout="column" class="img">
+                                        <img data-ng-src="data:image/png;base64,{{$ctrl.commands.getImage()}}">
+                                        <input layout-padding type="file" accept="image/*" on-file-change="$ctrl.commands.onImageChanged">
+                                    </div>
                                     <div layout="column" layout-align="center" flex>
                                         <div layout="row">
                                             <md-input-container flex>

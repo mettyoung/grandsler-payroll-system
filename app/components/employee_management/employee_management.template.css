@@ -6,6 +6,9 @@
 #detail-container img {
   width: 200px;
   height: 200px;
+}
+
+#detail-container .img {
   margin: 24px;
 }
 

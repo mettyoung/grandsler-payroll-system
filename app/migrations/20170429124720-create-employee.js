@@ -36,7 +36,7 @@ module.exports = {
         type: Sequelize.ENUM('Time-based', 'Output-based')
       },
       picture: {
-        type: Sequelize.BLOB
+        type: Sequelize.BLOB('long')
       },
       last_name: {
         allowNull: false,

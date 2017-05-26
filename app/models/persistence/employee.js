@@ -5,7 +5,7 @@ module.exports = function(sequelize, DataTypes) {
     time_shift_id: DataTypes.INTEGER,
     user_id: DataTypes.INTEGER,
     employee_type: DataTypes.ENUM('Time-based', 'Output-based'),
-    picture: DataTypes.BLOB,
+    picture: DataTypes.BLOB('long'),
     last_name: DataTypes.STRING,
     middle_name: DataTypes.STRING,
     first_name: DataTypes.STRING,

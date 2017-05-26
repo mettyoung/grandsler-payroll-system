@@ -16,6 +16,8 @@ require('../../components/employment_history/employment_history.module');
 require('../../components/employment_history/employment_history.component');
 require('../../components/user_account/user_account.module');
 require('../../components/user_account/user_account.component');
+require('../../directives/ng_input_file/ng_input_file.module');
+require('../../directives/ng_input_file/ng_input_file.directive');
 angular.module('employee-management', ['front-end-validations', 'notifier', 'crud-handler', 
   'model-provider', 'md.data.table', 'position-registry', 'time-shift-registry',
-  'employee-memos', 'employment-history', 'user-account']);
+  'employee-memos', 'employment-history', 'user-account', 'ng-input-file']);

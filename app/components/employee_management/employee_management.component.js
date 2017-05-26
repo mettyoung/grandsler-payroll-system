@@ -1,3 +1,6 @@
+const fs = require('fs');
+const base64 = require('base64-js');
+
 angular.module('employee-management')
   .component('employeeManagement', {
     templateUrl: './components/employee_management/employee_management.template.html',
@@ -308,6 +311,22 @@ angular.module('employee-management')
             controllerAs: '$ctrl',
             bindToController: true
           });
+        };
+
+        /**
+         * On image changed.
+         * @param imageSrc
+         */
+        this.commands.onImageChanged = files => {
+          this.selected_item.picture = base64.fromByteArray(fs.readFileSync(files[0].path));
+        };
+
+        /**
+         * Gets the loaded image.
+         * @returns {*|employees.picture|{type}}
+         */
+        this.commands.getImage = () => {
+          return this.selected_item.picture || base64.fromByteArray(fs.readFileSync('./app/assets/employee_placeholder.jpg'));
         };
       }]
   });
