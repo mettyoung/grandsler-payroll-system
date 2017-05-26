@@ -234,7 +234,7 @@
                                             <div ng-message="required">This is required.</div>
                                         </div>
                                     </md-input-container>
-                                    <md-button class="md-icon-button" ng-click="$ctrl.commands.openPositionRegistry()">
+                                    <md-button ng-show="$ctrl.auth.user.hasPermission('Position Registry')" class="md-icon-button" ng-click="$ctrl.commands.openPositionRegistry()">
                                         <md-icon md-svg-icon="image:ic_edit_24px"></md-icon>
                                     </md-button>
                                     <md-input-container flex>
