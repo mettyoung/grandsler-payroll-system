@@ -35,7 +35,7 @@
         <div id="main-content" layout="row" flex ng-hide="$ctrl.load_error">
 
             <!-- Master List -->
-            <md-sidenav id="master-container" layout="column" flex="40" md-whiteframe="4" md-is-locked-open="true">
+            <div id="master-container" layout="column" flex="40" md-whiteframe="4">
                 <md-content flex>
                     <md-list>
                         <md-list-item ng-repeat="timeShift in $ctrl.data.selected"
@@ -45,7 +45,7 @@
                         </md-list-item>
                     </md-list>
                 </md-content>
-            </md-sidenav>
+            </div>
 
             <!-- Detail Content-->
             <div id="detail-container" flex layout="column">

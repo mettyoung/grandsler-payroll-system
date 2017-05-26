@@ -242,6 +242,24 @@ angular.module('employee-management')
         };
 
         /**
+         * Opens time-shift registry.
+         */
+        this.commands.openTimeShiftRegistry = () =>
+        {
+
+          $mdDialog.show({
+            template: '<md-dialog flex="70">' +
+            '<time-shift-registry on-dialog-closed="$ctrl.parent.commands.preload()"></time-shift-registry>' +
+            '</md-dialog>',
+            multiple: true,
+            locals: {parent: this},
+            controller: angular.noop,
+            controllerAs: '$ctrl',
+            bindToController: true
+          });
+        };
+
+        /**
          * Opens memos.
          */
         this.commands.openMemos = employee =>

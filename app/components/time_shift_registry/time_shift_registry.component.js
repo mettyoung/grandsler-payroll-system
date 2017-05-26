@@ -1,5 +1,8 @@
 angular.module('time-shift-registry')
   .component('timeShiftRegistry', {
+    bindings: {
+      onDialogClosed: '&'
+    },
     templateUrl: './components/time_shift_registry/time_shift_registry.template.html',
     controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', 'CustomValidator', 'CrudHandler',
       function ($scope, $mdDialog, Notifier, ModelProvider, CustomValidator, CrudHandler)
@@ -158,7 +161,7 @@ angular.module('time-shift-registry')
          */
         this.close = function ()
         {
-          return $mdDialog.hide();
+          return $mdDialog.hide().then(() => this.onDialogClosed());
         };
       }]
   });
