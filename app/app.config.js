@@ -2,6 +2,12 @@ angular.module('grandsler-payroll-system')
   .config(['$stateProvider', $stateProvider =>
   {
     $stateProvider.state({
+      name: 'authentication',
+      url: '/authentication',
+      component: 'authentication'
+    });
+
+    $stateProvider.state({
       name: 'main_app',
       url: '/main_app',
       component: 'mainApp'

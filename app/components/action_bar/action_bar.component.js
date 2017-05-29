@@ -5,7 +5,7 @@ angular.module('action-bar')
       title: '<',
       onMenuPressed: '&'
     },
-    controller: ['$mdDialog', 'ModelProvider', function ($mdDialog, ModelProvider)
+    controller: ['$mdDialog', 'ModelProvider', '$state', function ($mdDialog, ModelProvider, $state)
     {
       this.auth = ModelProvider.auth;
 
@@ -19,8 +19,14 @@ angular.module('action-bar')
       this.openSalaryCriteriaDialog = function ()
       {
         $mdDialog.show({
-          template: '<md-dialog aria-label="Salary criteria registry dialog." flex="40"><salary-criteria-registry></salary-criteria-registry></md-dialog>'
+          template: '<md-dialog aria-label="Salary criteria registry dialog." flex="60"><salary-criteria-registry></salary-criteria-registry></md-dialog>'
         });
+      };
+      
+      this.logOut = function() 
+      {
+        ModelProvider.auth.logOut();
+        $state.go('authentication');
       };
     }]
   });
