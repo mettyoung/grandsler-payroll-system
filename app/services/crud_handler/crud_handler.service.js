@@ -201,11 +201,11 @@ class CrudHandler {
         if (masterItem)
           promise = promise.then(() =>
             masterItem.reload({transaction: transaction})
-              .then(() =>
+              .then(item =>
               {
                 controller.is_delete_disabled = false;
                 controller.detail_load_error = controller.write_error = null;
-                controller[options.selectedMasterItemProperty] = masterItem;
+                controller[options.selectedMasterItemProperty] = item;
               })
               .catch(error => {
                 controller.detail_load_error = error;
@@ -289,10 +289,7 @@ class CrudHandler {
               controller.data.selected = result.data;
               controller.data.total_count = result.total_count;
               if (result.data.length > 0)
-              {
-                controller[options.selectedMasterItemProperty] = result.data[0];
-                controller.is_delete_disabled = false;
-              }
+                return controller.commands.selectMasterItem(result.data[0], transaction);
             })
             .catch(error => controller.load_error = error)
             .then(() => controller._$scope.$apply());
