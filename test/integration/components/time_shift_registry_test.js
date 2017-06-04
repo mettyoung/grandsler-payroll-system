@@ -64,6 +64,7 @@ describe('Time Shift Registry Component', function ()
         isHideCalled: false,
         hide() {
           this.isHideCalled = true;
+          return Promise.resolve();
         }
       };
 
@@ -72,6 +73,9 @@ describe('Time Shift Registry Component', function ()
         $scope: $services.$scope,
         $mdDialog: $services.$mdDialog
       });
+
+      // Mock binding method
+      $services.$controller.onDialogClosed = () => (0);
 
       // Import dom
       $services.$dom = $('<md-dialog>').append($(fs.readFileSync(MAIN_TEMPLATE).toString()));
@@ -198,7 +202,7 @@ describe('Time Shift Registry Component', function ()
     {
       return $services.$controller.commands.load(transaction).then(() =>
       {
-        const $header = $services.$dom.find('#detail-container .panel-heading');
+        const $header = $services.$dom.find('#detail-container .header');
         const $details = $services.$dom.find('#detail-container md-list-item');
 
         expect($header.find('#name').val()).to.equal('Regular Shift');
@@ -231,7 +235,7 @@ describe('Time Shift Registry Component', function ()
         return $services.$controller.commands.selectMasterItem($services.$controller.data.selected[1], transaction)
           .then(() =>
           {
-            const $header = $services.$dom.find('#detail-container .panel-heading');
+            const $header = $services.$dom.find('#detail-container .header');
             const $details = $services.$dom.find('#detail-container md-list-item');
 
             expect($header.find('#name').val()).to.equal('Night Shift');
@@ -579,7 +583,7 @@ describe('Time Shift Registry Component', function ()
         $services.$dom.find('#create-button').click();
 
         expect($services.$dom.find('#detail-container').hasClass('ng-hide')).to.be.false;
-        const $header = $services.$dom.find('#detail-container .panel-heading');
+        const $header = $services.$dom.find('#detail-container .header');
         const $details = $services.$dom.find('#detail-container md-list-item');
 
         expect($header.find('#name').val()).to.equal('');
@@ -598,7 +602,7 @@ describe('Time Shift Registry Component', function ()
         $services.$dom.find('#create-button').click();
         $services.$dom.find('#create-new-time-frame').click();
 
-        const $header = $services.$dom.find('#detail-container .panel-heading');
+        const $header = $services.$dom.find('#detail-container .header');
         const $details = $services.$dom.find('#detail-container md-list-item');
 
         expect($header.find('#name').val()).to.equal('');
