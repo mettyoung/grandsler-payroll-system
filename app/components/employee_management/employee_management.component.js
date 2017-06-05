@@ -234,7 +234,7 @@ angular.module('employee-management')
         {
           $mdDialog.show({
             template: '<md-dialog flex="40">' +
-            '<position-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column" style="height: 400px;"></position-registry>' +
+            '<position-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></position-registry>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},

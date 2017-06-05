@@ -5,7 +5,7 @@
         <!-- Row: Title, create button, save button, delete button and close button. -->
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h3 flex>Position Registry</h3>
+                <h3 flex>Color Registry</h3>
                 <md-button id="create-button" class="md-icon-button"
                            ng-hide="$ctrl.load_error"
                            ng-click="$ctrl.commands.createMasterItem()">
@@ -18,7 +18,7 @@
                     <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
                 </md-button>
                 <md-button id="delete-button" class="md-icon-button"
-                           ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this position?')"
+                           ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this color?')"
                            ng-hide="$ctrl.load_error || $ctrl.is_delete_disabled">
                     <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
                 </md-button>
@@ -37,9 +37,9 @@
             <div id="master-container" layout="column" flex="40" md-whiteframe="4">
                 <md-content flex>
                     <md-list flex>
-                        <md-list-item ng-repeat="position in $ctrl.data.selected"
-                                      ng-click="$ctrl.commands.selectMasterItem(position)">
-                            <h4 class="name">{{ position.name }}</h4>
+                        <md-list-item ng-repeat="color in $ctrl.data.selected"
+                                      ng-click="$ctrl.commands.selectMasterItem(color)">
+                            <h4 class="name">{{ color.name }}</h4>
                             <md-divider ng-if="!$last"></md-divider>
                         </md-list-item>
                     </md-list>
@@ -59,7 +59,7 @@
                 <!-- Hides this if detail_load_error occurred. -->
                 <md-content ng-hide="$ctrl.detail_load_error" layout="column" flex>
                     <md-input-container flex>
-                        <label>Position Name</label>
+                        <label>Color Name</label>
                         <input required name="name" ng-model="$ctrl.selected_item.name" md-auto-focus="true">
                         <div ng-messages="$ctrl.Form.name.$error" ng-show="$ctrl.Form.name.$touched">
                             <div ng-message="required">This is required.</div>
