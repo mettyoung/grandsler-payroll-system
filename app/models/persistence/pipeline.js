@@ -8,6 +8,14 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
 
+        Pipeline.belongsToMany(models.Operation, {
+          through: models.PipelineOperation,
+          foreignKey: "pipeline_id",
+          otherKey: 'operation_id',
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
+
         Pipeline.hasMany(models.Operation, {
           foreignKey: "pipeline_id",
           onDelete: 'RESTRICT',

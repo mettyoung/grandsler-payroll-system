@@ -1,7 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var Operation = sequelize.define('Operation', {
-    pipeline_id: DataTypes.INTEGER,
     name: DataTypes.STRING,
     created_by: DataTypes.INTEGER,
     updated_by: DataTypes.INTEGER
@@ -9,8 +8,10 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
 
-        Operation.belongsTo(models.Pipeline, {
-          foreignKey: "pipeline_id",
+        Operation.belongsToMany(models.Pipeline, {
+          through: models.PipelineOperation,
+          foreignKey: 'operation_id',
+          otherKey: "pipeline_id",
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });

@@ -8,14 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      pipeline_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'pipelines',
-          key: 'id'
-        }
-      },
       name: {
         allowNull: false,
         type: Sequelize.STRING,
