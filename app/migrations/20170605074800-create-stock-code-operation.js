@@ -8,7 +8,8 @@ module.exports = {
         references: {
           model: 'stock_codes',
           key: 'id'
-        }
+        },
+        primaryKey: 'composite'
       },
       operation_id: {
         allowNull: false,
@@ -16,7 +17,8 @@ module.exports = {
         references: {
           model: 'operations',
           key: 'id'
-        }
+        },
+        primaryKey: 'composite'
       },
       price: {
         allowNull: false,
