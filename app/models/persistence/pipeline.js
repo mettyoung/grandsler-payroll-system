@@ -15,12 +15,6 @@ module.exports = function(sequelize, DataTypes) {
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });
-
-        Pipeline.hasMany(models.Operation, {
-          foreignKey: "pipeline_id",
-          onDelete: 'RESTRICT',
-          onUpdate: 'RESTRICT'
-        });
       }
     },
     tableName: "pipelines"

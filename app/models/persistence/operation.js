@@ -15,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });
-
+        
         Operation.belongsToMany(models.StockCode, {
           through: models.StockCodeOperation,
           foreignKey: 'operation_id',
