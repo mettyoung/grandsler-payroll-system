@@ -10,7 +10,9 @@ module.exports = function(sequelize, DataTypes) {
         // associations can be defined here
       }
     },
-    tableName: 'stock_codes_operations'
+    tableName: 'stock_codes_operations',
+    createdAt: false,
+    updatedAt: false
   });
   return StockCodeOperation;
 };
