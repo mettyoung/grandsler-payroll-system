@@ -1,0 +1,8 @@
+#master-container, #detail-container {
+  height: 500px;
+}
+
+#detail-container md-content {
+  padding: 24px;
+  background-color: transparent;
+}
