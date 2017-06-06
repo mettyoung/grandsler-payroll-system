@@ -152,13 +152,13 @@ angular.module('pipeline-registry')
          * Hides the dialog.
          * @returns {Promise}
          */
-        this.commands.close = function ()
+        this.commands.close = () =>
         {
           return $mdDialog.hide().then(() => this.onDialogClosed());
         };
 
         /**
-         * Opens position registry.
+         * Opens operation registry.
          */
         this.commands.openOperationRegistry = () =>
         {

@@ -159,7 +159,7 @@ angular.module('time-shift-registry')
          * Hides the dialog.
          * @returns {Promise}
          */
-        this.close = function ()
+        this.close = () => 
         {
           return $mdDialog.hide().then(() => this.onDialogClosed());
         };
