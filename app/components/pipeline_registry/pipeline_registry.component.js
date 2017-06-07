@@ -72,6 +72,11 @@ angular.module('pipeline-registry')
                     name: 'Duplicate Error',
                     message: 'You cannot have duplicated operation in different stages.'
                   });
+                if (error.name === 'SequelizeForeignConstraintError')
+                  return Promise.reject({
+                    name: 'Reference Error',
+                    message: 'Pipeline is in used.'
+                  });
                 return Promise.reject(error);
               }).then(() =>
               {

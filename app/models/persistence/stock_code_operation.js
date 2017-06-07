@@ -2,6 +2,7 @@
 module.exports = function(sequelize, DataTypes) {
   var StockCodeOperation = sequelize.define('StockCodeOperation', {
     stock_code_id: DataTypes.INTEGER,
+    pipeline_id: DataTypes.INTEGER,
     operation_id: DataTypes.INTEGER,
     price: DataTypes.DECIMAL(10,2)
   }, {

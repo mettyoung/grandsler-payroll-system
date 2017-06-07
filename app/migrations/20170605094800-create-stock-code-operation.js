@@ -11,13 +11,14 @@ module.exports = {
         },
         primaryKey: 'composite'
       },
+      pipeline_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        primaryKey: 'composite'
+      },
       operation_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {
-          model: 'operations',
-          key: 'id'
-        },
         primaryKey: 'composite'
       },
       price: {

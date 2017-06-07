@@ -60,6 +60,7 @@ angular.module('stock-code-registry')
                 for (let operation of this.selectedStockCode.Operations)
                   promise = promise.then(() => ModelProvider.models.StockCodeOperation.create({
                     stock_code_id: selectedStockCode.id,
+                    pipeline_id: this.selectedStockCode.pipeline_id,
                     operation_id: operation.id,
                     price: operation.StockCodeOperation.price
                   }, {
