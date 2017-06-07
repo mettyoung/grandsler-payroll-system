@@ -102,6 +102,7 @@ angular.module('time-shift-registry')
                     name: 'Reference Error',
                     message: 'Time-shift is in used.'
                   });
+                return Promise.reject(error);
               }).then(() =>
               {
                 this.close();

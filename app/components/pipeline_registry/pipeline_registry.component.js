@@ -72,6 +72,7 @@ angular.module('pipeline-registry')
                     name: 'Duplicate Error',
                     message: 'You cannot have duplicated operation in different stages.'
                   });
+                return Promise.reject(error);
               }).then(() =>
               {
                 this.commands.close();
@@ -99,6 +100,7 @@ angular.module('pipeline-registry')
                       name: 'Reference Error',
                       message: 'Pipeline is in used.'
                     });
+                  return Promise.reject(error);
                 }).then(() =>
                 {
                   this.commands.close();

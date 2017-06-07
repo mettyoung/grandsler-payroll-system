@@ -65,6 +65,7 @@ angular.module('position-registry')
                     name: 'Reference Error',
                     message: 'Position is in used.'
                   });
+                return Promise.reject(error);
               }).then(() =>
               {
                 this.commands.close();

@@ -65,6 +65,7 @@ angular.module('operation-registry')
                     name: 'Reference Error',
                     message: 'Operation is in used.'
                   });
+                return Promise.reject(error);
               }).then(() =>
               {
                 this.commands.close();

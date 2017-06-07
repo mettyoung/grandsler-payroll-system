@@ -93,6 +93,7 @@ angular.module('stock-code-registry')
                       name: 'Reference Error',
                       message: 'Stock code is in used.'
                     });
+                  return Promise.reject(error);
                 }).then(() =>
                 {
                   this.commands.close();

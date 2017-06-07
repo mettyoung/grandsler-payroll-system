@@ -65,6 +65,7 @@ angular.module('size-registry')
                     name: 'Reference Error',
                     message: 'Size is in used.'
                   });
+                return Promise.reject(error);
               }).then(() =>
               {
                 this.commands.close();

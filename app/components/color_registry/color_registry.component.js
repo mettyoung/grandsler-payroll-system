@@ -65,6 +65,7 @@ angular.module('color-registry')
                     name: 'Reference Error',
                     message: 'Color is in used.'
                   });
+                return Promise.reject(error);
               }).then(() =>
               {
                 this.commands.close();
