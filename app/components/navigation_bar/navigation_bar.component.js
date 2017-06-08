@@ -14,6 +14,11 @@ angular.module('navigation-bar')
           name: 'Employee Management',
           icon: "social:ic_group_24px",
           state_name: 'main_app.employee_management'
+        },
+        {
+          name: 'Production Order',
+          icon: "hardware:ic_power_input_24px",
+          state_name: 'main_app.production_order'
         }
       ];
 

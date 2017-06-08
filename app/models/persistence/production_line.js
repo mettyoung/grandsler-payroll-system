@@ -1,7 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var ProductionLine = sequelize.define('ProductionLine', {
-    id: DataTypes.INTEGER,
     parent_id: DataTypes.INTEGER,
     production_id: DataTypes.INTEGER,
     stock_code_id: DataTypes.INTEGER,

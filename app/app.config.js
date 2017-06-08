@@ -18,4 +18,10 @@ angular.module('grandsler-payroll-system')
       url: '/main_app/employee_management',
       component: 'employeeManagement'
     });
+
+    $stateProvider.state({
+      name: 'main_app.production_order',
+      url: '/main_app/production_order',
+      component: 'productionOrder'
+    });
   }]);
