@@ -1,310 +1,113 @@
-<link rel="stylesheet" href="./components/employee_management/employee_management.template.css">
+<link rel="stylesheet" href="./components/production_order/production_order.template.css">
 <!-- Load error message; hides the content and saveSelectedMasterItem button if loading error occurs. -->
 <div id="load-error-message" class="alert alert-danger" ng-hide="!$ctrl.load_error">
     <strong>{{$ctrl.load_error.name}}:</strong> {{$ctrl.load_error.message}}
 </div>
 
-<md-card flex>
-    <!-- Query Parameters -->
-    <md-toolbar class="md-table-toolbar md-default" flex>
-        <div class="md-toolbar-tools" flex>
-            <form layout="row" flex>
-                <input flex type="text" ng-model="$ctrl.query.name" md-auto-focus="true"
-                       placeholder="Search Employee Name">
-                <md-button class="md-icon-button" ng-click="$ctrl.showFilter = !$ctrl.showFilter">
-                    <md-icon md-svg-icon="content:ic_filter_list_24px"></md-icon>
-                </md-button>
-                <md-button class="md-icon-button" type="submit" ng-click="$ctrl.commands.load()">
-                    <md-icon md-svg-icon="action:ic_search_24px"></md-icon>
-                </md-button>
-                <md-button class="md-icon-button" ng-click="$ctrl.commands.createMasterItem()">
-                    <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
-                </md-button>
-            </form>
-        </div>
-        <div class="query-parameters" layout="column" ng-show="$ctrl.showFilter">
-            <md-input-container>
-                <label>Employee Type</label>
-                <md-select ng-model="$ctrl.query.employee_type">
-                    <md-option ng-value="0" selected>All</md-option>
-                    <md-option ng-value="'Time-based'">Time-based</md-option>
-                    <md-option ng-value="'Output-based'">Output-based</md-option>
-                </md-select>
-            </md-input-container>
-            <md-input-container>
-                <label>Status</label>
-                <md-select ng-model="$ctrl.query.is_active">
-                    <md-option ng-value="0" selected>All</md-option>
-                    <md-option ng-value="true">Active</md-option>
-                    <md-option ng-value="false">Inactive</md-option>
-                </md-select>
-            </md-input-container>
-            <md-input-container>
-                <label>Position</label>
-                <md-select ng-model="$ctrl.query.position_id">
-                    <md-option ng-value="0" selected>All</md-option>
-                    <md-option ng-value="position.id" ng-repeat="position in $ctrl.data.positions">{{position.name}}
-                    </md-option>
-                </md-select>
-            </md-input-container>
-            <md-input-container ng-show="$ctrl.auth.user.hasPermission('User Management')">
-                <label>Has User Access</label>
-                <md-select ng-model="$ctrl.query.has_user_access">
-                    <md-option ng-value="0" selected>All</md-option>
-                    <md-option ng-value="true">Yes</md-option>
-                    <md-option ng-value="false">No</md-option>
-                    </md-option>
-                </md-select>
-            </md-input-container>
-        </div>
-    </md-toolbar>
-
-    <!-- Data Table -->
-    <md-table-container>
-        <table md-table md-row-select ng-model="$ctrl.data.selected" md-progress="$ctrl.data.progress">
-            <thead md-head md-order="$ctrl.query.order" md-on-reorder="$ctrl.commands.load">
-            <tr md-row>
-                <th md-column md-order-by="id">ID</th>
-                <th md-column md-order-by="last_name">Name</th>
-                <th md-column md-order-by="employee_type">Employee Type</th>
-                <th md-column md-order-by="Position.name">Position</th>
-                <th md-column md-order-by="TimeShift.name">Time-shift</th>
-                <th md-column>Employment</th>
-                <th md-column>Memos</th>
-                <th md-column ng-show="$ctrl.auth.user.hasPermission('User Management')">User Access</th>
-            </tr>
-            </thead>
-            <tbody md-body>
-            <tr class="table-row" md-row ng-repeat="employee in $ctrl.data.selected">
-                <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.id}}</td>
-                <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.getFullName()}}</td>
-                <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.employee_type}}</td>
-                <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.Position.name}}</td>
-                <td md-cell ng-click="$ctrl.commands.selectMasterItem(employee)">{{employee.TimeShift.name}}</td>
-                <td md-cell>
-                    <md-button class="md-icon-button" ng-click="$ctrl.commands.openEmploymentHistories(employee)">
-                        <md-icon md-svg-icon="action:ic_assignment_24px"></md-icon>
+<!-- Row: Master list and detail content. -->
+<div id="main-content" layout="row" flex ng-hide="$ctrl.load_error">
+    <!-- Master List -->
+    <div id="master-container" layout="column" flex="40" md-whiteframe="4">
+        <!-- Query Parameters -->
+        <md-toolbar class="md-table-toolbar md-default">
+            <div class="md-toolbar-tools" flex>
+                <form layout="row" flex>
+                    <input flex type="text" ng-model="$ctrl.query.name" md-auto-focus="true"
+                           placeholder="Search Employee Name">
+                    <md-button class="md-icon-button" ng-click="$ctrl.showFilter = !$ctrl.showFilter">
+                        <md-icon md-svg-icon="content:ic_filter_list_24px"></md-icon>
                     </md-button>
-                </td>
-                <td md-cell>
-                    <md-button class="md-icon-button" ng-click="$ctrl.commands.openMemos(employee)">
-                        <md-icon md-svg-icon="communication:ic_comment_24px"></md-icon>
+                    <md-button class="md-icon-button" type="submit" ng-click="$ctrl.commands.load()">
+                        <md-icon md-svg-icon="action:ic_search_24px"></md-icon>
                     </md-button>
-                </td>
-                <td md-cell ng-show="$ctrl.auth.user.hasPermission('User Management')">
-                    <md-button class="md-icon-button" ng-show="employee.User" ng-click="$ctrl.commands.openUserAccount(employee)">
-                        <md-icon md-svg-icon="social:ic_person_24px"></md-icon>
+                    <md-button class="md-icon-button" ng-click="$ctrl.commands.createMasterItem()">
+                        <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
                     </md-button>
-                    <md-button class="md-icon-button" ng-hide="employee.User" ng-click="$ctrl.commands.openUserAccount(employee)">
-                        <md-icon md-svg-icon="social:ic_person_add_24px"></md-icon>
-                    </md-button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </md-table-container>
-
-    <md-table-pagination md-limit="$ctrl.query.limit" md-limit-options="$ctrl.preset.limitOptions"
-                         md-page="$ctrl.query.page" md-total="{{$ctrl.data.total_count}}"
-                         md-on-paginate="$ctrl.commands.load" md-page-select>
-    </md-table-pagination>
-</md-card>
-
-<!-- Detail -->
-<div style="visibility: hidden">
-    <div class="md-dialog-container" id="detail-dialog">
-        <md-dialog flex="60" ng-cloak>
-            <!-- Accept enter key -->
-            <form name="$ctrl.Form">
-                <!-- 1st sibling: Contains the content of the dialog -->
-                <md-dialog-content layout="column">
-                    <!-- Title bar -->
-                    <md-toolbar>
-                        <div class="md-toolbar-tools">
-                            <h3 flex>Employee Record</h3>
-                            <!-- Action buttons -->
-                            <!-- In create mode, save button is always visible. -->
-                            <!-- In edit mode, save button may be hidden if detail_load_error occurred. -->
-                            <!-- In both modes, save button's disability depends on validation rules. -->
-                            <md-button id='save-button' class="md-icon-button"
-                                       type='submit'
-                                       ng-hide="$ctrl.detail_load_error"
-                                       ng-disabled="!$ctrl.Form.$valid"
-                                       ng-click="$ctrl.commands.saveSelectedMasterItem()">
-                                <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
-                            </md-button>
-                            <!-- In create mode, delete button is not visible. -->
-                            <!-- In edit mode, delete button may be hidden if detail_load_error occurred. -->
-                            <md-button id="delete-button" class="md-icon-button"
-                                       ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this employee record?')"
-                                       ng-hide="$ctrl.is_delete_disabled">
-                                <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
-                            </md-button>
-                            <md-button id='close-button' ng-click="$ctrl.commands.close()" class="md-icon-button">
-                                <md-icon md-svg-icon="content:ic_clear_24px"></md-icon>
-                            </md-button>
+                </form>
+            </div>
+            <div class="query-parameters" layout="column" ng-show="$ctrl.showFilter">
+                <md-input-container>
+                    <label>Employee Type</label>
+                    <md-select ng-model="$ctrl.query.employee_type">
+                        <md-option ng-value="0" selected>All</md-option>
+                        <md-option ng-value="'Time-based'">Time-based</md-option>
+                        <md-option ng-value="'Output-based'">Output-based</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <label>Status</label>
+                    <md-select ng-model="$ctrl.query.is_active">
+                        <md-option ng-value="0" selected>All</md-option>
+                        <md-option ng-value="true">Active</md-option>
+                        <md-option ng-value="false">Inactive</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <label>Position</label>
+                    <md-select ng-model="$ctrl.query.position_id">
+                        <md-option ng-value="0" selected>All</md-option>
+                        <md-option ng-value="position.id" ng-repeat="position in $ctrl.data.positions">{{position.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container ng-show="$ctrl.auth.user.hasPermission('User Management')">
+                    <label>Has User Access</label>
+                    <md-select ng-model="$ctrl.query.has_user_access">
+                        <md-option ng-value="0" selected>All</md-option>
+                        <md-option ng-value="true">Yes</md-option>
+                        <md-option ng-value="false">No</md-option>
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <md-table-pagination md-limit="$ctrl.query.limit" md-limit-options="$ctrl.preset.limitOptions"
+                                 md-page="$ctrl.query.page" md-total="{{$ctrl.data.total_count}}"
+                                 md-on-paginate="$ctrl.commands.load" md-page-select>
+            </md-table-pagination>
+        </md-toolbar>
+        <md-content flex>
+            <md-list flex>
+                <md-list-item ng-repeat="productionOrder in $ctrl.data.selected"
+                              ng-click="$ctrl.commands.selectMasterItem(productionOrder)">
+                    <div layout="row" flex>
+                        <div layout="column" flex="50" layout-align="center start">
+                            <div layout="row" flex><strong>Batch:&nbsp;</strong>12</div>
+                            <div layout="row" flex><strong>Stock Code:&nbsp;</strong>SKU 123</div>
+                            <div layout="row" flex><strong>Color:&nbsp;</strong>Orange</div>
+                            <div layout="row" flex><strong>Size:&nbsp;</strong>Small</div>
                         </div>
-                    </md-toolbar>
-                    <div id="detail-container" flex layout="column">
-                        <!-- This error occurs on saving -->
-                        <div id="detail-load-error-message" class="alert alert-danger"
-                             ng-hide="!$ctrl.detail_load_error">
-                            <strong>{{$ctrl.detail_load_error.name}}:</strong> {{$ctrl.detail_load_error.message}}
-                        </div>
-                        <!-- This error occurs on saving -->
-                        <div id="write-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
-                            <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
-                        </div>
-                        <div>
-                            <md-content ng-hide="$ctrl.detail_load_error" layout="column" flex>
-                                <!-- Personal Information -->
-                                <div layout="row">
-                                    <div layout="column" class="img">
-                                        <img data-ng-src="data:image/png;base64,{{$ctrl.commands.getImage()}}">
-                                        <input layout-padding type="file" accept="image/*" on-file-change="$ctrl.commands.onImageChanged">
-                                    </div>
-                                    <div layout="column" layout-align="center" flex>
-                                        <div layout="row">
-                                            <md-input-container flex>
-                                                <label>Employee Number</label>
-                                                <input required name="id" type="number" ng-model="$ctrl.selected_item.id">
-                                                <div ng-messages="$ctrl.Form.id.$error" ng-show="$ctrl.Form.id.$touched">
-                                                    <div ng-message="required">This is required.</div>
-                                                </div>
-                                            </md-input-container>
-                                            <md-input-container flex>
-                                                <label>Last name</label>
-                                                <input required name="last_name" ng-model="$ctrl.selected_item.last_name">
-                                                <div ng-messages="$ctrl.Form.last_name.$error" ng-show="$ctrl.Form.last_name.$touched">
-                                                    <div ng-message="required">This is required.</div>
-                                                </div>
-                                            </md-input-container>
-                                        </div>
-                                        <div layout="row">
-                                            <md-input-container flex>
-                                                <label>First name</label>
-                                                <input required name="first_name" ng-model="$ctrl.selected_item.first_name">
-                                                <div ng-messages="$ctrl.Form.first_name.$error" ng-show="$ctrl.Form.first_name.$touched">
-                                                    <div ng-message="required">This is required.</div>
-                                                </div>
-                                            </md-input-container>
-                                            <md-input-container flex>
-                                                <label>Middle name</label>
-                                                <input ng-model="$ctrl.selected_item.middle_name">
-                                            </md-input-container>
-                                        </div>
-                                        <div layout="row">
-                                            <md-input-container>
-                                                <label>Gender</label>
-                                                <md-select required name="gender" ng-model="$ctrl.selected_item.gender">
-                                                    <md-option value="Male">Male</md-option>
-                                                    <md-option value="Female">Female</md-option>
-                                                </md-select>
-                                                <div ng-messages="$ctrl.Form.gender.$error" ng-show="$ctrl.Form.gender.$touched">
-                                                    <div ng-message="required">This is required.</div>
-                                                </div>
-                                            </md-input-container>
-                                            <md-input-container flex>
-                                                <label>Birthday</label>
-                                                <md-datepicker ng-model="$ctrl.selected_item.birthday"
-                                                               md-placeholder="Birthday" md-open-on-focus></md-datepicker>
-                                            </md-input-container>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Contact Information -->
-                                <div layout="row">
-                                    <md-input-container flex="60">
-                                        <label>Address</label>
-                                        <input ng-model="$ctrl.selected_item.address">
-                                    </md-input-container>
-                                    <md-input-container flex>
-                                        <label>Contact Number</label>
-                                        <input ng-model="$ctrl.selected_item.contact_number">
-                                    </md-input-container>
-                                </div>
-                                <!-- Employee Information -->
-                                <div layout="row" id="position">
-                                    <md-input-container flex>
-                                        <label>Position</label>
-                                        <md-select required name="position" ng-model="$ctrl.selected_item.position_id">
-                                            <md-option ng-value="position.id"
-                                                       ng-repeat="position in $ctrl.data.positions">
-                                                {{position.name}}
-                                            </md-option>
-                                        </md-select>
-                                        <div ng-messages="$ctrl.Form.position.$error" ng-show="$ctrl.Form.position.$touched">
-                                            <div ng-message="required">This is required.</div>
-                                        </div>
-                                    </md-input-container>
-                                    <md-button ng-show="$ctrl.auth.user.hasPermission('Position Registry')" class="md-icon-button" ng-click="$ctrl.commands.openPositionRegistry()">
-                                        <md-icon md-svg-icon="image:ic_edit_24px"></md-icon>
-                                    </md-button>
-                                    <md-input-container flex>
-                                        <label>Time-shift</label>
-                                        <md-select required name="time_shift" ng-model="$ctrl.selected_item.time_shift_id">
-                                            <md-option ng-value="timeShift.id"
-                                                       ng-repeat="timeShift in $ctrl.data.time_shifts">
-                                                {{timeShift.name}}
-                                            </md-option>
-                                        </md-select>
-                                        <div ng-messages="$ctrl.Form.time_shift.$error" ng-show="$ctrl.Form.time_shift.$touched">
-                                            <div ng-message="required">This is required.</div>
-                                        </div>
-                                    </md-input-container>
-                                    <md-button ng-show="$ctrl.auth.user.hasPermission('Time-shift Registry')" class="md-icon-button" ng-click="$ctrl.commands.openTimeShiftRegistry()">
-                                        <md-icon md-svg-icon="image:ic_edit_24px"></md-icon>
-                                    </md-button>
-                                </div>
-                                <div id="employee-type" layout="row">
-                                    <md-input-container flex>
-                                        <label>Employee Type</label>
-                                        <md-select required name="employee_type" ng-model="$ctrl.selected_item.employee_type">
-                                            <md-option ng-value="'Time-based'">Time-based</md-option>
-                                            <md-option ng-value="'Output-based'">Output-based</md-option>
-                                        </md-select>
-                                        <div ng-messages="$ctrl.Form.employee_type.$error" ng-show="$ctrl.Form.employee_type.$touched">
-                                            <div ng-message="required">This is required.</div>
-                                        </div>
-                                    </md-input-container>
-                                    <md-input-container flex ng-if="$ctrl.selected_item.employee_type == 'Time-based'">
-                                        <label>Day rate</label>
-                                        <input required name="day_rate" type="number" ng-model="$ctrl.selected_item.day_rate">
-                                        <div ng-messages="$ctrl.Form.day_rate.$error" ng-show="$ctrl.Form.day_rate.$touched">
-                                            <div ng-message="required">This is required.</div>
-                                        </div>
-                                    </md-input-container>
-                                </div>
-                                <!-- Employment Information -->
-                                <div layout="row" ng-if="$ctrl.is_delete_disabled" id="employment"
-                                     layout-align="center center" flex>
-                                    <md-input-container flex>
-                                        <label>Date Hired</label>
-                                        <md-datepicker required name="date_hired"
-                                                       ng-model="$ctrl.selected_item.Employment.date_hired"
-                                                       md-placeholder="Date hired" md-open-on-focus></md-datepicker>
-                                        <div ng-messages="$ctrl.Form.date_hired.$error"
-                                             ng-show="$ctrl.Form.date_hired.$touched">
-                                            <div ng-message="required">This is required.</div>
-                                        </div>
-                                    </md-input-container>
-                                    <md-input-container flex>
-                                        <label>Date Terminated</label>
-                                        <md-datepicker ng-model="$ctrl.selected_item.Employment.date_released"
-                                                       md-placeholder="Date terminated" md-open-on-focus></md-datepicker>
-                                    </md-input-container>
-                                </div>
-                                <div layout="row" ng-if="$ctrl.is_delete_disabled">
-                                    <md-input-container flex>
-                                        <label>Memo</label>
-                                        <textarea name="memo" ng-model="$ctrl.selected_item.Employment.memo"></textarea>
-                                    </md-input-container>
-                                </div>
-                            </md-content>
+                        <div layout="column" flex="50" layout-align="center end">
+                            <div layout="row" flex></div>
+                            <div layout="row" flex><strong>Employee:&nbsp;</strong>101</div>
+                            <div layout="row" flex><strong>Quantity In:&nbsp;</strong>10x12,2</div>
+                            <div layout="row" flex><strong>Quantity Out:&nbsp;</strong>5x12,2</div>
                         </div>
                     </div>
-                </md-dialog-content>
-            </form>
-        </md-dialog>
+                    <md-divider ng-if="!$last"></md-divider>
+                </md-list-item>
+            </md-list>
+        </md-content>
+    </div>
+
+    <!-- Column: Detail load error, write error and content.. -->
+    <div id="detail-container" flex layout="column">
+        <!-- This error occurs on selecting an item. -->
+        <div id="detail-load-error-message" class="alert alert-danger" ng-hide="!$ctrl.detail_load_error">
+            <strong>{{$ctrl.detail_load_error.name}}:</strong> {{$ctrl.detail_load_error.message}}
+        </div>
+        <!-- This error occurs on saving -->
+        <div id="save-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
+            <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
+        </div>
+        <!-- Hides this if detail_load_error occurred. -->
+        <md-content ng-hide="$ctrl.detail_load_error" layout="column" flex>
+            <md-input-container flex>
+                <label>Color Name</label>
+                <input required name="name" ng-model="$ctrl.selected_item.name" md-auto-focus="true">
+                <div ng-messages="$ctrl.Form.name.$error" ng-show="$ctrl.Form.name.$touched">
+                    <div ng-message="required">This is required.</div>
+                </div>
+            </md-input-container>
+        </md-content>
     </div>
 </div>

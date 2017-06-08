@@ -10,7 +10,11 @@ angular.module('grandsler-payroll-system')
     $stateProvider.state({
       name: 'main_app',
       url: '/main_app',
-      component: 'mainApp'
+      component: 'mainApp',
+      resolve: {
+        layout: () => 'column',
+        flex: () => 100
+      }
     });
 
     $stateProvider.state({

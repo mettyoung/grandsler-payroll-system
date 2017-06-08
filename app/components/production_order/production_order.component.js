@@ -3,7 +3,11 @@ const base64 = require('base64-js');
 
 angular.module('production-order')
   .component('productionOrder', {
-    templateUrl: './components/employee_management/employee_management.template.html',
+    bindings: {
+      layout: '@',
+      flex: '@'
+    },
+    templateUrl: './components/production_order/production_order.template.html',
     controller: ['$scope', '$mdDialog', 'Notifier', 'CrudHandler', 'ModelProvider',
       function ($scope, $mdDialog, Notifier, CrudHandler, ModelProvider)
       {
@@ -214,8 +218,9 @@ angular.module('production-order')
           /**
            * If environment is production or dev, then auto-load.
            */
-          if (process.env.NODE_ENV !== 'test')
-            this.commands.load()
+          // if (process.env.NODE_ENV !== 'test')
+          //   this.commands.load()
+          this.data.selected = [{}, {}];
         });
 
         /**

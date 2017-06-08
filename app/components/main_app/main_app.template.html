@@ -12,14 +12,14 @@
         <action-bar title="$ctrl.title" on-menu-pressed="$ctrl.openNavigationBar()"></action-bar>
 
         <!-- Main Content -->
-        <md-content flex layout-padding layout="column">
+        <div flex layout="column">
             <ui-view layout="column" flex>
                 <div layout="column" flex layout-align="center center">
                     <h3>To modify payroll settings, click the settings button at the top-right corner.</h3>
                     <h3>To access different modules, click the menu button at the top-left corner.</h3>
                 </div>
             </ui-view>
-        </md-content>
+        </div>
     </div>
 
     <!-- Activity Logs -->
