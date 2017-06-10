@@ -32,23 +32,87 @@ angular.module('production-order')
         };
 
         /**
+         * Autocomplete queries.
+         */
+        this.autocomplete = {
+          queryStockCode: query =>
+          {
+            return ModelProvider.models.StockCode.findAll({
+              where: {
+                name: {
+                  $like: '%' + query + '%'
+                }
+              }
+            }).then(stock_codes => stock_codes.map(function (stock_code)
+            {
+              return {
+                value: stock_code.id,
+                display: stock_code.name
+              };
+            }));
+          },
+          queryColor: query =>
+          {
+            return ModelProvider.models.Color.findAll({
+              where: {
+                name: {
+                  $like: '%' + query + '%'
+                }
+              }
+            }).then(colors => colors.map(function (color)
+            {
+              return {
+                value: color.id,
+                display: color.name
+              };
+            }));
+          },
+          querySize: query =>
+          {
+            return ModelProvider.models.Size.findAll({
+              where: {
+                name: {
+                  $like: '%' + query + '%'
+                }
+              }
+            }).then(sizes => sizes.map(function (size)
+            {
+              return {
+                value: size.id,
+                display: size.name
+              };
+            }));
+          },
+          queryEmployee: query =>
+          {
+            return ModelProvider.models.Employee.findAll({
+              where: {
+                $or: {
+                  first_name: {
+                    $like: '%' + query + '%'
+                  },
+                  middle_name: {
+                    $like: '%' + query + '%'
+                  },
+                  last_name: {
+                    $like: '%' + query + '%'
+                  }
+                }
+              }
+            }).then(employees => employees.map(function (employee)
+            {
+              return {
+                value: employee.id,
+                display: employee.getFullName()
+              };
+            }));
+          }
+        };
+        
+        /**
          * Life cycles
          */
         {
-          CrudHandler.onPreload(this, transaction => Promise.all([
-            ModelProvider.models.Position.findAll({
-              transaction: transaction
-            }),
-            ModelProvider.models.TimeShift.findAll({
-                transaction: transaction
-              }
-            )])
-            .then(values =>
-            {
-              this.data.positions = values[0];
-              this.data.time_shifts = values[1];
-            }));
-
           CrudHandler.onLoad(this, pageOptions =>
           {
             const selectionOptions = {};
@@ -148,7 +212,7 @@ angular.module('production-order')
           CrudHandler.onAfterCreateMasterItem(this, () =>
           {
             $mdDialog.show({
-              contentElement: '#detail-dialog',
+              contentElement: '#create-dialog',
               parent: angular.element(document.body)
             });
           });
@@ -233,13 +297,13 @@ angular.module('production-order')
         };
 
         /**
-         * Opens position registry.
+         * Opens stock code registry.
          */
-        this.commands.openPositionRegistry = () =>
+        this.commands.openStockCodeRegistry = () =>
         {
           $mdDialog.show({
-            template: '<md-dialog flex="40">' +
-            '<position-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></position-registry>' +
+            template: '<md-dialog flex="60">' +
+            '<stock-code-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></stock-code-registry>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},
@@ -250,14 +314,13 @@ angular.module('production-order')
         };
 
         /**
-         * Opens time-shift registry.
+         * Opens color registry.
          */
-        this.commands.openTimeShiftRegistry = () =>
+        this.commands.openColorRegistry = () =>
         {
-
           $mdDialog.show({
-            template: '<md-dialog flex="70">' +
-            '<time-shift-registry on-dialog-closed="$ctrl.parent.commands.preload()"></time-shift-registry>' +
+            template: '<md-dialog flex="60">' +
+            '<color-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></color-registry>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},
@@ -268,70 +331,20 @@ angular.module('production-order')
         };
 
         /**
-         * Opens memos.
+         * Opens size registry.
          */
-        this.commands.openMemos = employee =>
+        this.commands.openSizeRegistry = () =>
         {
           $mdDialog.show({
             template: '<md-dialog flex="60">' +
-            '<employee-memos selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></employee-memos>' +
+            '<size-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></size-registry>' +
             '</md-dialog>',
-            locals: {selected_employee: employee},
+            multiple: true,
+            locals: {parent: this},
             controller: angular.noop,
             controllerAs: '$ctrl',
             bindToController: true
           });
-        };
-
-        /**
-         * Opens employment history.
-         */
-        this.commands.openEmploymentHistories = employee =>
-        {
-          $mdDialog.show({
-            template: '<md-dialog flex="60">' +
-            '<employment-history selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></employment-history>' +
-            '</md-dialog>',
-            locals: {selected_employee: employee},
-            controller: angular.noop,
-            controllerAs: '$ctrl',
-            bindToController: true
-          });
-        };
-
-        /**
-         * Opens employment history.
-         */
-        this.commands.openUserAccount = employee =>
-        {
-          $mdDialog.show({
-            template: '<md-dialog flex="60">' +
-            '<user-account on-dialog-closed="$ctrl.parent.commands.load()" selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></user-account>' +
-            '</md-dialog>',
-            locals: {
-              parent: this,
-              selected_employee: employee
-            },
-            controller: angular.noop,
-            controllerAs: '$ctrl',
-            bindToController: true
-          });
-        };
-
-        /**
-         * On image changed.
-         * @param imageSrc
-         */
-        this.commands.onImageChanged = files => {
-          this.selected_item.picture = base64.fromByteArray(fs.readFileSync(files[0].path));
-        };
-
-        /**
-         * Gets the loaded image.
-         * @returns {*|employees.picture|{type}}
-         */
-        this.commands.getImage = () => {
-          return this.selected_item.picture || base64.fromByteArray(fs.readFileSync('./app/assets/employee_placeholder.jpg'));
         };
       }]
   });

@@ -3,32 +3,8 @@
   background-color: transparent;
 }
 
-#detail-container img {
-  width: 200px;
-  height: 200px;
-}
-
-#detail-container .img {
-  margin: 24px;
-}
-
 #detail-container md-input-container {
   margin: 8px 24px;
-}
-
-#detail-container md-autocomplete md-autocomplete-wrap {
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-
-#detail-container md-autocomplete button,
-#detail-container md-autocomplete md-icon {
-  display: none;
-}
-
-#detail-container #position md-input-container {
-  margin-right: 0px;
 }
 
 #detail-container #employment, #detail-container #employee-type {
@@ -41,4 +17,23 @@
 
 .md-table-pagination>.buttons:not(:first-child), .md-table-pagination>.limit-select:not(:first-child) {
   margin-left: 0px;
+}
+
+#create-dialog md-input-container {
+  margin-bottom: 0px;
+}
+
+#create-dialog md-autocomplete {
+  background-color: transparent;
+}
+
+#create-dialog md-autocomplete md-autocomplete-wrap {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+#create-dialog md-autocomplete button,
+#create-dialog md-autocomplete md-icon {
+  display: none;
 }

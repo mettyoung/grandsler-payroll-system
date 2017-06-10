@@ -16,17 +16,6 @@
   margin: 8px 24px;
 }
 
-#detail-container md-autocomplete md-autocomplete-wrap {
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-
-#detail-container md-autocomplete button,
-#detail-container md-autocomplete md-icon {
-  display: none;
-}
-
 #detail-container #position md-input-container {
   margin-right: 0px;
 }

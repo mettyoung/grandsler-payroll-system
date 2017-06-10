@@ -110,4 +110,182 @@
             </md-input-container>
         </md-content>
     </div>
+
+    <!-- Create new batch -->
+    <div style="visibility: hidden">
+        <div class="md-dialog-container" id="create-dialog">
+            <md-dialog flex="60" ng-cloak>
+                <!-- Accept enter key -->
+                <form name="$ctrl.Form">
+                    <!-- 1st sibling: Contains the content of the dialog -->
+                    <md-dialog-content layout="column">
+                        <!-- Title bar -->
+                        <md-toolbar>
+                            <div class="md-toolbar-tools">
+                                <h3 flex>New production order</h3>
+                                <!-- Action buttons -->
+                                <md-button id='save-button' class="md-icon-button"
+                                           type='submit'
+                                           ng-disabled="!$ctrl.Form.$valid"
+                                           ng-click="$ctrl.commands.saveSelectedMasterItem()">
+                                    <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
+                                </md-button>
+                                <md-button id='close-button' ng-click="$ctrl.commands.close()" class="md-icon-button">
+                                    <md-icon md-svg-icon="content:ic_clear_24px"></md-icon>
+                                </md-button>
+                            </div>
+                        </md-toolbar>
+                        <!-- Form -->
+                        <md-content flex layout="column" layout-padding>
+                            <!-- This error occurs on saving -->
+                            <div id="write-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
+                                <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
+                            </div>
+                            <div layout="row">
+                                <md-input-container flex>
+                                    <label>Stock Code</label>
+                                    <md-autocomplete
+                                            required
+                                            md-require-match
+                                            md-input-name="stock_code"
+                                            md-min-length="0"
+                                            md-items="stock_code in $ctrl.autocomplete.queryStockCode($ctrl.search_stock_code)"
+                                            md-item-text="stock_code.display"
+                                            md-selected-item="$ctrl.selected_stock_code"
+                                            md-search-text="$ctrl.search_stock_code">
+                                        <md-item-template>
+                                            <span md-highlight-text="$ctrl.search_stock_code" md-highlight-flags="^i">{{stock_code.display}}</span>
+                                        </md-item-template>
+                                        <md-not-found>
+                                            <span>'{{$ctrl.search_stock_code}}' cannot be found.</span>
+                                        </md-not-found>
+                                    </md-autocomplete>
+                                    <div ng-messages="$ctrl.Form.stock_code.$error" ng-show="$ctrl.Form.stock_code.$touched">
+                                        <div ng-message="required">This is required.</div>
+                                        <div ng-message="md-require-match">This is required.</div>
+                                    </div>
+                                </md-input-container>
+                                <md-button layout-align="center center"
+                                           style="height: inherit;"
+                                           ng-show="$ctrl.auth.user.hasPermission('Stock Code Registry')"
+                                           class="md-icon-button" ng-click="$ctrl.commands.openStockCodeRegistry()">
+                                    <md-icon md-svg-icon="image:ic_edit_24px"></md-icon>
+                                </md-button>
+                            </div>
+                            <div layout="row">
+                                <md-input-container flex>
+                                    <label>Color</label>
+                                    <md-autocomplete
+                                            required
+                                            md-require-match
+                                            md-input-name="color"
+                                            md-min-length="0"
+                                            md-items="color in $ctrl.autocomplete.queryColor($ctrl.search_color)"
+                                            md-item-text="color.display"
+                                            md-selected-item="$ctrl.selected_color"
+                                            md-search-text="$ctrl.search_color">
+                                        <md-item-template>
+                                            <span md-highlight-text="$ctrl.search_color" md-highlight-flags="^i">{{color.display}}</span>
+                                        </md-item-template>
+                                        <md-not-found>
+                                            <span>'{{$ctrl.search_color}}' cannot be found.</span>
+                                        </md-not-found>
+                                    </md-autocomplete>
+                                    <div ng-messages="$ctrl.Form.color.$error" ng-show="$ctrl.Form.color.$touched">
+                                        <div ng-message="required">This is required.</div>
+                                        <div ng-message="md-require-match">This is required.</div>
+                                    </div>
+                                </md-input-container>
+                                <md-button layout-align="center center"
+                                           style="height: inherit;"
+                                           ng-show="$ctrl.auth.user.hasPermission('Color Registry')"
+                                           class="md-icon-button" ng-click="$ctrl.commands.openColorRegistry()">
+                                    <md-icon md-svg-icon="image:ic_edit_24px"></md-icon>
+                                </md-button>
+                            </div>
+                            <div layout="row">
+                                <md-input-container flex>
+                                    <label>Size</label>
+                                    <md-autocomplete
+                                            required
+                                            md-require-match
+                                            md-input-name="size"
+                                            md-min-length="0"
+                                            md-items="size in $ctrl.autocomplete.querySize($ctrl.search_size)"
+                                            md-item-text="size.display"
+                                            md-selected-item="$ctrl.selected_size"
+                                            md-search-text="$ctrl.search_size">
+                                        <md-item-template>
+                                            <span md-highlight-text="$ctrl.search_size" md-highlight-flags="^i">{{size.display}}</span>
+                                        </md-item-template>
+                                        <md-not-found>
+                                            <span>'{{$ctrl.search_size}}' cannot be found.</span>
+                                        </md-not-found>
+                                    </md-autocomplete>
+                                    <div ng-messages="$ctrl.Form.size.$error" ng-show="$ctrl.Form.size.$touched">
+                                        <div ng-message="required">This is required.</div>
+                                        <div ng-message="md-require-match">This is required.</div>
+                                    </div>
+                                </md-input-container>
+                                <md-button layout-align="center center"
+                                           style="height: inherit;"
+                                           ng-show="$ctrl.auth.user.hasPermission('Size Registry')"
+                                           class="md-icon-button" ng-click="$ctrl.commands.openSizeRegistry()">
+                                    <md-icon md-svg-icon="image:ic_edit_24px"></md-icon>
+                                </md-button>
+                            </div>
+                            <div layout="row">
+                                <md-input-container flex>
+                                    <label>Employee</label>
+                                    <md-autocomplete
+                                            required
+                                            md-require-match
+                                            md-input-name="employee"
+                                            md-min-length="0"
+                                            md-items="employee in $ctrl.autocomplete.queryEmployee($ctrl.search_employee)"
+                                            md-item-text="employee.display"
+                                            md-selected-item="$ctrl.selected_employee"
+                                            md-search-text="$ctrl.search_employee">
+                                        <md-item-template>
+                                            <span md-highlight-text="$ctrl.search_employee" md-highlight-flags="^i">{{employee.display}}</span>
+                                        </md-item-template>
+                                        <md-not-found>
+                                            <span>'{{$ctrl.search_employee}}' cannot be found.</span>
+                                        </md-not-found>
+                                    </md-autocomplete>
+                                    <div ng-messages="$ctrl.Form.employee.$error"
+                                         ng-show="$ctrl.Form.employee.$touched">
+                                        <div ng-message="required">This is required.</div>
+                                        <div ng-message="md-require-match">This is required.</div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div layout="row">
+                                <md-input-container flex>
+                                    <label>Dozen quantity</label>
+                                    <input required name="dozen_quantity" type="number"
+                                           ng-model="$ctrl.selected_item.dozen_quantity">
+                                    </input>
+                                    <div ng-messages="$ctrl.Form.dozen_quantity.$error"
+                                         ng-show="$ctrl.Form.dozen_quantity.$touched">
+                                        <div ng-message="required">This is required.</div>
+                                    </div>
+                                </md-input-container>
+                                <md-input-container flex>
+                                    <label>Piece quantity</label>
+                                    <input required name="piece_quantity" type="number"
+                                           ng-model="$ctrl.selected_item.piece_quantity">
+                                    </input>
+                                    <div ng-messages="$ctrl.Form.piece_quantity.$error"
+                                         ng-show="$ctrl.Form.piece_quantity.$touched">
+                                        <div ng-message="required">This is required.</div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                    </md-dialog-content>
+                </form>
+            </md-dialog>
+        </div>
+    </div>
 </div>
