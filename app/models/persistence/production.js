@@ -17,6 +17,30 @@ module.exports = function(sequelize, DataTypes) {
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });
+
+        Production.belongsTo(models.StockCode, {
+          foreignKey: "stock_code_id",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
+
+        Production.belongsTo(models.Color, {
+          foreignKey: "color_id",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
+
+        Production.belongsTo(models.Size, {
+          foreignKey: "size_id",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
+
+        Production.belongsTo(models.Employee, {
+          foreignKey: "employee_id",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
       }
     },
     tableName: 'productions'

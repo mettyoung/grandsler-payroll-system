@@ -71,16 +71,16 @@
                               ng-click="$ctrl.commands.selectMasterItem(productionOrder)">
                     <div layout="row" flex>
                         <div layout="column" flex="50" layout-align="center start">
-                            <div layout="row" flex><strong>Batch:&nbsp;</strong>12</div>
-                            <div layout="row" flex><strong>Stock Code:&nbsp;</strong>SKU 123</div>
-                            <div layout="row" flex><strong>Color:&nbsp;</strong>Orange</div>
-                            <div layout="row" flex><strong>Size:&nbsp;</strong>Small</div>
+                            <div layout="row" flex><strong>Batch:&nbsp;</strong>{{productionOrder.id}}</div>
+                            <div layout="row" flex><strong>Stock Code:&nbsp;</strong>{{productionOrder.StockCode.name}}</div>
+                            <div layout="row" flex><strong>Color:&nbsp;</strong>{{productionOrder.Color.name}}</div>
+                            <div layout="row" flex><strong>Size:&nbsp;</strong>{{productionOrder.Size.name}}</div>
                         </div>
                         <div layout="column" flex="50" layout-align="center end">
                             <div layout="row" flex></div>
-                            <div layout="row" flex><strong>Employee:&nbsp;</strong>101</div>
-                            <div layout="row" flex><strong>Quantity In:&nbsp;</strong>10x12,2</div>
-                            <div layout="row" flex><strong>Quantity Out:&nbsp;</strong>5x12,2</div>
+                            <div layout="row" flex><strong>Employee:&nbsp;</strong>{{productionOrder.Employee.getFullName()}}</div>
+                            <div layout="row" flex><strong>Quantity In:&nbsp;</strong>{{productionOrder.dozen_quantity}}x12,{{productionOrder.piece_quantity}}</div>
+                            <div layout="row" flex><strong>Quantity Out:&nbsp;</strong>(TODO: 5x12,2)</div>
                         </div>
                     </div>
                     <md-divider ng-if="!$last"></md-divider>
@@ -147,6 +147,7 @@
                                     <md-autocomplete
                                             required
                                             md-require-match
+                                            md-autofocus
                                             md-input-name="stock_code"
                                             md-min-length="0"
                                             md-items="stock_code in $ctrl.autocomplete.queryStockCode($ctrl.search_stock_code)"

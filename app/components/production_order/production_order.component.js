@@ -1,6 +1,3 @@
-const fs = require('fs');
-const base64 = require('base64-js');
-
 angular.module('production-order')
   .component('productionOrder', {
     bindings: {
@@ -119,10 +116,11 @@ angular.module('production-order')
 
             // Add associations
             Object.assign(selectionOptions, {
-              include: [ModelProvider.models.User, ModelProvider.models.TimeShift, ModelProvider.models.Position],
+              include: [ModelProvider.models.StockCode, ModelProvider.models.Color, ModelProvider.models.Size, ModelProvider.models.Employee],
               where: {}
             });
 
+            /*
             // Add filters
             if (this.query.employee_type !== 0)
               Object.assign(selectionOptions.where, {
@@ -185,11 +183,12 @@ angular.module('production-order')
                   }
                 }
               });
+            */
 
             // Execute the query.
             return Promise.all([
-              ModelProvider.models.Employee.findAll(Object.assign(pageOptions, selectionOptions)),
-              ModelProvider.models.Employee.findAll(Object.assign({
+              ModelProvider.models.Production.findAll(Object.assign(pageOptions, selectionOptions)),
+              ModelProvider.models.Production.findAll(Object.assign({
                 attributes: [[ModelProvider.models.sequelize.fn('COUNT', ModelProvider.models.sequelize.col('*')), 'total_count']],
               }, selectionOptions))])
               .then(values =>
@@ -199,14 +198,6 @@ angular.module('production-order')
                   total_count: values[1][0].get('total_count')
                 };
               });
-          });
-
-          CrudHandler.onAfterSelectMasterItem(this, () =>
-          {
-            $mdDialog.show({
-              contentElement: '#detail-dialog',
-              parent: angular.element(document.body)
-            });
           });
 
           CrudHandler.onAfterCreateMasterItem(this, () =>
@@ -276,7 +267,7 @@ angular.module('production-order')
          * If environment is production or dev, then auto-load.
          */
         if (process.env.NODE_ENV !== 'test')
-          this.commands.load()
+          this.commands.load();
 
         /**
          * Hides the dialog.
