@@ -223,24 +223,17 @@ angular.module('production-order')
             let selectedItem = this.selected_item;
             if (this.selected_item.constructor === Object)
             {
-              selectedItem.Employments = [selectedItem.Employment];
-              selectedItem = ModelProvider.models.Employee.build(selectedItem, {
-                include: [ModelProvider.models.Employment]
-              });
               action = 'created';
+              selectedItem.stock_code_id = selectedItem.stock_code.value;
+              selectedItem.color_id = selectedItem.color.value;
+              selectedItem.size_id = selectedItem.size.value;
+              selectedItem.employee_id = selectedItem.employee.value;
+              selectedItem = ModelProvider.models.Production.build(selectedItem);
             }
 
             return Notifier.perform(() =>
               selectedItem.save({
                 transaction: transaction
-              }).catch(error =>
-              {
-                if (error.name === 'SequelizeUniqueConstraintError')
-                  return Promise.reject({
-                    name: 'Unique Key Error',
-                    message: 'Employee number is in used.'
-                  });
-                return Promise.reject(error);
               }).then(() =>
               {
                 this.commands.close();
@@ -277,15 +270,13 @@ angular.module('production-order')
         /**
          * Bootstraps this controller with CrudHandler that handles the basic CRUD controller routines.
          */
-        CrudHandler.bootstrap(this, $scope).then(() =>
-        {
-          /**
-           * If environment is production or dev, then auto-load.
-           */
-          // if (process.env.NODE_ENV !== 'test')
-          //   this.commands.load()
-          this.data.selected = [{}, {}];
-        });
+        CrudHandler.bootstrap(this, $scope);
+
+        /**
+         * If environment is production or dev, then auto-load.
+         */
+        if (process.env.NODE_ENV !== 'test')
+          this.commands.load()
 
         /**
          * Hides the dialog.

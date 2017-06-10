@@ -151,7 +151,7 @@
                                             md-min-length="0"
                                             md-items="stock_code in $ctrl.autocomplete.queryStockCode($ctrl.search_stock_code)"
                                             md-item-text="stock_code.display"
-                                            md-selected-item="$ctrl.selected_stock_code"
+                                            md-selected-item="$ctrl.selected_item.stock_code"
                                             md-search-text="$ctrl.search_stock_code">
                                         <md-item-template>
                                             <span md-highlight-text="$ctrl.search_stock_code" md-highlight-flags="^i">{{stock_code.display}}</span>
@@ -182,7 +182,7 @@
                                             md-min-length="0"
                                             md-items="color in $ctrl.autocomplete.queryColor($ctrl.search_color)"
                                             md-item-text="color.display"
-                                            md-selected-item="$ctrl.selected_color"
+                                            md-selected-item="$ctrl.selected_item.color"
                                             md-search-text="$ctrl.search_color">
                                         <md-item-template>
                                             <span md-highlight-text="$ctrl.search_color" md-highlight-flags="^i">{{color.display}}</span>
@@ -213,7 +213,7 @@
                                             md-min-length="0"
                                             md-items="size in $ctrl.autocomplete.querySize($ctrl.search_size)"
                                             md-item-text="size.display"
-                                            md-selected-item="$ctrl.selected_size"
+                                            md-selected-item="$ctrl.selected_item.size"
                                             md-search-text="$ctrl.search_size">
                                         <md-item-template>
                                             <span md-highlight-text="$ctrl.search_size" md-highlight-flags="^i">{{size.display}}</span>
@@ -244,7 +244,7 @@
                                             md-min-length="0"
                                             md-items="employee in $ctrl.autocomplete.queryEmployee($ctrl.search_employee)"
                                             md-item-text="employee.display"
-                                            md-selected-item="$ctrl.selected_employee"
+                                            md-selected-item="$ctrl.selected_item.employee"
                                             md-search-text="$ctrl.search_employee">
                                         <md-item-template>
                                             <span md-highlight-text="$ctrl.search_employee" md-highlight-flags="^i">{{employee.display}}</span>
