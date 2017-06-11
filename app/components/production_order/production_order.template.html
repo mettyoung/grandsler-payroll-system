@@ -7,7 +7,7 @@
 <!-- Row: Master list and detail content. -->
 <div id="main-content" layout="row" flex ng-hide="$ctrl.load_error">
     <!-- Master List -->
-    <div id="master-container" layout="column" flex="40" md-whiteframe="4">
+    <div id="master-container" layout="column" flex="45" md-whiteframe="4">
         <!-- Query Parameters -->
         <md-toolbar class="md-table-toolbar md-default">
             <div class="md-toolbar-tools" flex>
@@ -69,20 +69,23 @@
             <md-list flex>
                 <md-list-item ng-repeat="productionOrder in $ctrl.data.selected"
                               ng-click="$ctrl.commands.selectMasterItem(productionOrder)">
-                    <div layout="row" flex>
-                        <div layout="column" flex="50" layout-align="center start">
-                            <div layout="row" flex><strong>Batch:&nbsp;</strong>{{productionOrder.id}}</div>
-                            <div layout="row" flex><strong>Stock Code:&nbsp;</strong>{{productionOrder.StockCode.name}}</div>
-                            <div layout="row" flex><strong>Color:&nbsp;</strong>{{productionOrder.Color.name}}</div>
-                            <div layout="row" flex><strong>Size:&nbsp;</strong>{{productionOrder.Size.name}}</div>
-                        </div>
-                        <div layout="column" flex="50" layout-align="center end">
-                            <div layout="row" flex></div>
-                            <div layout="row" flex><strong>Employee:&nbsp;</strong>{{productionOrder.Employee.getFullName()}}</div>
-                            <div layout="row" flex><strong>Quantity In:&nbsp;</strong>{{productionOrder.dozen_quantity}}x12,{{productionOrder.piece_quantity}}</div>
-                            <div layout="row" flex><strong>Quantity Out:&nbsp;</strong>(TODO: 5x12,2)</div>
-                        </div>
-                    </div>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td colspan="2"><strong>Batch:&nbsp;</strong>{{productionOrder.id}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stock Code:&nbsp;</strong>{{productionOrder.StockCode.name}}</td>
+                            <td><strong>Employee:&nbsp;</strong>{{productionOrder.Employee.getFullName()}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Color:&nbsp;</strong>{{productionOrder.Color.name}}</td>
+                            <td><strong>Quantity In:&nbsp;</strong>{{productionOrder.dozen_quantity}}x12,{{productionOrder.piece_quantity}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Size:&nbsp;</strong>{{productionOrder.Size.name}}</td>
+                            <td><strong>Quantity Out:&nbsp;</strong>(TODO: 5x12,2)</td>
+                        </tr>
+                    </table>
                     <md-divider ng-if="!$last"></md-divider>
                 </md-list-item>
             </md-list>
