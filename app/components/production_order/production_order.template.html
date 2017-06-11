@@ -116,7 +116,7 @@
         <div class="md-dialog-container" id="create-dialog">
             <md-dialog flex="60" ng-cloak>
                 <!-- Accept enter key -->
-                <form name="$ctrl.Form">
+                <form name="$ctrl.CreateForm">
                     <!-- 1st sibling: Contains the content of the dialog -->
                     <md-dialog-content layout="column">
                         <!-- Title bar -->
@@ -126,7 +126,7 @@
                                 <!-- Action buttons -->
                                 <md-button id='save-button' class="md-icon-button"
                                            type='submit'
-                                           ng-disabled="!$ctrl.Form.$valid"
+                                           ng-disabled="!$ctrl.CreateForm.$valid"
                                            ng-click="$ctrl.commands.saveSelectedMasterItem()">
                                     <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
                                 </md-button>
@@ -161,7 +161,8 @@
                                             <span>'{{$ctrl.search_stock_code}}' cannot be found.</span>
                                         </md-not-found>
                                     </md-autocomplete>
-                                    <div ng-messages="$ctrl.Form.stock_code.$error" ng-show="$ctrl.Form.stock_code.$touched">
+                                    <div ng-messages="$ctrl.CreateForm.stock_code.$error"
+                                         ng-show="$ctrl.CreateForm.stock_code.$touched">
                                         <div ng-message="required">This is required.</div>
                                         <div ng-message="md-require-match">This is required.</div>
                                     </div>
@@ -192,7 +193,7 @@
                                             <span>'{{$ctrl.search_color}}' cannot be found.</span>
                                         </md-not-found>
                                     </md-autocomplete>
-                                    <div ng-messages="$ctrl.Form.color.$error" ng-show="$ctrl.Form.color.$touched">
+                                    <div ng-messages="$ctrl.CreateForm.color.$error" ng-show="$ctrl.CreateForm.color.$touched">
                                         <div ng-message="required">This is required.</div>
                                         <div ng-message="md-require-match">This is required.</div>
                                     </div>
@@ -223,7 +224,7 @@
                                             <span>'{{$ctrl.search_size}}' cannot be found.</span>
                                         </md-not-found>
                                     </md-autocomplete>
-                                    <div ng-messages="$ctrl.Form.size.$error" ng-show="$ctrl.Form.size.$touched">
+                                    <div ng-messages="$ctrl.CreateForm.size.$error" ng-show="$ctrl.CreateForm.size.$touched">
                                         <div ng-message="required">This is required.</div>
                                         <div ng-message="md-require-match">This is required.</div>
                                     </div>
@@ -254,8 +255,8 @@
                                             <span>'{{$ctrl.search_employee}}' cannot be found.</span>
                                         </md-not-found>
                                     </md-autocomplete>
-                                    <div ng-messages="$ctrl.Form.employee.$error"
-                                         ng-show="$ctrl.Form.employee.$touched">
+                                    <div ng-messages="$ctrl.CreateForm.employee.$error"
+                                         ng-show="$ctrl.CreateForm.employee.$touched">
                                         <div ng-message="required">This is required.</div>
                                         <div ng-message="md-require-match">This is required.</div>
                                     </div>
@@ -267,8 +268,8 @@
                                     <input required name="dozen_quantity" type="number"
                                            ng-model="$ctrl.selected_item.dozen_quantity">
                                     </input>
-                                    <div ng-messages="$ctrl.Form.dozen_quantity.$error"
-                                         ng-show="$ctrl.Form.dozen_quantity.$touched">
+                                    <div ng-messages="$ctrl.CreateForm.dozen_quantity.$error"
+                                         ng-show="$ctrl.CreateForm.dozen_quantity.$touched">
                                         <div ng-message="required">This is required.</div>
                                     </div>
                                 </md-input-container>
@@ -277,8 +278,8 @@
                                     <input required name="piece_quantity" type="number"
                                            ng-model="$ctrl.selected_item.piece_quantity">
                                     </input>
-                                    <div ng-messages="$ctrl.Form.piece_quantity.$error"
-                                         ng-show="$ctrl.Form.piece_quantity.$touched">
+                                    <div ng-messages="$ctrl.CreateForm.piece_quantity.$error"
+                                         ng-show="$ctrl.CreateForm.piece_quantity.$touched">
                                         <div ng-message="required">This is required.</div>
                                     </div>
                                 </md-input-container>
