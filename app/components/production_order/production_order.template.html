@@ -108,20 +108,18 @@
             <!-- Hides these two if detail_load_error occurred. -->
             <md-toolbar ng-hide="$ctrl.detail_load_error">
                 <div class="md-toolbar-tools" flex>
-                    <form layout="row" flex>
-                        <h2 flex>Batch: {{$ctrl.selected_item.id}}</h2>
-                        <md-button class="md-icon-button" type='submit'
-                                   ng-hide="$ctrl.detail_load_error"
-                                   ng-disabled="!$ctrl.Form.$valid"
-                                   ng-click="$ctrl.commands.saveSelectedMasterItem()">
-                            <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
-                        </md-button>
-                        <md-button class="md-icon-button"
-                                   ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this position?')"
-                                   ng-hide="$ctrl.is_delete_disabled">
-                            <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
-                        </md-button>
-                    </form>
+                    <h2 flex>Batch: {{$ctrl.selected_item.id}}</h2>
+                    <md-button class="md-icon-button" type='submit'
+                               ng-hide="$ctrl.detail_load_error"
+                               ng-disabled="!$ctrl.Form.$valid"
+                               ng-click="$ctrl.commands.saveSelectedMasterItem()">
+                        <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
+                    </md-button>
+                    <md-button class="md-icon-button"
+                               ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this position?')"
+                               ng-hide="$ctrl.is_delete_disabled">
+                        <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
+                    </md-button>
                 </div>
             </md-toolbar>
             <md-content ng-hide="$ctrl.detail_load_error" layout="column" flex>
