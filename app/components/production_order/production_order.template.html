@@ -128,7 +128,7 @@
                         <div layout="column">
                             <header>
                                 <h3>Operation {{operation_index + 1}}: {{operation.name}}</h3>
-                                <span>Quantity Remaining: {{operation.quantity_remaining}}</span>
+                                <span>Quantity Remaining: {{operation.dozen_quantity_remaining}}x12,{{operation.piece_quantity_remaining}}</span>
                             </header>
                             <div layout="column" ng-repeat="lines in operation.lines">
                                 <header ng-if="lines.previous_employee">
