@@ -105,7 +105,7 @@ angular.module('production-order')
             }));
           }
         };
-        
+
         /**
          * Life cycles
          */
@@ -116,7 +116,10 @@ angular.module('production-order')
 
             // Add associations
             Object.assign(selectionOptions, {
-              include: [ModelProvider.models.StockCode, ModelProvider.models.Color, ModelProvider.models.Size, ModelProvider.models.Employee],
+              include: [{
+                model: ModelProvider.models.StockCode,
+                include: [ModelProvider.models.Operation]
+              }, ModelProvider.models.Color, ModelProvider.models.Size, ModelProvider.models.Employee],
               where: {}
             });
 
@@ -188,16 +191,19 @@ angular.module('production-order')
             // Execute the query.
             return Promise.all([
               ModelProvider.models.Production.findAll(Object.assign(pageOptions, selectionOptions)),
-              ModelProvider.models.Production.findAll(Object.assign({
-                attributes: [[ModelProvider.models.sequelize.fn('COUNT', ModelProvider.models.sequelize.col('*')), 'total_count']],
-              }, selectionOptions))])
-              .then(values =>
-              {
-                return {
-                  data: values[0],
-                  total_count: values[1][0].get('total_count')
-                };
-              });
+              ModelProvider.models.Production.findOne(Object.assign({
+                attributes: [[ModelProvider.models.sequelize.fn('COUNT', ModelProvider.models.sequelize.col('*')), 'total_count'],
+                  'stock_code_id', 'color_id', 'size_id', 'employee_id'],
+              }, selectionOptions)),
+            ]).then(values =>
+            {
+              return {
+                data: values[0],
+                total_count: values[1].get('total_count')
+              };
+            });
+          });
+
           });
 
           CrudHandler.onAfterCreateMasterItem(this, () =>
