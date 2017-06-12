@@ -130,11 +130,11 @@
                                 <h3>Operation {{operation_index + 1}}: {{operation.name}}</h3>
                                 <span>Quantity Remaining: {{operation.quantity_remaining}}</span>
                             </header>
-                            <div layout="column" ng-repeat="set in operation.data">
-                                <header ng-if="set.previous_employee">
-                                    <h4>{{set.previous_employee.getFullName()}}</h4>
+                            <div layout="column" ng-repeat="lines in operation.lines">
+                                <header ng-if="lines.previous_employee">
+                                    <h4>{{lines.previous_employee.getFullName()}}</h4>
                                 </header>
-                                <div layout="row" ng-repeat="line in set.lines">
+                                <div layout="row" ng-repeat="line in lines.lines">
                                     <md-input-container flex>
                                         <label>Date Finished</label>
                                         <md-datepicker required
@@ -153,10 +153,10 @@
                                                 md-require-match
                                                 md-input-name="employee_{{operation_index}}_{{$index}}"
                                                 md-min-length="0"
-                                                md-items="employee in $ctrl.autocomplete.queryEmployee($ctrl.search_employee)"
+                                                md-items="employee in $ctrl.autocomplete.queryEmployee(line.search_employee)"
                                                 md-item-text="employee.display"
                                                 md-selected-item="line.employee"
-                                                md-search-text="$ctrl.search_employee">
+                                                md-search-text="line.search_employee">
                                             <md-item-template>
                                                     <span md-highlight-text="$ctrl.search_employee"
                                                           md-highlight-flags="^i">{{employee.display}}</span>
@@ -195,6 +195,11 @@
                                             </div>
                                         </md-input-container>
                                     </div>
+                                </div>
+                                <div layout="row" layout-align="center center" layout-margin>
+                                    <md-button class="md-primary" ng-click="$ctrl.commands.createNewLine(lines)">Add
+                                        production line
+                                    </md-button>
                                 </div>
                             </div>
                         </div>

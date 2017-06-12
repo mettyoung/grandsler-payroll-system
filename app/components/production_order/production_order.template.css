@@ -5,6 +5,7 @@
 #detail-container md-content {
   padding: 0px 24px;
   background-color: transparent;
+  margin-bottom: 48px;
 }
 
 #detail-container header {
