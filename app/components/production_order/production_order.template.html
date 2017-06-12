@@ -4,11 +4,11 @@
     <strong>{{$ctrl.load_error.name}}:</strong> {{$ctrl.load_error.message}}
 </div>
 
-<!-- Row: Master list and detail content. -->
-<div id="main-content" layout="row" flex ng-hide="$ctrl.load_error">
-    <!-- Master List -->
+<!-- Row: Master and detail. -->
+<div id="main-content" layout="row" flex>
+    <!-- Column: Query parameters and master list. -->
     <div id="master-container" layout="column" flex="45" md-whiteframe="4">
-        <!-- Query Parameters -->
+        <!-- TODO: Query Parameters -->
         <md-toolbar class="md-table-toolbar md-default">
             <div class="md-toolbar-tools" flex>
                 <form layout="row" flex>
@@ -65,7 +65,8 @@
                                  md-on-paginate="$ctrl.commands.load" md-page-select>
             </md-table-pagination>
         </md-toolbar>
-        <md-content flex>
+        <!-- TODO: Quantity Out; tooltip for quantity 1,2,3,4,5 of operations -->
+        <md-content flex ng-hide="$ctrl.load_error">
             <md-list flex>
                 <md-list-item ng-repeat="productionOrder in $ctrl.data.selected"
                               ng-click="$ctrl.commands.selectMasterItem(productionOrder)">
@@ -79,7 +80,8 @@
                         </tr>
                         <tr>
                             <td><strong>Color:&nbsp;</strong>{{productionOrder.Color.name}}</td>
-                            <td><strong>Quantity In:&nbsp;</strong>{{productionOrder.dozen_quantity}}x12,{{productionOrder.piece_quantity}}</td>
+                            <td><strong>Quantity In:&nbsp;</strong>{{productionOrder.dozen_quantity}}x12,{{productionOrder.piece_quantity}}
+                            </td>
                         </tr>
                         <tr>
                             <td><strong>Size:&nbsp;</strong>{{productionOrder.Size.name}}</td>
@@ -93,25 +95,116 @@
     </div>
 
     <!-- Column: Detail load error, write error and content.. -->
-    <div id="detail-container" flex layout="column">
-        <!-- This error occurs on selecting an item. -->
-        <div id="detail-load-error-message" class="alert alert-danger" ng-hide="!$ctrl.detail_load_error">
-            <strong>{{$ctrl.detail_load_error.name}}:</strong> {{$ctrl.detail_load_error.message}}
-        </div>
-        <!-- This error occurs on saving -->
-        <div id="save-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
-            <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
-        </div>
-        <!-- Hides this if detail_load_error occurred. -->
-        <md-content ng-hide="$ctrl.detail_load_error" layout="column" flex>
-            <md-input-container flex>
-                <label>Color Name</label>
-                <input required name="name" ng-model="$ctrl.selected_item.name" md-auto-focus="true">
-                <div ng-messages="$ctrl.Form.name.$error" ng-show="$ctrl.Form.name.$touched">
-                    <div ng-message="required">This is required.</div>
+    <div id="detail-container" flex layout="column" ng-hide="$ctrl.load_error">
+        <form name="$ctrl.Form">
+            <!-- This error occurs on selecting an item. -->
+            <div id="detail-load-error-message" class="alert alert-danger" ng-hide="!$ctrl.detail_load_error">
+                <strong>{{$ctrl.detail_load_error.name}}:</strong> {{$ctrl.detail_load_error.message}}
+            </div>
+            <!-- This error occurs on saving -->
+            <div id="save-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
+                <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
+            </div>
+            <!-- Hides these two if detail_load_error occurred. -->
+            <md-toolbar ng-hide="$ctrl.detail_load_error">
+                <div class="md-toolbar-tools" flex>
+                    <form layout="row" flex>
+                        <h2 flex>Batch: {{$ctrl.selected_item.id}}</h2>
+                        <md-button class="md-icon-button" type='submit'
+                                   ng-hide="$ctrl.detail_load_error"
+                                   ng-disabled="!$ctrl.Form.$valid"
+                                   ng-click="$ctrl.commands.saveSelectedMasterItem()">
+                            <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
+                        </md-button>
+                        <md-button class="md-icon-button"
+                                   ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete this position?')"
+                                   ng-hide="$ctrl.is_delete_disabled">
+                            <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
+                        </md-button>
+                    </form>
                 </div>
-            </md-input-container>
-        </md-content>
+            </md-toolbar>
+            <md-content ng-hide="$ctrl.detail_load_error" layout="column" flex>
+                <md-list flex>
+                    <md-list-item ng-repeat="(operation_index, operation) in $ctrl.selected_item.detail">
+                        <div layout="column">
+                            <header>
+                                <h3>Operation {{operation_index + 1}}: {{operation.name}}</h3>
+                                <span>Quantity Remaining: {{operation.quantity_remaining}}</span>
+                            </header>
+                            <div layout="column" ng-repeat="set in operation.data">
+                                <header ng-if="set.previous_employee">
+                                    <h4>{{set.previous_employee.getFullName()}}</h4>
+                                </header>
+                                <div layout="row" ng-repeat="line in set.lines">
+                                    <md-input-container flex>
+                                        <label>Date Finished</label>
+                                        <md-datepicker required
+                                                       name="date_finished_{{operation_index}}_{{$index}}"
+                                                       ng-model="line.date"
+                                                       md-placeholder="Date finished"
+                                                       md-open-on-focus></md-datepicker>
+                                        <div ng-messages="$ctrl.Form['date_finished_' + operation_index + '_' + $index].$error">
+                                            <div ng-message="required">This is required.</div>
+                                        </div>
+                                    </md-input-container>
+                                    <md-input-container flex>
+                                        <label>Employee</label>
+                                        <md-autocomplete
+                                                required
+                                                md-require-match
+                                                md-input-name="employee_{{operation_index}}_{{$index}}"
+                                                md-min-length="0"
+                                                md-items="employee in $ctrl.autocomplete.queryEmployee($ctrl.search_employee)"
+                                                md-item-text="employee.display"
+                                                md-selected-item="line.employee"
+                                                md-search-text="$ctrl.search_employee">
+                                            <md-item-template>
+                                                    <span md-highlight-text="$ctrl.search_employee"
+                                                          md-highlight-flags="^i">{{employee.display}}</span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                <span>'{{$ctrl.search_employee}}' cannot be found.</span>
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                        <div ng-messages="$ctrl.Form['employee_' + operation_index + '_' + $index].$error"
+                                             ng-show="$ctrl.Form['employee_' + operation_index + '_' + $index].$touched">
+                                            <div ng-message="required">This is required.</div>
+                                            <div ng-message="md-require-match">This is required.</div>
+                                        </div>
+                                    </md-input-container>
+                                    <div flex="30" layout="row">
+                                        <md-input-container>
+                                            <label>Dozen Qty.</label>
+                                            <input required name="dozen_quantity_{{operation_index}}_{{$index}}"
+                                                   type="number"
+                                                   ng-model="line.dozen_quantity">
+                                            </input>
+                                            <div ng-messages="$ctrl.Form['dozen_quantity_' + operation_index + '_' + $index].$error"
+                                                 ng-show="$ctrl.Form['dozen_quantity_' + operation_index + '_' + $index].$touched">
+                                                <div ng-message="required">This is required.</div>
+                                            </div>
+                                        </md-input-container>
+                                        <md-input-container>
+                                            <label>Piece Qty.</label>
+                                            <input required name="piece_quantity_{{operation_index}}_{{$index}}"
+                                                   type="number"
+                                                   ng-model="line.piece_quantity">
+                                            </input>
+                                            <div ng-messages="$ctrl.Form['piece_quantity_' + operation_index + '_' + $index].$error"
+                                                 ng-show="$ctrl.Form['piece_quantity_' + operation_index + '_' + $index].$touched">
+                                                <div ng-message="required">This is required.</div>
+                                            </div>
+                                        </md-input-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <md-divider ng-if="!$last"></md-divider>
+                    </md-list-item>
+                </md-list>
+            </md-content>
+        </form>
     </div>
 
     <!-- Create new batch -->
@@ -127,7 +220,7 @@
                             <div class="md-toolbar-tools">
                                 <h3 flex>New production order</h3>
                                 <!-- Action buttons -->
-                                <md-button id='save-button' class="md-icon-button"
+                                <md-button class="md-icon-button"
                                            type='submit'
                                            ng-disabled="!$ctrl.CreateForm.$valid"
                                            ng-click="$ctrl.commands.saveSelectedMasterItem()">
@@ -196,7 +289,8 @@
                                             <span>'{{$ctrl.search_color}}' cannot be found.</span>
                                         </md-not-found>
                                     </md-autocomplete>
-                                    <div ng-messages="$ctrl.CreateForm.color.$error" ng-show="$ctrl.CreateForm.color.$touched">
+                                    <div ng-messages="$ctrl.CreateForm.color.$error"
+                                         ng-show="$ctrl.CreateForm.color.$touched">
                                         <div ng-message="required">This is required.</div>
                                         <div ng-message="md-require-match">This is required.</div>
                                     </div>
@@ -227,7 +321,8 @@
                                             <span>'{{$ctrl.search_size}}' cannot be found.</span>
                                         </md-not-found>
                                     </md-autocomplete>
-                                    <div ng-messages="$ctrl.CreateForm.size.$error" ng-show="$ctrl.CreateForm.size.$touched">
+                                    <div ng-messages="$ctrl.CreateForm.size.$error"
+                                         ng-show="$ctrl.CreateForm.size.$touched">
                                         <div ng-message="required">This is required.</div>
                                         <div ng-message="md-require-match">This is required.</div>
                                     </div>

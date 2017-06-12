@@ -1,14 +1,18 @@
+#detail-container md-toolbar {
+  background-color: #2C80D2;
+}
+
 #detail-container md-content {
-  padding: 24px;
+  padding: 0px 24px;
   background-color: transparent;
 }
 
-#detail-container md-input-container {
-  margin: 8px 24px;
+#detail-container header {
+  margin-bottom: 16px;
 }
 
-#detail-container #employment, #detail-container #employee-type {
-  margin-top: 32px;
+#detail-container md-input-container {
+  margin: 8px 0px;
 }
 
 .md-table-pagination {
@@ -23,17 +27,17 @@
   margin-bottom: 0px;
 }
 
-#create-dialog md-autocomplete {
+md-autocomplete {
   background-color: transparent;
 }
 
-#create-dialog md-autocomplete md-autocomplete-wrap {
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
+md-autocomplete md-autocomplete-wrap {
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
 }
 
-#create-dialog md-autocomplete button,
-#create-dialog md-autocomplete md-icon {
+md-autocomplete button,
+md-autocomplete md-icon {
   display: none;
 }
