@@ -270,6 +270,15 @@ angular.module('production-order')
           this.commands.load();
 
         /**
+         * Create new line.
+         * @param lines
+         */
+        this.commands.createNewLine = lines =>
+        {
+          lines.lines.push({});
+        };
+
+        /**
          * Hides the dialog.
          * @returns {Promise}
          */
