@@ -204,6 +204,39 @@ angular.module('production-order')
             });
           });
 
+          CrudHandler.onAfterSelectMasterItem(this, () =>
+          {
+            this.selected_item.detail = this.selected_item.StockCode.Operations.map((operation, index) =>
+            {
+              let stage = {
+                name: operation.name,
+                dozen_quantity_remaining: this.selected_item.dozen_quantity,
+                piece_quantity_remaining: this.selected_item.piece_quantity,
+                lines: [
+                  {
+                    previous_employee: null,
+                    lines: []
+                  }
+                ]
+              };
+
+              if (index === 0)
+                stage.lines = [
+                  {
+                    previous_employee: this.selected_item.Employee.getFullName(),
+                    lines: [
+                      {
+                        employee: {
+                          value: this.selected_item.employee_id,
+                          display: this.selected_item.Employee.getFullName()
+                        }
+                      }
+                    ]
+                  }
+                ];
+
+              return stage;
+            });
           });
 
           CrudHandler.onAfterCreateMasterItem(this, () =>
