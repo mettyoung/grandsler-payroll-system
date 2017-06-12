@@ -10,10 +10,21 @@ angular.module('grandsler-payroll-system')
     $stateProvider.state({
       name: 'main_app',
       url: '/main_app',
-      component: 'mainApp',
-      resolve: {
-        layout: () => 'column',
-        flex: () => 100
+      views: {
+        '': {
+          component: 'mainApp',
+          resolve: {
+            layout: () => 'column',
+            flex: () => 100
+          }
+        },
+        'right-side-nav@main_app': {
+          template: `
+            <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right"
+                        md-is-locked-open="$mdMedia('gt-sm')">
+                <activity-logs flex></activity-logs>
+            </md-sidenav>`
+        }
       }
     });
 
@@ -26,6 +37,17 @@ angular.module('grandsler-payroll-system')
     $stateProvider.state({
       name: 'main_app.production_order',
       url: '/main_app/production_order',
-      component: 'productionOrder'
+      views: {
+        '': {
+          component: 'productionOrder',
+          resolve: {
+            layout: () => 'column',
+            flex: () => 100
+          }
+        },
+        'right-side-nav@main_app': {
+          template: ''
+        }
+      }
     });
   }]);
