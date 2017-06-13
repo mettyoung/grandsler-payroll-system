@@ -345,6 +345,7 @@ angular.module('production-order')
         this.commands.autocomplete = {
           queryStockCode: query =>
           {
+            query = query || '';
             return ModelProvider.models.StockCode.findAll({
               where: {
                 name: {
@@ -355,6 +356,7 @@ angular.module('production-order')
           },
           queryColor: query =>
           {
+            query = query || '';
             return ModelProvider.models.Color.findAll({
               where: {
                 name: {
@@ -365,6 +367,7 @@ angular.module('production-order')
           },
           querySize: query =>
           {
+            query = query || '';
             return ModelProvider.models.Size.findAll({
               where: {
                 name: {
@@ -375,6 +378,7 @@ angular.module('production-order')
           },
           queryEmployee: query =>
           {
+            query = query || '';
             return ModelProvider.models.Employee.findAll({
               where: {
                 $or: {
