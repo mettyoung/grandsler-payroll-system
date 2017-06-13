@@ -168,10 +168,10 @@ angular.module('production-order')
             if (this.selected_item.constructor === Object)
             {
               action = 'created';
-              selectedItem.stock_code_id = selectedItem.stock_code.id;
-              selectedItem.color_id = selectedItem.color.id;
-              selectedItem.size_id = selectedItem.size.id;
-              selectedItem.employee_id = selectedItem.employee.id;
+              selectedItem.stock_code_id = selectedItem.StockCode.id;
+              selectedItem.color_id = selectedItem.Color.id;
+              selectedItem.size_id = selectedItem.Size.id;
+              selectedItem.employee_id = selectedItem.Employee.id;
               selectedItem = ModelProvider.models.Production.build(selectedItem);
             }
 
