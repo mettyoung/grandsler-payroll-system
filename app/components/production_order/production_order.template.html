@@ -130,7 +130,7 @@
                                 <h3>Operation {{operation_index + 1}}: {{operation.name}}</h3>
                                 <span>Quantity Remaining: {{operation.dozen_quantity_remaining}}x12,{{operation.piece_quantity_remaining}}</span>
                             </header>
-                            <div layout="column" ng-repeat="line in operation.lines">
+                            <div layout="column" ng-repeat="(line_index, line) in operation.lines">
                                 <header ng-if="line.previous_production_line">
                                     <h4>{{line.previous_production_line.date_finished | date:'MM/dd/yyyy'}} </h4>
                                     <h5>{{line.previous_production_line.Employee.getFullName()}}: {{line.previous_production_line.dozen_quantity}}x12,{{line.previous_production_line.piece_quantity}}</h5>
@@ -140,7 +140,7 @@
                                         <label>Date Finished</label>
                                         <md-datepicker required
                                                        name="date_finished_{{operation_index}}_{{$index}}"
-                                                       ng-model="production_line.date"
+                                                       ng-model="production_line.date_finished"
                                                        md-placeholder="Date finished"
                                                        md-open-on-focus></md-datepicker>
                                         <div ng-messages="$ctrl.Form['date_finished_' + operation_index + '_' + $index].$error">
