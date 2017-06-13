@@ -100,10 +100,6 @@
         <div id="detail-load-error-message" class="alert alert-danger" ng-hide="!$ctrl.detail_load_error">
             <strong>{{$ctrl.detail_load_error.name}}:</strong> {{$ctrl.detail_load_error.message}}
         </div>
-        <!-- This error occurs on saving -->
-        <div id="save-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
-            <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
-        </div>
         <!-- Hides these two if detail_load_error occurred. -->
         <md-toolbar ng-hide="$ctrl.detail_load_error">
             <div class="md-toolbar-tools" flex>
@@ -121,6 +117,10 @@
                 </md-button>
             </div>
         </md-toolbar>
+        <!-- This error occurs on saving -->
+        <div id="save-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
+            <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
+        </div>
         <md-content ng-hide="$ctrl.detail_load_error" layout="column" flex>
             <form name="$ctrl.Form">
                 <md-list flex>
