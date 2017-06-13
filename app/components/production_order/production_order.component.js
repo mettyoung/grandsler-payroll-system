@@ -136,7 +136,7 @@ angular.module('production-order')
                 piece_quantity_remaining: this.selected_item.piece_quantity,
                 lines: [
                   {
-                    previous_employee: null,
+                    previous_line: null,
                     lines: []
                   }
                 ]
@@ -145,7 +145,13 @@ angular.module('production-order')
               if (index === 0)
                 stage.lines = [
                   {
-                    previous_employee: this.selected_item.Employee.getFullName(),
+                    previous_line: {
+                      dozen_quantity: this.selected_item.dozen_quantity,
+                      piece_quantity: this.selected_item.piece_quantity,
+                      Employee: {
+                        getFullName: () => this.selected_item.Employee.getFullName()
+                      }
+                    },
                     lines: [
                       {
                         employee: {
@@ -386,6 +392,24 @@ angular.module('production-order')
                 display: employee.getFullName()
               };
             }));
+          }
+        };
+
+        /**
+         * Computes and updates quantity remaining.
+         * @param operation
+         */
+        this.commands.computeQuantityRemaining = operation =>
+        {
+          const totalQuantity = operation.lines.reduce(
+            (accumulator, line) => accumulator + line.previous_line.dozen_quantity * 12 + line.previous_line.piece_quantity - line.lines.reduce(
+              (accumulator, line) => accumulator + line.dozen_quantity * 12 + line.piece_quantity, 0)
+            , 0);
+
+          if (!isNaN(totalQuantity))
+          {
+            operation.dozen_quantity_remaining = Math.floor(totalQuantity / 12);
+            operation.piece_quantity_remaining = totalQuantity % 12;
           }
         };
       }]

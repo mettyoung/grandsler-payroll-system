@@ -131,8 +131,8 @@
                                 <span>Quantity Remaining: {{operation.dozen_quantity_remaining}}x12,{{operation.piece_quantity_remaining}}</span>
                             </header>
                             <div layout="column" ng-repeat="lines in operation.lines">
-                                <header ng-if="lines.previous_employee">
-                                    <h4>{{lines.previous_employee.getFullName()}}</h4>
+                                <header ng-if="lines.previous_line">
+                                    <h4>{{lines.previous_line.Employee.getFullName()}}</h4>
                                 </header>
                                 <div layout="row" ng-repeat="line in lines.lines">
                                     <md-input-container flex>
@@ -176,7 +176,8 @@
                                             <label>Dozen Qty.</label>
                                             <input required name="dozen_quantity_{{operation_index}}_{{$index}}"
                                                    type="number"
-                                                   ng-model="line.dozen_quantity">
+                                                   ng-model="line.dozen_quantity"
+                                                   ng-change="$ctrl.commands.computeQuantityRemaining(operation)">
                                             </input>
                                             <div ng-messages="$ctrl.Form['dozen_quantity_' + operation_index + '_' + $index].$error"
                                                  ng-show="$ctrl.Form['dozen_quantity_' + operation_index + '_' + $index].$touched">
@@ -187,7 +188,8 @@
                                             <label>Piece Qty.</label>
                                             <input required name="piece_quantity_{{operation_index}}_{{$index}}"
                                                    type="number"
-                                                   ng-model="line.piece_quantity">
+                                                   ng-model="line.piece_quantity"
+                                                   ng-change="$ctrl.commands.computeQuantityRemaining(operation)">
                                             </input>
                                             <div ng-messages="$ctrl.Form['piece_quantity_' + operation_index + '_' + $index].$error"
                                                  ng-show="$ctrl.Form['piece_quantity_' + operation_index + '_' + $index].$touched">
