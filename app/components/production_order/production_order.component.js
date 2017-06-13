@@ -193,8 +193,8 @@ angular.module('production-order')
               ModelProvider.models.Production.findAll(Object.assign(pageOptions, selectionOptions)),
               ModelProvider.models.Production.findOne(Object.assign({
                 attributes: [[ModelProvider.models.sequelize.fn('COUNT', ModelProvider.models.sequelize.col('*')), 'total_count'],
-                  'stock_code_id', 'color_id', 'size_id', 'employee_id'],
-              }, selectionOptions)),
+                  'stock_code_id', 'color_id', 'size_id', 'employee_id']
+              }, selectionOptions))
             ]).then(values =>
             {
               return {
@@ -314,7 +314,19 @@ angular.module('production-order')
          */
         this.commands.createNewLine = lines =>
         {
-          lines.lines.push({});
+          lines.push({});
+        };
+
+        /**
+         * Deletes the selected line.
+         * @param lines
+         * @param line
+         * @param message
+         * @returns {*|Promise.<*>}
+         */
+        this.commands.deleteLine = (lines, line, message) =>
+        {
+          return CrudHandler._confirmation(message).then(() => lines.splice(lines.indexOf(line), 1), () => (0));
         };
 
         /**

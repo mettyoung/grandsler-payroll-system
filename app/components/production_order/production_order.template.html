@@ -195,9 +195,15 @@
                                             </div>
                                         </md-input-container>
                                     </div>
+                                    <div layout="column" layout-align="center end">
+                                        <md-button class="md-icon-button"
+                                                   ng-click="$ctrl.commands.deleteLine(lines.lines, line, 'Are you sure you want to delete this production line?')">
+                                            <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
+                                        </md-button>
+                                    </div>
                                 </div>
                                 <div layout="row" layout-align="center center" layout-margin>
-                                    <md-button class="md-primary" ng-click="$ctrl.commands.createNewLine(lines)">Add
+                                    <md-button class="md-primary" ng-click="$ctrl.commands.createNewLine(lines.lines)">Add
                                         production line
                                     </md-button>
                                 </div>
