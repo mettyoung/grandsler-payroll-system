@@ -153,7 +153,7 @@
                                                 md-require-match
                                                 md-input-name="employee_{{operation_index}}_{{$index}}"
                                                 md-min-length="0"
-                                                md-items="employee in $ctrl.autocomplete.queryEmployee(line.search_employee)"
+                                                md-items="employee in $ctrl.commands.autocomplete.queryEmployee(line.search_employee)"
                                                 md-item-text="employee.display"
                                                 md-selected-item="line.employee"
                                                 md-search-text="line.search_employee">
@@ -256,7 +256,7 @@
                                             md-autofocus
                                             md-input-name="stock_code"
                                             md-min-length="0"
-                                            md-items="stock_code in $ctrl.autocomplete.queryStockCode($ctrl.search_stock_code)"
+                                            md-items="stock_code in $ctrl.commands.autocomplete.queryStockCode($ctrl.search_stock_code)"
                                             md-item-text="stock_code.display"
                                             md-selected-item="$ctrl.selected_item.stock_code"
                                             md-search-text="$ctrl.search_stock_code">
@@ -288,7 +288,7 @@
                                             md-require-match
                                             md-input-name="color"
                                             md-min-length="0"
-                                            md-items="color in $ctrl.autocomplete.queryColor($ctrl.search_color)"
+                                            md-items="color in $ctrl.commands.autocomplete.queryColor($ctrl.search_color)"
                                             md-item-text="color.display"
                                             md-selected-item="$ctrl.selected_item.color"
                                             md-search-text="$ctrl.search_color">
@@ -320,7 +320,7 @@
                                             md-require-match
                                             md-input-name="size"
                                             md-min-length="0"
-                                            md-items="size in $ctrl.autocomplete.querySize($ctrl.search_size)"
+                                            md-items="size in $ctrl.commands.autocomplete.querySize($ctrl.search_size)"
                                             md-item-text="size.display"
                                             md-selected-item="$ctrl.selected_item.size"
                                             md-search-text="$ctrl.search_size">
@@ -352,7 +352,7 @@
                                             md-require-match
                                             md-input-name="employee"
                                             md-min-length="0"
-                                            md-items="employee in $ctrl.autocomplete.queryEmployee($ctrl.search_employee)"
+                                            md-items="employee in $ctrl.commands.autocomplete.queryEmployee($ctrl.search_employee)"
                                             md-item-text="employee.display"
                                             md-selected-item="$ctrl.selected_item.employee"
                                             md-search-text="$ctrl.search_employee">

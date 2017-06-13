@@ -29,84 +29,6 @@ angular.module('production-order')
         };
 
         /**
-         * Autocomplete queries.
-         */
-        this.autocomplete = {
-          queryStockCode: query =>
-          {
-            return ModelProvider.models.StockCode.findAll({
-              where: {
-                name: {
-                  $like: '%' + query + '%'
-                }
-              }
-            }).then(stock_codes => stock_codes.map(function (stock_code)
-            {
-              return {
-                value: stock_code.id,
-                display: stock_code.name
-              };
-            }));
-          },
-          queryColor: query =>
-          {
-            return ModelProvider.models.Color.findAll({
-              where: {
-                name: {
-                  $like: '%' + query + '%'
-                }
-              }
-            }).then(colors => colors.map(function (color)
-            {
-              return {
-                value: color.id,
-                display: color.name
-              };
-            }));
-          },
-          querySize: query =>
-          {
-            return ModelProvider.models.Size.findAll({
-              where: {
-                name: {
-                  $like: '%' + query + '%'
-                }
-              }
-            }).then(sizes => sizes.map(function (size)
-            {
-              return {
-                value: size.id,
-                display: size.name
-              };
-            }));
-          },
-          queryEmployee: query =>
-          {
-            return ModelProvider.models.Employee.findAll({
-              where: {
-                $or: {
-                  first_name: {
-                    $like: '%' + query + '%'
-                  },
-                  middle_name: {
-                    $like: '%' + query + '%'
-                  },
-                  last_name: {
-                    $like: '%' + query + '%'
-                  }
-                }
-              }
-            }).then(employees => employees.map(function (employee)
-            {
-              return {
-                value: employee.id,
-                display: employee.getFullName()
-              };
-            }));
-          }
-        };
-
-        /**
          * Life cycles
          */
         {
@@ -387,6 +309,84 @@ angular.module('production-order')
             controllerAs: '$ctrl',
             bindToController: true
           });
+        };
+
+        /**
+         * Autocomplete queries.
+         */
+        this.commands.autocomplete = {
+          queryStockCode: query =>
+          {
+            return ModelProvider.models.StockCode.findAll({
+              where: {
+                name: {
+                  $like: '%' + query + '%'
+                }
+              }
+            }).then(stock_codes => stock_codes.map(function (stock_code)
+            {
+              return {
+                value: stock_code.id,
+                display: stock_code.name
+              };
+            }));
+          },
+          queryColor: query =>
+          {
+            return ModelProvider.models.Color.findAll({
+              where: {
+                name: {
+                  $like: '%' + query + '%'
+                }
+              }
+            }).then(colors => colors.map(function (color)
+            {
+              return {
+                value: color.id,
+                display: color.name
+              };
+            }));
+          },
+          querySize: query =>
+          {
+            return ModelProvider.models.Size.findAll({
+              where: {
+                name: {
+                  $like: '%' + query + '%'
+                }
+              }
+            }).then(sizes => sizes.map(function (size)
+            {
+              return {
+                value: size.id,
+                display: size.name
+              };
+            }));
+          },
+          queryEmployee: query =>
+          {
+            return ModelProvider.models.Employee.findAll({
+              where: {
+                $or: {
+                  first_name: {
+                    $like: '%' + query + '%'
+                  },
+                  middle_name: {
+                    $like: '%' + query + '%'
+                  },
+                  last_name: {
+                    $like: '%' + query + '%'
+                  }
+                }
+              }
+            }).then(employees => employees.map(function (employee)
+            {
+              return {
+                value: employee.id,
+                display: employee.getFullName()
+              };
+            }));
+          }
         };
       }]
   });
