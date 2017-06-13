@@ -162,6 +162,25 @@ angular.module('production-order')
             });
           });
 
+          /**
+           * Validation logic before saving.
+           */
+          CrudHandler.onBeforeSaveSelectedMasterItem(this, masterItem =>
+          {
+            let operationCounter = 1;
+            for (let operation of masterItem.detail)
+            {
+              if (operation.dozen_quantity_remaining * operation.piece_quantity_remaining < 0)
+                return Promise.reject({
+                  name: 'Validation Error',
+                  message: `Quantity remaining of Operation ${operationCounter}: "${operation.name}" must not be negative.`
+                });
+              operationCounter++;
+            }
+
+            return Promise.resolve();
+          });
+
           CrudHandler.onSaveSelectedMasterItem(this, transaction =>
           {
             let action = 'modified';
@@ -464,7 +483,7 @@ angular.module('production-order')
           if (!isNaN(totalQuantity))
           {
             operation.dozen_quantity_remaining = Math.floor(totalQuantity / 12);
-            operation.piece_quantity_remaining = totalQuantity % 12;
+            operation.piece_quantity_remaining = Math.abs(totalQuantity % 12);
           }
         };
       }]
