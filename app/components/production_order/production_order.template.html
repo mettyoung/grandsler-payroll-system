@@ -125,17 +125,17 @@
             <form name="$ctrl.Form">
                 <md-list flex>
                     <md-list-item ng-repeat="(operation_index, operation) in $ctrl.selected_item.detail">
-                        <div layout="column">
-                            <header>
+                        <div layout="column" flex>
+                            <header flex>
                                 <h3>Operation {{operation_index + 1}}: {{operation.name}}</h3>
                                 <span>Quantity Remaining: {{operation.dozen_quantity_remaining}}x12,{{operation.piece_quantity_remaining}}</span>
                             </header>
-                            <div layout="column" ng-repeat="(line_index, line) in operation.lines">
-                                <header ng-if="line.previous_production_line">
+                            <div layout="column" ng-repeat="(line_index, line) in operation.lines" flex>
+                                <header flex>
                                     <h4>{{line.previous_production_line.date_finished | date:'MM/dd/yyyy'}} </h4>
                                     <h5>{{line.previous_production_line.Employee.getFullName()}}: {{line.previous_production_line.dozen_quantity}}x12,{{line.previous_production_line.piece_quantity}}</h5>
                                 </header>
-                                <div layout="row" ng-repeat="production_line in line.production_lines">
+                                <div layout="row" ng-repeat="production_line in line.production_lines" flex>
                                     <md-input-container flex>
                                         <label>Date Finished</label>
                                         <md-datepicker required
@@ -205,7 +205,7 @@
                                         </md-button>
                                     </div>
                                 </div>
-                                <div layout="row" layout-align="center center" layout-margin>
+                                <div layout="row" layout-margin flex layout-align="center center">
                                     <md-button class="md-primary" ng-click="$ctrl.commands.createNewProductionLine(operation_index, line_index)">
                                         Add production line
                                     </md-button>
