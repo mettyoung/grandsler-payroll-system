@@ -130,41 +130,27 @@ angular.module('production-order')
           {
             this.selected_item.detail = this.selected_item.StockCode.Operations.map((operation, index) =>
             {
-              let stage = {
+              return {
                 name: operation.name,
                 dozen_quantity_remaining: this.selected_item.dozen_quantity,
                 piece_quantity_remaining: this.selected_item.piece_quantity,
-                lines: [
-                  {
-                    previous_production_line: null,
-                    production_lines: []
-                  }
-                ]
+                lines: []
               };
-
-              if (index === 0)
-                stage.lines = [
-                  {
-                    previous_production_line: {
-                      date_finished: new Date(),
-                      dozen_quantity: this.selected_item.dozen_quantity,
-                      piece_quantity: this.selected_item.piece_quantity,
-                      Employee: {
-                        getFullName: () => this.selected_item.Employee.getFullName()
-                      }
-                    },
-                    production_lines: [
-                      {
-                        Employee: {
-                          getFullName: () => this.selected_item.Employee.getFullName()
-                        }
-                      }
-                    ]
-                  }
-                ];
-
-              return stage;
             });
+
+            this.selected_item.detail[0].lines = [
+              {
+                previous_production_line: {
+                  date_finished: new Date(),
+                  dozen_quantity: this.selected_item.dozen_quantity,
+                  piece_quantity: this.selected_item.piece_quantity,
+                  Employee: {
+                    getFullName: () => this.selected_item.Employee.getFullName()
+                  }
+                },
+                production_lines: []
+              }
+            ];
           });
 
           CrudHandler.onAfterCreateMasterItem(this, () =>
@@ -237,12 +223,48 @@ angular.module('production-order')
           this.commands.load();
 
         /**
-         * Create new line.
-         * @param lines
+         * Create new production line.
          */
-        this.commands.createNewLine = lines =>
+        this.commands.createNewLine = (operation_index, line_index) =>
         {
-          lines.push({});
+          // Select the production lines given operation_index and line_index.
+          const currentProductionLines = this.selected_item.detail[operation_index].lines[line_index].production_lines;
+
+          // Create new production line.
+          const newProductionLine = {
+            date_finished: new Date(),
+            Employee: null,
+            dozen_quantity: 0,
+            piece_quantity: 0
+          };
+
+          // Add the new production line to the current production lines.
+          currentProductionLines.push(newProductionLine);
+
+          // If there is a next operation, execute the following:
+          if (this.selected_item.detail[operation_index + 1])
+          {
+            // Create a new line for the next operation and add a reference of the created production line.
+            const newLine = {
+              previous_production_line: newProductionLine,
+              production_lines: []
+            };
+
+            // Add the new line to the lines of the next operation.
+            this.selected_item.detail[operation_index + 1].lines.push(newLine);
+            
+            // Add watcher for re-computation of quantity remaining on dozen_quantity value changed.
+            $scope.$watch(() => newProductionLine.dozen_quantity, () =>
+            {
+              this.commands.computeQuantityRemaining(this.selected_item.detail[operation_index + 1]);
+            });
+
+            // Add watcher for re-computation of quantity remaining on piece_quantity value changed.
+            $scope.$watch(() => newProductionLine.piece_quantity, () =>
+            {
+              this.commands.computeQuantityRemaining(this.selected_item.detail[operation_index + 1]);
+            });
+          }
         };
 
         /**
