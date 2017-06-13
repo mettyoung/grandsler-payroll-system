@@ -416,6 +416,23 @@ class CrudHandler {
     return this._$mdDialog.show(confirmationDialog);
   }
 
+  /**
+   * Creates an alert message box.
+   * @param message 
+   * @private
+   */
+  _alert(title, message) 
+  {
+    let alertDialog = this._$mdDialog.alert()
+      .title(title)
+      .textContent(message)
+      .ok('Okay');
+    
+    alertDialog._options.multiple = true;
+
+    return this._$mdDialog.show(alertDialog);
+  }
+  
   _getPaginationQuery(query)
   {
     // Extract column name with direction

@@ -225,7 +225,7 @@ angular.module('production-order')
         /**
          * Create new production line.
          */
-        this.commands.createNewLine = (operation_index, line_index) =>
+        this.commands.createNewProductionLine = (operation_index, line_index) =>
         {
           // Select the production lines given operation_index and line_index.
           const currentProductionLines = this.selected_item.detail[operation_index].lines[line_index].production_lines;
@@ -249,6 +249,9 @@ angular.module('production-order')
               previous_production_line: newProductionLine,
               production_lines: []
             };
+            
+            // Store a reference of newLine to the newProductionLine.
+            newProductionLine.newLine = newLine;
 
             // Add the new line to the lines of the next operation.
             this.selected_item.detail[operation_index + 1].lines.push(newLine);
@@ -268,15 +271,17 @@ angular.module('production-order')
         };
 
         /**
-         * Deletes the selected line.
-         * @param lines
-         * @param line
-         * @param message
-         * @returns {*|Promise.<*>}
+         * Deletes the selected production line but first checks if it is used.
          */
-        this.commands.deleteLine = (lines, line, message) =>
+        this.commands.deleteProductionLine = (operation_index, line_index, productionLine, message) =>
         {
-          return CrudHandler._confirmation(message).then(() => lines.splice(lines.indexOf(line), 1), () => (0));
+          // Select the production lines given operation_index and line_index.
+          const currentProductionLines = this.selected_item.detail[operation_index].lines[line_index].production_lines;
+
+          if (productionLine.newLine && productionLine.newLine.production_lines.length > 0)
+            return CrudHandler._alert('Restriction', 'You cannot delete a production line in used.');
+          else
+            return CrudHandler._confirmation(message).then(() => currentProductionLines.splice(currentProductionLines.indexOf(productionLine), 1), () => (0));
         };
 
         /**
