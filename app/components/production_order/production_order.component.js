@@ -284,9 +284,14 @@ angular.module('production-order')
             return CrudHandler._confirmation(message).then(() => {
               // Deletes the productionLine in the currentProductionLines.
               currentProductionLines.splice(currentProductionLines.indexOf(productionLine), 1);
-              // Deletes the line in the next operation if there's any.
+              // Recompute quantity remaining
+              this.commands.computeQuantityRemaining(this.selected_item.detail[operation_index]);
+              // Deletes the line in the next operation if there's any and recompute quantity remaining.
               if (this.selected_item.detail[operation_index + 1])
+              {
                 this.selected_item.detail[operation_index + 1].lines.splice(this.selected_item.detail[operation_index + 1].lines.indexOf(productionLine.newLine), 1);
+                this.commands.computeQuantityRemaining(this.selected_item.detail[operation_index + 1]);
+              }
             }, () => (0));
         };
 
