@@ -139,11 +139,11 @@
                                     <md-input-container flex>
                                         <label>Date Finished</label>
                                         <md-datepicker required
-                                                       name="date_finished_{{operation_index}}_{{$index}}"
+                                                       name="date_finished_{{operation_index}}_{{line_index}}_{{$index}}"
                                                        ng-model="production_line.date_finished"
                                                        md-placeholder="Date finished"
                                                        md-open-on-focus></md-datepicker>
-                                        <div ng-messages="$ctrl.Form['date_finished_' + operation_index + '_' + $index].$error">
+                                        <div ng-messages="$ctrl.Form['date_finished_' + operation_index + '_' + line_index + '_' + $index].$error">
                                             <div ng-message="required">This is required.</div>
                                         </div>
                                     </md-input-container>
@@ -152,7 +152,7 @@
                                         <md-autocomplete
                                                 required
                                                 md-require-match
-                                                md-input-name="employee_{{operation_index}}_{{$index}}"
+                                                md-input-name="employee_{{operation_index}}_{{line_index}}_{{$index}}"
                                                 md-min-length="0"
                                                 md-items="employee in $ctrl.commands.autocomplete.queryEmployee(production_line.search_employee)"
                                                 md-item-text="employee.getFullName()"
@@ -166,8 +166,8 @@
                                                 <span>'{{$ctrl.search_employee}}' cannot be found.</span>
                                             </md-not-found>
                                         </md-autocomplete>
-                                        <div ng-messages="$ctrl.Form['employee_' + operation_index + '_' + $index].$error"
-                                             ng-show="$ctrl.Form['employee_' + operation_index + '_' + $index].$touched">
+                                        <div ng-messages="$ctrl.Form['employee_' + operation_index + '_' + line_index + '_' + $index].$error"
+                                             ng-show="$ctrl.Form['employee_' + operation_index + '_' + line_index + '_' + $index].$touched">
                                             <div ng-message="required">This is required.</div>
                                             <div ng-message="md-require-match">This is required.</div>
                                         </div>
@@ -175,25 +175,25 @@
                                     <div flex="30" layout="row">
                                         <md-input-container>
                                             <label>Dozen Qty.</label>
-                                            <input required name="dozen_quantity_{{operation_index}}_{{$index}}"
+                                            <input required name="dozen_quantity_{{operation_index}}_{{line_index}}_{{$index}}"
                                                    type="number"
                                                    ng-model="production_line.dozen_quantity"
                                                    ng-change="$ctrl.commands.computeQuantityRemaining(operation)">
                                             </input>
-                                            <div ng-messages="$ctrl.Form['dozen_quantity_' + operation_index + '_' + $index].$error"
-                                                 ng-show="$ctrl.Form['dozen_quantity_' + operation_index + '_' + $index].$touched">
+                                            <div ng-messages="$ctrl.Form['dozen_quantity_' + operation_index + '_' + line_index + '_' + $index].$error"
+                                                 ng-show="$ctrl.Form['dozen_quantity_' + operation_index + '_' + line_index + '_' + $index].$touched">
                                                 <div ng-message="required">This is required.</div>
                                             </div>
                                         </md-input-container>
                                         <md-input-container>
                                             <label>Piece Qty.</label>
-                                            <input required name="piece_quantity_{{operation_index}}_{{$index}}"
+                                            <input required name="piece_quantity_{{operation_index}}_{{line_index}}_{{$index}}"
                                                    type="number"
                                                    ng-model="production_line.piece_quantity"
                                                    ng-change="$ctrl.commands.computeQuantityRemaining(operation)">
                                             </input>
-                                            <div ng-messages="$ctrl.Form['piece_quantity_' + operation_index + '_' + $index].$error"
-                                                 ng-show="$ctrl.Form['piece_quantity_' + operation_index + '_' + $index].$touched">
+                                            <div ng-messages="$ctrl.Form['piece_quantity_' + operation_index + '_' + line_index + '_' + $index].$error"
+                                                 ng-show="$ctrl.Form['piece_quantity_' + operation_index + '_' + line_index + '_' + $index].$touched">
                                                 <div ng-message="required">This is required.</div>
                                             </div>
                                         </md-input-container>
