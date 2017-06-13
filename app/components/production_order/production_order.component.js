@@ -136,8 +136,8 @@ angular.module('production-order')
                 piece_quantity_remaining: this.selected_item.piece_quantity,
                 lines: [
                   {
-                    previous_line: null,
-                    lines: []
+                    previous_production_line: null,
+                    production_lines: []
                   }
                 ]
               };
@@ -145,7 +145,7 @@ angular.module('production-order')
               if (index === 0)
                 stage.lines = [
                   {
-                    previous_line: {
+                    previous_production_line: {
                       date_finished: new Date(),
                       dozen_quantity: this.selected_item.dozen_quantity,
                       piece_quantity: this.selected_item.piece_quantity,
@@ -153,7 +153,7 @@ angular.module('production-order')
                         getFullName: () => this.selected_item.Employee.getFullName()
                       }
                     },
-                    lines: [
+                    production_lines: [
                       {
                         Employee: {
                           getFullName: () => this.selected_item.Employee.getFullName()
@@ -378,8 +378,8 @@ angular.module('production-order')
         this.commands.computeQuantityRemaining = operation =>
         {
           const totalQuantity = operation.lines.reduce(
-            (accumulator, line) => accumulator + line.previous_line.dozen_quantity * 12 + line.previous_line.piece_quantity - line.lines.reduce(
-              (accumulator, line) => accumulator + line.dozen_quantity * 12 + line.piece_quantity, 0)
+            (accumulator, line) => accumulator + line.previous_production_line.dozen_quantity * 12 + line.previous_production_line.piece_quantity - line.production_lines.reduce(
+              (accumulator, production_line) => accumulator + production_line.dozen_quantity * 12 + production_line.piece_quantity, 0)
             , 0);
 
           if (!isNaN(totalQuantity))

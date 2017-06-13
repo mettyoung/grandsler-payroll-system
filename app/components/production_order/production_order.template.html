@@ -130,17 +130,17 @@
                                 <h3>Operation {{operation_index + 1}}: {{operation.name}}</h3>
                                 <span>Quantity Remaining: {{operation.dozen_quantity_remaining}}x12,{{operation.piece_quantity_remaining}}</span>
                             </header>
-                            <div layout="column" ng-repeat="lines in operation.lines">
-                                <header ng-if="lines.previous_line">
-                                    <h4>{{lines.previous_line.date_finished | date:'MM/dd/yyyy'}} </h4>
-                                    <h5>{{lines.previous_line.Employee.getFullName()}}: {{lines.previous_line.dozen_quantity}}x12,{{lines.previous_line.piece_quantity}}</h5>
+                            <div layout="column" ng-repeat="line in operation.lines">
+                                <header ng-if="line.previous_production_line">
+                                    <h4>{{line.previous_production_line.date_finished | date:'MM/dd/yyyy'}} </h4>
+                                    <h5>{{line.previous_production_line.Employee.getFullName()}}: {{line.previous_production_line.dozen_quantity}}x12,{{line.previous_production_line.piece_quantity}}</h5>
                                 </header>
-                                <div layout="row" ng-repeat="line in lines.lines">
+                                <div layout="row" ng-repeat="production_line in line.production_lines">
                                     <md-input-container flex>
                                         <label>Date Finished</label>
                                         <md-datepicker required
                                                        name="date_finished_{{operation_index}}_{{$index}}"
-                                                       ng-model="line.date"
+                                                       ng-model="production_line.date"
                                                        md-placeholder="Date finished"
                                                        md-open-on-focus></md-datepicker>
                                         <div ng-messages="$ctrl.Form['date_finished_' + operation_index + '_' + $index].$error">
@@ -154,10 +154,10 @@
                                                 md-require-match
                                                 md-input-name="employee_{{operation_index}}_{{$index}}"
                                                 md-min-length="0"
-                                                md-items="employee in $ctrl.commands.autocomplete.queryEmployee(line.search_employee)"
+                                                md-items="employee in $ctrl.commands.autocomplete.queryEmployee(production_line.search_employee)"
                                                 md-item-text="employee.getFullName()"
-                                                md-selected-item="line.Employee"
-                                                md-search-text="line.search_employee">
+                                                md-selected-item="production_line.Employee"
+                                                md-search-text="production_line.search_employee">
                                             <md-item-template>
                                                     <span md-highlight-text="$ctrl.search_employee"
                                                           md-highlight-flags="^i">{{employee.getFullName()}}</span>
@@ -177,7 +177,7 @@
                                             <label>Dozen Qty.</label>
                                             <input required name="dozen_quantity_{{operation_index}}_{{$index}}"
                                                    type="number"
-                                                   ng-model="line.dozen_quantity"
+                                                   ng-model="production_line.dozen_quantity"
                                                    ng-change="$ctrl.commands.computeQuantityRemaining(operation)">
                                             </input>
                                             <div ng-messages="$ctrl.Form['dozen_quantity_' + operation_index + '_' + $index].$error"
@@ -189,7 +189,7 @@
                                             <label>Piece Qty.</label>
                                             <input required name="piece_quantity_{{operation_index}}_{{$index}}"
                                                    type="number"
-                                                   ng-model="line.piece_quantity"
+                                                   ng-model="production_line.piece_quantity"
                                                    ng-change="$ctrl.commands.computeQuantityRemaining(operation)">
                                             </input>
                                             <div ng-messages="$ctrl.Form['piece_quantity_' + operation_index + '_' + $index].$error"
@@ -200,7 +200,7 @@
                                     </div>
                                     <div layout="column" layout-align="center end">
                                         <md-button class="md-icon-button"
-                                                   ng-click="$ctrl.commands.deleteLine(lines.lines, line, 'Are you sure you want to delete this production line?')">
+                                                   ng-click="$ctrl.commands.deleteLine(line.production_lines, production_line, 'Are you sure you want to delete this production line?')">
                                             <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
                                         </md-button>
                                     </div>
