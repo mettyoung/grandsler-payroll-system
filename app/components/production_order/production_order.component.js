@@ -14,17 +14,17 @@ angular.module('production-order')
          */
         const MESSAGE = {
           created: {
-            module: 'Employee Management',
-            description: 'Created an employee record successfully!'
+            module: 'Production Order',
+            description: 'Created a production order successfully!'
           },
           deleted: {
-            module: 'Employee Management',
-            description: 'Deleted an employee record successfully!',
-            toast: 'Deleted an employee record!'
+            module: 'Production Order',
+            description: 'Deleted a production order successfully!',
+            toast: 'Deleted a production order!'
           },
           modified: {
-            module: 'Employee Management',
-            description: 'Modified an employee record successfully!'
+            module: 'Production Order',
+            description: 'Modified a production order successfully!'
           }
         };
 
@@ -128,9 +128,10 @@ angular.module('production-order')
 
           CrudHandler.onAfterSelectMasterItem(this, () =>
           {
-            this.selected_item.detail = this.selected_item.StockCode.Operations.map((operation, index) =>
+            this.selected_item.detail = this.selected_item.StockCode.Operations.map(operation =>
             {
               return {
+                id: operation.id,
                 name: operation.name,
                 dozen_quantity_remaining: this.selected_item.dozen_quantity,
                 piece_quantity_remaining: this.selected_item.piece_quantity,
@@ -178,6 +179,42 @@ angular.module('production-order')
             return Notifier.perform(() =>
               selectedItem.save({
                 transaction: transaction
+              }).then(productionOrder =>
+              {
+                let promise = Promise.resolve();
+                for (let operation of selectedItem.detail)
+                  for (let line of operation.lines)
+                    for (let productionLine of line.production_lines)
+                    {
+                      promise = promise.then(() =>
+                      {
+                        let newProductionLine = productionLine;
+
+                        // Create production line.
+                        if (productionLine.constructor === Object)
+                        {
+                          newProductionLine = Object.assign({
+                            parent_id: null,
+                            production_id: productionOrder.id,
+                            stock_code_id: productionOrder.StockCode.id,
+                            pipeline_id: productionOrder.StockCode.pipeline_id,
+                            operation_id: operation.id,
+                            employee_id: productionLine.Employee.id
+                          }, productionLine);
+
+                          newProductionLine = ModelProvider.models.ProductionLine.build(newProductionLine);
+                        }
+
+                        return newProductionLine.save({transaction: transaction})
+                          .then(parentProductionLine =>
+                          {
+                            if (productionLine.childLine)
+                              for (let childProductionLine of productionLine.childLine.production_lines)
+                                childProductionLine.parent_id = parentProductionLine.id;
+                          })
+                      });
+                    }
+                return promise;
               }).then(() =>
               {
                 this.commands.close();
@@ -251,7 +288,7 @@ angular.module('production-order')
             };
             
             // Store a reference of newLine to the newProductionLine.
-            newProductionLine.newLine = newLine;
+            newProductionLine.childLine = newLine;
 
             // Add the new line to the lines of the next operation.
             this.selected_item.detail[operation_index + 1].lines.push(newLine);
@@ -278,7 +315,7 @@ angular.module('production-order')
           // Select the production lines given operation_index and line_index.
           const currentProductionLines = this.selected_item.detail[operation_index].lines[line_index].production_lines;
 
-          if (productionLine.newLine && productionLine.newLine.production_lines.length > 0)
+          if (productionLine.childLine && productionLine.childLine.production_lines.length > 0)
             return CrudHandler._alert('Restriction', 'You cannot delete a production line in used.');
           else
             return CrudHandler._confirmation(message).then(() => {
@@ -289,7 +326,7 @@ angular.module('production-order')
               // Deletes the line in the next operation if there's any and recompute quantity remaining.
               if (this.selected_item.detail[operation_index + 1])
               {
-                this.selected_item.detail[operation_index + 1].lines.splice(this.selected_item.detail[operation_index + 1].lines.indexOf(productionLine.newLine), 1);
+                this.selected_item.detail[operation_index + 1].lines.splice(this.selected_item.detail[operation_index + 1].lines.indexOf(productionLine.childLine), 1);
                 this.commands.computeQuantityRemaining(this.selected_item.detail[operation_index + 1]);
               }
             }, () => (0));

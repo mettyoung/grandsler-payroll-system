@@ -134,7 +134,7 @@
                                 <header class="line-header" flex>
                                     <h5><strong>Date Finished: </strong>{{line.previous_production_line.date_finished | date:'MM/dd/yyyy'}} </h5>
                                     <h6><strong>Previous Employee: </strong>{{line.previous_production_line.Employee.getFullName()}}</h6>
-                                    <h6><strong>Quantity Finished: </strong>{{line.previous_production_line.dozen_quantity}}x12,{{line.previous_production_line.piece_quantity}}</h6>
+                                    <h6><strong>Initial Quantity: </strong>{{line.previous_production_line.dozen_quantity}}x12,{{line.previous_production_line.piece_quantity}}</h6>
                                 </header>
                                 <div layout="row" ng-repeat="production_line in line.production_lines" flex>
                                     <md-input-container flex>
