@@ -132,7 +132,8 @@
                             </header>
                             <div layout="column" ng-repeat="lines in operation.lines">
                                 <header ng-if="lines.previous_line">
-                                    <h4>{{lines.previous_line.Employee.getFullName()}}</h4>
+                                    <h4>{{lines.previous_line.date_finished | date:'MM/dd/yyyy'}} </h4>
+                                    <h5>{{lines.previous_line.Employee.getFullName()}}: {{lines.previous_line.dozen_quantity}}x12,{{lines.previous_line.piece_quantity}}</h5>
                                 </header>
                                 <div layout="row" ng-repeat="line in lines.lines">
                                     <md-input-container flex>

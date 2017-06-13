@@ -146,6 +146,7 @@ angular.module('production-order')
                 stage.lines = [
                   {
                     previous_line: {
+                      date_finished: new Date(),
                       dozen_quantity: this.selected_item.dozen_quantity,
                       piece_quantity: this.selected_item.piece_quantity,
                       Employee: {
