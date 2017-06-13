@@ -126,32 +126,39 @@ angular.module('production-order')
             });
           });
 
+          /**
+           * Construct the detail view model.
+           */
           CrudHandler.onAfterSelectMasterItem(this, () =>
           {
+            // Initialize the empty detail view model.
             this.selected_item.detail = this.selected_item.StockCode.Operations.map(operation =>
             {
               return {
                 id: operation.id,
                 name: operation.name,
-                dozen_quantity_remaining: this.selected_item.dozen_quantity,
-                piece_quantity_remaining: this.selected_item.piece_quantity,
                 lines: []
               };
             });
 
-            this.selected_item.detail[0].lines = [
-              {
-                previous_production_line: {
-                  date_finished: new Date(),
-                  dozen_quantity: this.selected_item.dozen_quantity,
-                  piece_quantity: this.selected_item.piece_quantity,
-                  Employee: {
-                    getFullName: () => this.selected_item.Employee.getFullName()
+            if (this.selected_item.detail.length > 0)
+            {
+              Object.assign(this.selected_item.detail[0], {
+                dozen_quantity_remaining: this.selected_item.dozen_quantity,
+                piece_quantity_remaining: this.selected_item.piece_quantity,
+                lines: [
+                  {
+                    previous_production_line: {
+                      date_finished: null,
+                      dozen_quantity: this.selected_item.dozen_quantity,
+                      piece_quantity: this.selected_item.piece_quantity,
+                      Employee: this.selected_item.Employee
+                    },
+                    production_lines: []
                   }
-                },
-                production_lines: []
-              }
-            ];
+                ]
+              });
+            }
           });
 
           CrudHandler.onAfterCreateMasterItem(this, () =>
