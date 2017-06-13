@@ -155,12 +155,12 @@
                                                 md-input-name="employee_{{operation_index}}_{{$index}}"
                                                 md-min-length="0"
                                                 md-items="employee in $ctrl.commands.autocomplete.queryEmployee(line.search_employee)"
-                                                md-item-text="employee.display"
-                                                md-selected-item="line.employee"
+                                                md-item-text="employee.getFullName()"
+                                                md-selected-item="line.Employee"
                                                 md-search-text="line.search_employee">
                                             <md-item-template>
                                                     <span md-highlight-text="$ctrl.search_employee"
-                                                          md-highlight-flags="^i">{{employee.display}}</span>
+                                                          md-highlight-flags="^i">{{employee.getFullName()}}</span>
                                             </md-item-template>
                                             <md-not-found>
                                                 <span>'{{$ctrl.search_employee}}' cannot be found.</span>
@@ -260,11 +260,11 @@
                                             md-input-name="stock_code"
                                             md-min-length="0"
                                             md-items="stock_code in $ctrl.commands.autocomplete.queryStockCode($ctrl.search_stock_code)"
-                                            md-item-text="stock_code.display"
+                                            md-item-text="stock_code.name"
                                             md-selected-item="$ctrl.selected_item.stock_code"
                                             md-search-text="$ctrl.search_stock_code">
                                         <md-item-template>
-                                            <span md-highlight-text="$ctrl.search_stock_code" md-highlight-flags="^i">{{stock_code.display}}</span>
+                                            <span md-highlight-text="$ctrl.search_stock_code" md-highlight-flags="^i">{{stock_code.name}}</span>
                                         </md-item-template>
                                         <md-not-found>
                                             <span>'{{$ctrl.search_stock_code}}' cannot be found.</span>
@@ -292,11 +292,11 @@
                                             md-input-name="color"
                                             md-min-length="0"
                                             md-items="color in $ctrl.commands.autocomplete.queryColor($ctrl.search_color)"
-                                            md-item-text="color.display"
+                                            md-item-text="color.name"
                                             md-selected-item="$ctrl.selected_item.color"
                                             md-search-text="$ctrl.search_color">
                                         <md-item-template>
-                                            <span md-highlight-text="$ctrl.search_color" md-highlight-flags="^i">{{color.display}}</span>
+                                            <span md-highlight-text="$ctrl.search_color" md-highlight-flags="^i">{{color.name}}</span>
                                         </md-item-template>
                                         <md-not-found>
                                             <span>'{{$ctrl.search_color}}' cannot be found.</span>
@@ -324,11 +324,11 @@
                                             md-input-name="size"
                                             md-min-length="0"
                                             md-items="size in $ctrl.commands.autocomplete.querySize($ctrl.search_size)"
-                                            md-item-text="size.display"
+                                            md-item-text="size.name"
                                             md-selected-item="$ctrl.selected_item.size"
                                             md-search-text="$ctrl.search_size">
                                         <md-item-template>
-                                            <span md-highlight-text="$ctrl.search_size" md-highlight-flags="^i">{{size.display}}</span>
+                                            <span md-highlight-text="$ctrl.search_size" md-highlight-flags="^i">{{size.name}}</span>
                                         </md-item-template>
                                         <md-not-found>
                                             <span>'{{$ctrl.search_size}}' cannot be found.</span>
@@ -356,11 +356,11 @@
                                             md-input-name="employee"
                                             md-min-length="0"
                                             md-items="employee in $ctrl.commands.autocomplete.queryEmployee($ctrl.search_employee)"
-                                            md-item-text="employee.display"
+                                            md-item-text="employee.getFullName()"
                                             md-selected-item="$ctrl.selected_item.employee"
                                             md-search-text="$ctrl.search_employee">
                                         <md-item-template>
-                                            <span md-highlight-text="$ctrl.search_employee" md-highlight-flags="^i">{{employee.display}}</span>
+                                            <span md-highlight-text="$ctrl.search_employee" md-highlight-flags="^i">{{employee.getFullName()}}</span>
                                         </md-item-template>
                                         <md-not-found>
                                             <span>'{{$ctrl.search_employee}}' cannot be found.</span>

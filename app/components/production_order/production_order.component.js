@@ -155,9 +155,8 @@ angular.module('production-order')
                     },
                     lines: [
                       {
-                        employee: {
-                          value: this.selected_item.employee_id,
-                          display: this.selected_item.Employee.getFullName()
+                        Employee: {
+                          getFullName: () => this.selected_item.Employee.getFullName()
                         }
                       }
                     ]
@@ -183,10 +182,10 @@ angular.module('production-order')
             if (this.selected_item.constructor === Object)
             {
               action = 'created';
-              selectedItem.stock_code_id = selectedItem.stock_code.value;
-              selectedItem.color_id = selectedItem.color.value;
-              selectedItem.size_id = selectedItem.size.value;
-              selectedItem.employee_id = selectedItem.employee.value;
+              selectedItem.stock_code_id = selectedItem.stock_code.id;
+              selectedItem.color_id = selectedItem.color.id;
+              selectedItem.size_id = selectedItem.size.id;
+              selectedItem.employee_id = selectedItem.employee.id;
               selectedItem = ModelProvider.models.Production.build(selectedItem);
             }
 
@@ -330,13 +329,7 @@ angular.module('production-order')
                   $like: '%' + query + '%'
                 }
               }
-            }).then(stock_codes => stock_codes.map(function (stock_code)
-            {
-              return {
-                value: stock_code.id,
-                display: stock_code.name
-              };
-            }));
+            });
           },
           queryColor: query =>
           {
@@ -346,13 +339,7 @@ angular.module('production-order')
                   $like: '%' + query + '%'
                 }
               }
-            }).then(colors => colors.map(function (color)
-            {
-              return {
-                value: color.id,
-                display: color.name
-              };
-            }));
+            });
           },
           querySize: query =>
           {
@@ -362,13 +349,7 @@ angular.module('production-order')
                   $like: '%' + query + '%'
                 }
               }
-            }).then(sizes => sizes.map(function (size)
-            {
-              return {
-                value: size.id,
-                display: size.name
-              };
-            }));
+            });
           },
           queryEmployee: query =>
           {
@@ -386,13 +367,7 @@ angular.module('production-order')
                   }
                 }
               }
-            }).then(employees => employees.map(function (employee)
-            {
-              return {
-                value: employee.id,
-                display: employee.getFullName()
-              };
-            }));
+            });
           }
         };
 
