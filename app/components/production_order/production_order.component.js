@@ -281,7 +281,13 @@ angular.module('production-order')
           if (productionLine.newLine && productionLine.newLine.production_lines.length > 0)
             return CrudHandler._alert('Restriction', 'You cannot delete a production line in used.');
           else
-            return CrudHandler._confirmation(message).then(() => currentProductionLines.splice(currentProductionLines.indexOf(productionLine), 1), () => (0));
+            return CrudHandler._confirmation(message).then(() => {
+              // Deletes the productionLine in the currentProductionLines.
+              currentProductionLines.splice(currentProductionLines.indexOf(productionLine), 1);
+              // Deletes the line in the next operation if there's any.
+              if (this.selected_item.detail[operation_index + 1])
+                this.selected_item.detail[operation_index + 1].lines.splice(this.selected_item.detail[operation_index + 1].lines.indexOf(productionLine.newLine), 1);
+            }, () => (0));
         };
 
         /**
