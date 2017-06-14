@@ -194,7 +194,7 @@ angular.module('production-order')
                   });
               }
 
-              // Compute quantity remaining
+              // Compute quantity remaining on load.
               this.commands.computeQuantityRemaining();
             }
           });
@@ -367,18 +367,6 @@ angular.module('production-order')
 
             // Add the new line to the lines of the next operation.
             this.selected_item.detail[operation_index + 1].lines.push(newLine);
-
-            // Add watcher for re-computation of quantity remaining on dozen_quantity value changed.
-            $scope.$watch(() => newProductionLine.dozen_quantity, () =>
-            {
-              this.commands.computeQuantityRemaining();
-            });
-
-            // Add watcher for re-computation of quantity remaining on piece_quantity value changed.
-            $scope.$watch(() => newProductionLine.piece_quantity, () =>
-            {
-              this.commands.computeQuantityRemaining();
-            });
           }
         };
 
@@ -397,14 +385,13 @@ angular.module('production-order')
             {
               // Deletes the productionLine in the currentProductionLines.
               currentProductionLines.splice(currentProductionLines.indexOf(productionLine), 1);
-              // Recompute quantity remaining
-              this.commands.computeQuantityRemaining();
+
               // Deletes the line in the next operation if there's any and recompute quantity remaining.
               if (this.selected_item.detail[operation_index + 1])
-              {
                 this.selected_item.detail[operation_index + 1].lines.splice(this.selected_item.detail[operation_index + 1].lines.indexOf(productionLine.childLine), 1);
-                this.commands.computeQuantityRemaining();
-              }
+
+              // Recompute quantity remaining on delete.
+              this.commands.computeQuantityRemaining();
             }, () => (0));
         };
 
