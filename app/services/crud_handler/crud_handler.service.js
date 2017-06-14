@@ -207,7 +207,8 @@ class CrudHandler {
                 controller.detail_load_error = controller.write_error = null;
                 controller[options.selectedMasterItemProperty] = item;
               })
-              .catch(error => {
+              .catch(error =>
+              {
                 controller.detail_load_error = error;
                 controller.is_delete_disabled = true;
               })
@@ -249,7 +250,13 @@ class CrudHandler {
         else
           transaction = transactionOrMessage;
 
-        return promise.then(() => self._write(controller, transaction, 'delete'), () => (0));
+        return promise.then(() => self._write(controller, transaction, 'delete')
+          .then(() =>
+          {
+            // If delete is successful, set the selected item to null.
+            if (!controller.write_error)
+              controller[options.selectedMasterItemProperty] = null;
+          }), () => (0));
       },
 
       /**
@@ -418,21 +425,21 @@ class CrudHandler {
 
   /**
    * Creates an alert message box.
-   * @param message 
+   * @param message
    * @private
    */
-  _alert(title, message) 
+  _alert(title, message)
   {
     let alertDialog = this._$mdDialog.alert()
       .title(title)
       .textContent(message)
       .ok('Okay');
-    
+
     alertDialog._options.multiple = true;
 
     return this._$mdDialog.show(alertDialog);
   }
-  
+
   _getPaginationQuery(query)
   {
     // Extract column name with direction
