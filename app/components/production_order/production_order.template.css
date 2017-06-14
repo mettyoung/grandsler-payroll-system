@@ -16,6 +16,14 @@
   margin: 8px 0px;
 }
 
+#detail-container header.line-header {
+  border-left: 6px solid #2196F3;
+  padding: 0.01em 16px;
+  background-color: #ddffff;
+  color: black;
+  margin-bottom: 24px;
+}
+
 .md-table-pagination {
   padding: 0px;
   -webkit-justify-content: space-around;
@@ -24,10 +32,6 @@
 
 .md-table-pagination>.buttons:not(:first-child), .md-table-pagination>.limit-select:not(:first-child) {
   margin-left: 0px;
-}
-
-#create-dialog md-input-container {
-  margin-bottom: 0px;
 }
 
 md-autocomplete {
@@ -43,12 +47,4 @@ md-autocomplete md-autocomplete-wrap {
 md-autocomplete button,
 md-autocomplete md-icon {
   display: none;
-}
-
-#detail-container header.line-header {
-  border-left: 6px solid #2196F3;
-  padding: 0.01em 16px;
-  background-color: #ddffff;
-  color: black;
-  margin-bottom: 24px;
 }

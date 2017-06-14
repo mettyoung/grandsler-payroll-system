@@ -1,6 +1,7 @@
 angular.module('production-order-dialog')
   .component('productionOrderDialog', {
     bindings: {
+      onDialogClosed: '&',
       layout: '@',
       flex: '@'
     },
@@ -57,7 +58,7 @@ angular.module('production-order-dialog')
          */
         this.commands.close = () =>
         {
-          return $mdDialog.hide().then(() => this.commands.load());
+          return $mdDialog.hide().then(() => this.onDialogClosed());
         };
 
         /**

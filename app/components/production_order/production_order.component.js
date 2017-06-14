@@ -10,13 +10,9 @@ angular.module('production-order')
       {
         /**
          * This is used for the Notifier module.
-         * @type {{created: {module: string, description: string}, deleted: {module: string, description: string, toast: string}, modified: {module: string, description: string}}}
+         * @type {{deleted: {module: string, description: string, toast: string}, modified: {module: string, description: string}}}
          */
         const MESSAGE = {
-          created: {
-            module: 'Production Order',
-            description: 'Created a production order successfully!'
-          },
           deleted: {
             module: 'Production Order',
             description: 'Deleted a production order successfully!',
@@ -187,7 +183,7 @@ angular.module('production-order')
                 if (existingLine)
                   existingLine.production_lines.push(productionLine);
                 else
-                  // Store a reference of the UI-exposed production line to previous_production_line.
+                // Store a reference of the UI-exposed production line to previous_production_line.
                   selectedLines.push({
                     previous_production_line: this.selected_item.ProductionLines.filter(element => element.id === productionLine.parent_id)[0],
                     production_lines: [productionLine]
@@ -206,8 +202,14 @@ angular.module('production-order')
           CrudHandler.onAfterCreateMasterItem(this, () =>
           {
             $mdDialog.show({
-              contentElement: '#create-dialog',
-              parent: angular.element(document.body)
+              template: '<md-dialog flex="60">' +
+              '<production-order-dialog on-dialog-closed="$ctrl.parent.commands.load()" layout="column"></production-order-dialog>' +
+              '</md-dialog>',
+              multiple: true,
+              locals: {parent: this},
+              controller: angular.noop,
+              controllerAs: '$ctrl',
+              bindToController: true
             });
           });
 
@@ -216,9 +218,6 @@ angular.module('production-order')
            */
           CrudHandler.onBeforeSaveSelectedMasterItem(this, masterItem =>
           {
-            if (!masterItem.detail)
-              return Promise.resolve();
-
             let operationCounter = 1;
             for (let operation of masterItem.detail)
             {
@@ -235,33 +234,18 @@ angular.module('production-order')
 
           CrudHandler.onSaveSelectedMasterItem(this, transaction =>
           {
-            let action = 'modified';
-            let selectedItem = this.selected_item;
-            if (this.selected_item.constructor === Object)
-            {
-              action = 'created';
-              selectedItem.stock_code_id = selectedItem.StockCode.id;
-              selectedItem.color_id = selectedItem.Color.id;
-              selectedItem.size_id = selectedItem.Size.id;
-              selectedItem.employee_id = selectedItem.Employee.id;
-              selectedItem = ModelProvider.models.Production.build(selectedItem);
-            }
-
             return Notifier.perform(() =>
-              selectedItem.save({
+              this.selected_item.save({
                 transaction: transaction
               }).then(productionOrder =>
               {
-                if (!selectedItem.detail)
-                  return Promise.resolve();
-
                 let promise = ModelProvider.sequelize.query('DELETE FROM production_lines WHERE production_id = ? ORDER BY id DESC', {
                   replacements: [productionOrder.id],
                   type: ModelProvider.sequelize.QueryTypes.DELETE,
                   transaction: transaction
                 });
 
-                for (let operation of selectedItem.detail)
+                for (let operation of this.selected_item.detail)
                   for (let line of operation.lines)
                     for (let productionLine of line.production_lines)
                     {
@@ -295,7 +279,7 @@ angular.module('production-order')
               }).then(() =>
               {
                 this.commands.close();
-                return MESSAGE[action];
+                return MESSAGE.modified;
               }), transaction);
           });
 
@@ -394,93 +378,9 @@ angular.module('production-order')
         };
 
         /**
-         * Opens stock code registry.
-         */
-        this.commands.openStockCodeRegistry = () =>
-        {
-          $mdDialog.show({
-            template: '<md-dialog flex="60">' +
-            '<stock-code-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></stock-code-registry>' +
-            '</md-dialog>',
-            multiple: true,
-            locals: {parent: this},
-            controller: angular.noop,
-            controllerAs: '$ctrl',
-            bindToController: true
-          });
-        };
-
-        /**
-         * Opens color registry.
-         */
-        this.commands.openColorRegistry = () =>
-        {
-          $mdDialog.show({
-            template: '<md-dialog flex="60">' +
-            '<color-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></color-registry>' +
-            '</md-dialog>',
-            multiple: true,
-            locals: {parent: this},
-            controller: angular.noop,
-            controllerAs: '$ctrl',
-            bindToController: true
-          });
-        };
-
-        /**
-         * Opens size registry.
-         */
-        this.commands.openSizeRegistry = () =>
-        {
-          $mdDialog.show({
-            template: '<md-dialog flex="60">' +
-            '<size-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></size-registry>' +
-            '</md-dialog>',
-            multiple: true,
-            locals: {parent: this},
-            controller: angular.noop,
-            controllerAs: '$ctrl',
-            bindToController: true
-          });
-        };
-
-        /**
          * Autocomplete queries.
          */
         this.commands.autocomplete = {
-          queryStockCode: query =>
-          {
-            query = query || '';
-            return ModelProvider.models.StockCode.findAll({
-              where: {
-                name: {
-                  $like: '%' + query + '%'
-                }
-              }
-            });
-          },
-          queryColor: query =>
-          {
-            query = query || '';
-            return ModelProvider.models.Color.findAll({
-              where: {
-                name: {
-                  $like: '%' + query + '%'
-                }
-              }
-            });
-          },
-          querySize: query =>
-          {
-            query = query || '';
-            return ModelProvider.models.Size.findAll({
-              where: {
-                name: {
-                  $like: '%' + query + '%'
-                }
-              }
-            });
-          },
           queryEmployee: query =>
           {
             query = query || '';
