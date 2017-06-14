@@ -192,6 +192,9 @@ angular.module('production-order')
                     previous_production_line: this.selected_item.ProductionLines.filter(element => element.id === productionLine.parent_id)[0],
                     production_lines: [productionLine]
                   });
+
+                // Add child line if there's a next operation.
+                addChildLine(this.selected_item.detail[operation_indexer[productionLine.operation_id] + 1], productionLine);
               }
 
               // Compute quantity remaining on load.
@@ -353,21 +356,8 @@ angular.module('production-order')
           // Add the new production line to the current production lines.
           currentProductionLines.push(newProductionLine);
 
-          // If there is a next operation, execute the following:
-          if (this.selected_item.detail[operation_index + 1])
-          {
-            // Create a new line for the next operation and add a reference of the created production line.
-            const newLine = {
-              previous_production_line: newProductionLine,
-              production_lines: []
-            };
-
-            // Store a reference of newLine to the newProductionLine.
-            newProductionLine.childLine = newLine;
-
-            // Add the new line to the lines of the next operation.
-            this.selected_item.detail[operation_index + 1].lines.push(newLine);
-          }
+          // Add child line if there's a next operation.
+          addChildLine(this.selected_item.detail[operation_index + 1], newProductionLine);
         };
 
         /**
@@ -532,5 +522,27 @@ angular.module('production-order')
             }
           }
         };
+
+        /**
+         * Add child line to the productionLine if there is a next operation.
+         */
+        function addChildLine(nextOperation, productionLine)
+        {
+          // If there is a next operation, create a new line and save the previous production line reference to the productionLine:
+          if (nextOperation)
+          {
+            // Create a new line for the next operation and add a reference of the created production line.
+            const newLine = {
+              previous_production_line: productionLine,
+              production_lines: []
+            };
+
+            // Store a reference of newLine to the productionLine.
+            productionLine.childLine = newLine;
+
+            // Add the new line to the lines of the next operation.
+            nextOperation.lines.push(newLine);
+          }
+        }
       }]
   });
