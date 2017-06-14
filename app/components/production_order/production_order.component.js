@@ -175,6 +175,9 @@ angular.module('production-order')
            */
           CrudHandler.onBeforeSaveSelectedMasterItem(this, masterItem =>
           {
+            if (!masterItem.detail)
+              return Promise.resolve();
+            
             let operationCounter = 1;
             for (let operation of masterItem.detail)
             {
@@ -209,6 +212,8 @@ angular.module('production-order')
               }).then(productionOrder =>
               {
                 let promise = Promise.resolve();
+                if(!selectedItem.detail)
+                  return Promise.resolve();
                 for (let operation of selectedItem.detail)
                   for (let line of operation.lines)
                     for (let productionLine of line.production_lines)
