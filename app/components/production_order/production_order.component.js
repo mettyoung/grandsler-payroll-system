@@ -262,11 +262,7 @@ angular.module('production-order')
                       });
                     }
                 return promise;
-              }).then(() =>
-              {
-                this.commands.close();
-                return MESSAGE.modified;
-              }), transaction);
+              }).then(() => MESSAGE.modified), transaction);
           });
 
           CrudHandler.onDeleteSelectedMasterItem(this, transaction =>
@@ -289,11 +285,7 @@ angular.module('production-order')
                       message: 'Production Order is in used.'
                     });
                   return Promise.reject(error);
-                }).then(() =>
-                {
-                  this.commands.close();
-                  return MESSAGE.deleted;
-                });
+                }).then(() => MESSAGE.deleted);
             }, transaction);
           });
         }
@@ -377,15 +369,6 @@ angular.module('production-order')
               // Recompute quantity remaining on delete.
               this.commands.computeQuantityRemaining();
             }, () => (0));
-        };
-
-        /**
-         * Hides the dialog.
-         * @returns {Promise}
-         */
-        this.commands.close = () =>
-        {
-          return $mdDialog.hide().then(() => this.commands.load());
         };
 
         /**
