@@ -268,21 +268,19 @@ angular.module('production-order')
                       promise = promise.then(() =>
                       {
                         let newProductionLine = productionLine;
+                        if (productionLine.constructor !== Object)
+                          newProductionLine = productionLine.get({plain: true});
 
-                        // Create production line.
-                        if (productionLine.constructor === Object)
-                        {
-                          newProductionLine = Object.assign({
-                            parent_id: null,
-                            production_id: productionOrder.id,
-                            stock_code_id: productionOrder.StockCode.id,
-                            pipeline_id: productionOrder.StockCode.pipeline_id,
-                            operation_id: operation.id,
-                            employee_id: productionLine.Employee.id
-                          }, productionLine);
+                        newProductionLine = Object.assign({
+                          parent_id: null,
+                          production_id: productionOrder.id,
+                          stock_code_id: productionOrder.StockCode.id,
+                          pipeline_id: productionOrder.StockCode.pipeline_id,
+                          operation_id: operation.id,
+                          employee_id: productionLine.Employee.id
+                        }, newProductionLine);
 
-                          newProductionLine = ModelProvider.models.ProductionLine.build(newProductionLine);
-                        }
+                        newProductionLine = ModelProvider.models.ProductionLine.build(newProductionLine);
 
                         return newProductionLine.save({transaction: transaction})
                           .then(parentProductionLine =>
