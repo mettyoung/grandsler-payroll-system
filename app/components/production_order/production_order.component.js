@@ -199,20 +199,6 @@ angular.module('production-order')
             $scope.$apply();
           });
 
-          CrudHandler.onAfterCreateMasterItem(this, () =>
-          {
-            $mdDialog.show({
-              template: '<md-dialog flex="60">' +
-              '<production-order-dialog on-dialog-closed="$ctrl.parent.commands.load()" layout="column"></production-order-dialog>' +
-              '</md-dialog>',
-              multiple: true,
-              locals: {parent: this},
-              controller: angular.noop,
-              controllerAs: '$ctrl',
-              bindToController: true
-            });
-          });
-
           /**
            * Validation logic before saving.
            */
@@ -318,10 +304,27 @@ angular.module('production-order')
         CrudHandler.bootstrap(this, $scope);
 
         /**
+         * Override createMasterItem.
+         */
+        this.commands.createMasterItem = () =>
+        {
+          $mdDialog.show({
+            template: '<md-dialog flex="60">' +
+            '<production-order-dialog on-dialog-closed="$ctrl.parent.commands.load()" layout="column"></production-order-dialog>' +
+            '</md-dialog>',
+            multiple: true,
+            locals: {parent: this},
+            controller: angular.noop,
+            controllerAs: '$ctrl',
+            bindToController: true
+          });
+        };
+
+        /**
          * Initialize selected_item to null.
          */
         this.selected_item = null;
-        
+
         /**
          * If environment is production or dev, then auto-load.
          */
