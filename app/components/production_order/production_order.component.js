@@ -143,6 +143,7 @@ angular.module('production-order')
 
             if (this.selected_item.detail.length > 0)
             {
+              // Initialize operation 1 header.
               Object.assign(this.selected_item.detail[0], {
                 dozen_quantity_remaining: this.selected_item.dozen_quantity,
                 piece_quantity_remaining: this.selected_item.piece_quantity,

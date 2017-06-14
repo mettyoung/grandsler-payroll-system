@@ -132,7 +132,9 @@
                             </header>
                             <div layout="column" ng-repeat="(line_index, line) in operation.lines" flex>
                                 <header class="line-header" flex>
-                                    <h5><strong>Date Finished: </strong>{{line.previous_production_line.date_finished | date:'MM/dd/yyyy'}} </h5>
+                                    <h5 ng-if="line.previous_production_line.date_finished">
+                                        <strong>Date Started: </strong>{{line.previous_production_line.date_finished | date:'MM/dd/yyyy'}}
+                                    </h5>
                                     <h6><strong>Previous Employee: </strong>{{line.previous_production_line.Employee.getFullName()}}</h6>
                                     <h6><strong>Initial Quantity: </strong>{{line.previous_production_line.dozen_quantity}}x12,{{line.previous_production_line.piece_quantity}}</h6>
                                 </header>
