@@ -1,0 +1,18 @@
+md-input-container {
+  margin-bottom: 0px;
+}
+
+md-autocomplete {
+  background-color: transparent;
+}
+
+md-autocomplete md-autocomplete-wrap {
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+md-autocomplete button,
+md-autocomplete md-icon {
+  display: none;
+}
