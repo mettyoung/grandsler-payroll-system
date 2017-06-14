@@ -177,7 +177,7 @@ angular.module('production-order')
           {
             if (!masterItem.detail)
               return Promise.resolve();
-            
+
             let operationCounter = 1;
             for (let operation of masterItem.detail)
             {
@@ -211,9 +211,15 @@ angular.module('production-order')
                 transaction: transaction
               }).then(productionOrder =>
               {
-                let promise = Promise.resolve();
                 if(!selectedItem.detail)
                   return Promise.resolve();
+
+                let promise = ModelProvider.sequelize.query('DELETE FROM production_lines WHERE production_id = ? ORDER BY id DESC', {
+                  replacements: [productionOrder.id],
+                  type: ModelProvider.sequelize.QueryTypes.DELETE,
+                  transaction: transaction
+                });
+
                 for (let operation of selectedItem.detail)
                   for (let line of operation.lines)
                     for (let productionLine of line.production_lines)
