@@ -318,6 +318,11 @@ angular.module('production-order')
         CrudHandler.bootstrap(this, $scope);
 
         /**
+         * Initialize selected_item to null.
+         */
+        this.selected_item = null;
+        
+        /**
          * If environment is production or dev, then auto-load.
          */
         if (process.env.NODE_ENV !== 'test')
