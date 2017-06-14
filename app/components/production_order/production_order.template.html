@@ -181,7 +181,7 @@
                                             <input required name="dozen_quantity_{{operation_index}}_{{line_index}}_{{$index}}"
                                                    type="number"
                                                    ng-model="production_line.dozen_quantity"
-                                                   ng-change="$ctrl.commands.computeQuantityRemaining(operation)">
+                                                   ng-change="$ctrl.commands.computeQuantityRemaining()">
                                             </input>
                                             <div ng-messages="$ctrl.Form['dozen_quantity_' + operation_index + '_' + line_index + '_' + $index].$error"
                                                  ng-show="$ctrl.Form['dozen_quantity_' + operation_index + '_' + line_index + '_' + $index].$touched">
@@ -193,7 +193,7 @@
                                             <input required name="piece_quantity_{{operation_index}}_{{line_index}}_{{$index}}"
                                                    type="number"
                                                    ng-model="production_line.piece_quantity"
-                                                   ng-change="$ctrl.commands.computeQuantityRemaining(operation)">
+                                                   ng-change="$ctrl.commands.computeQuantityRemaining()">
                                             </input>
                                             <div ng-messages="$ctrl.Form['piece_quantity_' + operation_index + '_' + line_index + '_' + $index].$error"
                                                  ng-show="$ctrl.Form['piece_quantity_' + operation_index + '_' + line_index + '_' + $index].$touched">
