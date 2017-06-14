@@ -200,6 +200,7 @@ angular.module('production-order')
               // Compute quantity remaining on load.
               this.commands.computeQuantityRemaining();
             }
+            $scope.$apply();
           });
 
           CrudHandler.onAfterCreateMasterItem(this, () =>
