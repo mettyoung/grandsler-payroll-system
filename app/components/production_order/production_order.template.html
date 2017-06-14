@@ -180,6 +180,7 @@
                                             <label>Dozen Qty.</label>
                                             <input required name="dozen_quantity_{{operation_index}}_{{line_index}}_{{$index}}"
                                                    type="number"
+                                                   min="0"
                                                    ng-model="production_line.dozen_quantity"
                                                    ng-change="$ctrl.commands.computeQuantityRemaining()">
                                             </input>
@@ -192,6 +193,8 @@
                                             <label>Piece Qty.</label>
                                             <input required name="piece_quantity_{{operation_index}}_{{line_index}}_{{$index}}"
                                                    type="number"
+                                                   min="0"
+                                                   max="11"
                                                    ng-model="production_line.piece_quantity"
                                                    ng-change="$ctrl.commands.computeQuantityRemaining()">
                                             </input>
@@ -380,6 +383,7 @@
                                 <md-input-container flex>
                                     <label>Dozen quantity</label>
                                     <input required name="dozen_quantity" type="number"
+                                           min="0"
                                            ng-model="$ctrl.selected_item.dozen_quantity">
                                     </input>
                                     <div ng-messages="$ctrl.CreateForm.dozen_quantity.$error"
@@ -390,6 +394,8 @@
                                 <md-input-container flex>
                                     <label>Piece quantity</label>
                                     <input required name="piece_quantity" type="number"
+                                           min="0"
+                                           max="11"
                                            ng-model="$ctrl.selected_item.piece_quantity">
                                     </input>
                                     <div ng-messages="$ctrl.CreateForm.piece_quantity.$error"
