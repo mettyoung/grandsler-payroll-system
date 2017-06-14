@@ -290,21 +290,24 @@ angular.module('production-order')
 
             return Notifier.perform(() =>
             {
-              return this.selected_item.destroy({
+              return ModelProvider.sequelize.query('DELETE FROM production_lines WHERE production_id = ? ORDER BY id DESC', {
+                replacements: [this.selected_item.id],
+                type: ModelProvider.sequelize.QueryTypes.DELETE,
                 transaction: transaction
-              }).catch(error =>
-              {
-                if (error.name === 'SequelizeForeignKeyConstraintError')
-                  return Promise.reject({
-                    name: 'Reference Error',
-                    message: 'Employee is in used.'
-                  });
-                return Promise.reject(error);
-              }).then(() =>
-              {
-                this.commands.close();
-                return MESSAGE.deleted;
-              });
+              }).then(() => this.selected_item.destroy({transaction: transaction}))
+                .catch(error =>
+                {
+                  if (error.name === 'SequelizeForeignKeyConstraintError')
+                    return Promise.reject({
+                      name: 'Reference Error',
+                      message: 'Production Order is in used.'
+                    });
+                  return Promise.reject(error);
+                }).then(() =>
+                {
+                  this.commands.close();
+                  return MESSAGE.deleted;
+                });
             }, transaction);
           });
         }
