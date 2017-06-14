@@ -13,7 +13,17 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        // associations can be defined here
+        ProductionLine.belongsTo(models.ProductionLine, {
+          foreignKey: "parent_id",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
+        
+        ProductionLine.belongsTo(models.Employee, {
+          foreignKey: "employee_id",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
       }
     },
     tableName: 'production_lines',

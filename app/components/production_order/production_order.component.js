@@ -38,10 +38,20 @@ angular.module('production-order')
 
             // Add associations
             Object.assign(selectionOptions, {
-              include: [{
-                model: ModelProvider.models.StockCode,
-                include: [ModelProvider.models.Operation]
-              }, ModelProvider.models.Color, ModelProvider.models.Size, ModelProvider.models.Employee],
+              include: [
+                {
+                  model: ModelProvider.models.StockCode,
+                  include: [ModelProvider.models.Operation]
+                },
+                ModelProvider.models.Color, ModelProvider.models.Size, ModelProvider.models.Employee,
+                {
+                  model: ModelProvider.models.ProductionLine,
+                  include: [ModelProvider.models.Employee,
+                    {
+                      model: ModelProvider.models.ProductionLine,
+                      include: [ModelProvider.models.Employee]
+                    }]
+                }],
               where: {}
             });
 
@@ -141,6 +151,11 @@ angular.module('production-order')
               };
             });
 
+            // Create operation indexer.
+            const operation_indexer = {};
+            for (let i = 0; i < this.selected_item.detail.length; i++)
+              operation_indexer[this.selected_item.detail[i].id] = i;
+
             if (this.selected_item.detail.length > 0)
             {
               // Initialize operation 1 header.
@@ -150,6 +165,7 @@ angular.module('production-order')
                 lines: [
                   {
                     previous_production_line: {
+                      id: null,
                       date_finished: null,
                       dozen_quantity: this.selected_item.dozen_quantity,
                       piece_quantity: this.selected_item.piece_quantity,
@@ -159,6 +175,27 @@ angular.module('production-order')
                   }
                 ]
               });
+
+              // Load detail from database.
+              for (let productionLine of this.selected_item.ProductionLines)
+              {
+                // Find the selected lines given operation_id.
+                const selectedLines = this.selected_item.detail[operation_indexer[productionLine.operation_id]].lines;
+
+                // Find the selected line by matching productionLine's previous production line.
+                let existingLine;
+                for (let line of selectedLines)
+                  if (line.previous_production_line.id === productionLine.parent_id)
+                    existingLine = line;
+
+                if (existingLine)
+                  existingLine.production_lines.push(productionLine);
+                else
+                  selectedLines.push({
+                    previous_production_line: productionLine.ProductionLine,
+                    production_lines: [productionLine]
+                  });
+              }
             }
           });
 
@@ -211,7 +248,7 @@ angular.module('production-order')
                 transaction: transaction
               }).then(productionOrder =>
               {
-                if(!selectedItem.detail)
+                if (!selectedItem.detail)
                   return Promise.resolve();
 
                 let promise = ModelProvider.sequelize.query('DELETE FROM production_lines WHERE production_id = ? ORDER BY id DESC', {
@@ -324,13 +361,13 @@ angular.module('production-order')
               previous_production_line: newProductionLine,
               production_lines: []
             };
-            
+
             // Store a reference of newLine to the newProductionLine.
             newProductionLine.childLine = newLine;
 
             // Add the new line to the lines of the next operation.
             this.selected_item.detail[operation_index + 1].lines.push(newLine);
-            
+
             // Add watcher for re-computation of quantity remaining on dozen_quantity value changed.
             $scope.$watch(() => newProductionLine.dozen_quantity, () =>
             {
@@ -356,7 +393,8 @@ angular.module('production-order')
           if (productionLine.childLine && productionLine.childLine.production_lines.length > 0)
             return CrudHandler._alert('Restriction', 'You cannot delete a production line in used.');
           else
-            return CrudHandler._confirmation(message).then(() => {
+            return CrudHandler._confirmation(message).then(() =>
+            {
               // Deletes the productionLine in the currentProductionLines.
               currentProductionLines.splice(currentProductionLines.indexOf(productionLine), 1);
               // Recompute quantity remaining
