@@ -46,11 +46,7 @@ angular.module('production-order')
                 ModelProvider.models.Color, ModelProvider.models.Size, ModelProvider.models.Employee,
                 {
                   model: ModelProvider.models.ProductionLine,
-                  include: [ModelProvider.models.Employee,
-                    {
-                      model: ModelProvider.models.ProductionLine,
-                      include: [ModelProvider.models.Employee]
-                    }]
+                  include: [ModelProvider.models.Employee]
                 }],
               where: {}
             });
@@ -191,8 +187,9 @@ angular.module('production-order')
                 if (existingLine)
                   existingLine.production_lines.push(productionLine);
                 else
+                  // Store a reference of the UI-exposed production line to previous_production_line.
                   selectedLines.push({
-                    previous_production_line: productionLine.ProductionLine,
+                    previous_production_line: this.selected_item.ProductionLines.filter(element => element.id === productionLine.parent_id)[0],
                     production_lines: [productionLine]
                   });
               }
