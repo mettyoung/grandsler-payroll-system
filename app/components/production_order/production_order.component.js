@@ -412,6 +412,14 @@ angular.module('production-order')
             {
               operation.dozen_quantity_remaining = Math.floor(totalQuantity / 12);
               operation.piece_quantity_remaining = Math.abs(totalQuantity % 12);
+
+              for (let line of operation.lines)
+              {
+                const expected = line.previous_production_line.dozen_quantity * 12 + line.previous_production_line.piece_quantity;
+                const actual = line.production_lines.reduce(
+                  (accumulator, production_line) => accumulator + production_line.dozen_quantity * 12 + production_line.piece_quantity, 0);
+                line.progress = actual / expected * 100;
+              }
             }
           }
         };
