@@ -71,7 +71,7 @@
                 <md-list-item ng-class="productionOrder.is_finished ? 'is_finished' : ''"
                               ng-repeat="productionOrder in $ctrl.data.selected"
                               ng-click="$ctrl.commands.selectMasterItem(productionOrder)">
-                    <table style="width: 100%;">
+                    <table style="width: 100%; table-layout: fixed;">
                         <tr>
                             <td><strong>Batch:&nbsp;</strong>{{productionOrder.id}}</td>
                             <td><strong>Stock Code:&nbsp;</strong>{{productionOrder.StockCode.name}}</td>
