@@ -8,12 +8,11 @@
 <div id="main-content" layout="row" flex>
     <!-- Column: Query parameters and master list. -->
     <div id="master-container" layout="column" flex="40" md-whiteframe="4">
-        <!-- TODO: Query Parameters -->
         <md-toolbar class="md-table-toolbar md-default">
             <div class="md-toolbar-tools" flex>
                 <form layout="row" flex>
-                    <input flex type="text" ng-model="$ctrl.query.name" md-auto-focus="true"
-                           placeholder="Search Employee Name">
+                    <input flex type="text" ng-model="$ctrl.query.employee" md-auto-focus="true"
+                           placeholder="Search Employee">
                     <md-button class="md-icon-button" ng-click="$ctrl.showFilter = !$ctrl.showFilter">
                         <md-icon md-svg-icon="content:ic_filter_list_24px"></md-icon>
                     </md-button>
@@ -27,35 +26,47 @@
             </div>
             <div class="query-parameters" layout="column" ng-show="$ctrl.showFilter">
                 <md-input-container>
-                    <label>Employee Type</label>
-                    <md-select ng-model="$ctrl.query.employee_type">
+                    <label>Stock Code</label>
+                    <md-select ng-model="$ctrl.query.stock_code_id">
                         <md-option ng-value="0" selected>All</md-option>
-                        <md-option ng-value="'Time-based'">Time-based</md-option>
-                        <md-option ng-value="'Output-based'">Output-based</md-option>
+                        <md-option ng-value="stock_code.id" ng-repeat="stock_code in $ctrl.data.stock_codes">
+                            {{stock_code.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <label>Color</label>
+                    <md-select ng-model="$ctrl.query.color_id">
+                        <md-option ng-value="0" selected>All</md-option>
+                        <md-option ng-value="color.id" ng-repeat="color in $ctrl.data.colors">
+                            {{color.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <label>Size</label>
+                    <md-select ng-model="$ctrl.query.size_id">
+                        <md-option ng-value="0" selected>All</md-option>
+                        <md-option ng-value="size.id" ng-repeat="size in $ctrl.data.sizes">
+                            {{size.name}}
+                        </md-option>
                     </md-select>
                 </md-input-container>
                 <md-input-container>
                     <label>Status</label>
-                    <md-select ng-model="$ctrl.query.is_active">
+                    <md-select ng-model="$ctrl.query.is_finished">
                         <md-option ng-value="0" selected>All</md-option>
-                        <md-option ng-value="true">Active</md-option>
-                        <md-option ng-value="false">Inactive</md-option>
+                        <md-option ng-value="true">Finished</md-option>
+                        <md-option ng-value="false">Unfinished</md-option>
                     </md-select>
                 </md-input-container>
+                <!-- Discrepancy in percentage -->
                 <md-input-container>
-                    <label>Position</label>
-                    <md-select ng-model="$ctrl.query.position_id">
+                    <label>Show Operation Number</label>
+                    <md-select ng-model="$ctrl.query.operation_number">
                         <md-option ng-value="0" selected>All</md-option>
-                        <md-option ng-value="position.id" ng-repeat="position in $ctrl.data.positions">{{position.name}}
-                        </md-option>
-                    </md-select>
-                </md-input-container>
-                <md-input-container ng-show="$ctrl.auth.user.hasPermission('User Management')">
-                    <label>Has User Access</label>
-                    <md-select ng-model="$ctrl.query.has_user_access">
-                        <md-option ng-value="0" selected>All</md-option>
-                        <md-option ng-value="true">Yes</md-option>
-                        <md-option ng-value="false">No</md-option>
+                        <md-option ng-value="operation_number" ng-repeat="operation_number in $ctrl.data.operation_numbers">
+                            {{operation_number}}
                         </md-option>
                     </md-select>
                 </md-input-container>

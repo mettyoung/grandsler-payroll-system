@@ -28,6 +28,31 @@ angular.module('production-order')
          * Life cycles
          */
         {
+          CrudHandler.onPreload(this, transaction => Promise.all([
+            ModelProvider.models.StockCode.findAll({
+              transaction: transaction
+            }),
+            ModelProvider.models.Color.findAll({
+              transaction: transaction
+            }),
+            ModelProvider.models.Size.findAll({
+              transaction: transaction
+            }),
+            ModelProvider.models.PipelineOperation.findOne({
+                transaction: transaction,
+                group: ['pipeline_id'],
+                attributes: [[ModelProvider.sequelize.fn('COUNT', ModelProvider.sequelize.col('*')), 'total_count']],
+                order: [[ModelProvider.sequelize.col('total_count'), 'DESC']]
+              }
+            )])
+            .then(values =>
+            {
+              [this.data.stock_codes, this.data.colors, this.data.sizes] = values;
+              const numberOfOperations = values[3].get('total_count') || 0;
+
+              this.data.operation_numbers = [...new Array(numberOfOperations).keys()].map(value => value + 1);
+            }));
+
           CrudHandler.onLoad(this, pageOptions =>
           {
             const selectionOptions = {};
@@ -302,7 +327,7 @@ angular.module('production-order')
         {
           $mdDialog.show({
             template: '<md-dialog flex="60">' +
-            '<production-order-dialog on-dialog-closed="$ctrl.parent.commands.load()" layout="column"></production-order-dialog>' +
+            '<production-order-dialog on-dialog-closed="$ctrl.parent.commands.preload() && $ctrl.parent.commands.load()" layout="column"></production-order-dialog>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},
