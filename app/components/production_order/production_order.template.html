@@ -68,7 +68,8 @@
         <!-- TODO: Quantity Out; tooltip for quantity 1,2,3,4,5 of operations -->
         <md-content flex ng-hide="$ctrl.load_error">
             <md-list flex>
-                <md-list-item ng-repeat="productionOrder in $ctrl.data.selected"
+                <md-list-item ng-class="productionOrder.is_finished ? 'is_finished' : ''"
+                              ng-repeat="productionOrder in $ctrl.data.selected"
                               ng-click="$ctrl.commands.selectMasterItem(productionOrder)">
                     <table style="width: 100%;">
                         <tr>
