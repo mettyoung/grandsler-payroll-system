@@ -72,20 +72,19 @@
                               ng-click="$ctrl.commands.selectMasterItem(productionOrder)">
                     <table style="width: 100%;">
                         <tr>
-                            <td colspan="2"><strong>Batch:&nbsp;</strong>{{productionOrder.id}}</td>
-                        </tr>
-                        <tr>
+                            <td><strong>Batch:&nbsp;</strong>{{productionOrder.id}}</td>
                             <td><strong>Stock Code:&nbsp;</strong>{{productionOrder.StockCode.name}}</td>
-                            <td><strong>Employee:&nbsp;</strong>{{productionOrder.Employee.getFullName()}}</td>
                         </tr>
                         <tr>
                             <td><strong>Color:&nbsp;</strong>{{productionOrder.Color.name}}</td>
+                            <td><strong>Employee:&nbsp;</strong>{{productionOrder.Employee.getFullName()}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Size:&nbsp;</strong>{{productionOrder.Size.name}}</td>
                             <td><strong>Quantity In:&nbsp;</strong>{{productionOrder.dozen_quantity}}x12,{{productionOrder.piece_quantity}}
                             </td>
                         </tr>
                         <tr>
-                            <td><strong>Size:&nbsp;</strong>{{productionOrder.Size.name}}</td>
-                            <td><strong>Quantity Out:&nbsp;</strong>(TODO: 5x12,2)</td>
                         </tr>
                     </table>
                     <md-divider ng-if="!$last"></md-divider>
