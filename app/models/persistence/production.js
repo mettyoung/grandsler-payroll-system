@@ -7,6 +7,7 @@ module.exports = function(sequelize, DataTypes) {
     employee_id: DataTypes.INTEGER,
     dozen_quantity: DataTypes.INTEGER,
     piece_quantity: DataTypes.INTEGER,
+    is_finished: DataTypes.BOOLEAN,
     created_by: DataTypes.INTEGER,
     updated_by: DataTypes.INTEGER
   }, {

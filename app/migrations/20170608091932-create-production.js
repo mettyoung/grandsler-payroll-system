@@ -50,6 +50,11 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
+      is_finished: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       created_by: {
         allowNull: false,
         type: Sequelize.INTEGER,
