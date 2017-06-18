@@ -69,3 +69,7 @@ md-autocomplete button,
 md-autocomplete md-icon {
   display: none;
 }
+
+.query-parameters {
+  height: 150px;
+}

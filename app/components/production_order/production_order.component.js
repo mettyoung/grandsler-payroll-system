@@ -137,6 +137,7 @@ angular.module('production-order')
               });
             */
 
+            this.data.show_progress_bar = true;
             // Execute the query.
             return Promise.all([
               ModelProvider.models.Production.findAll(Object.assign(pageOptions, selectionOptions)),
@@ -146,6 +147,7 @@ angular.module('production-order')
               }, selectionOptions))
             ]).then(values =>
             {
+              this.data.show_progress_bar = false;
               return {
                 data: values[0],
                 total_count: values[1].get('total_count')
