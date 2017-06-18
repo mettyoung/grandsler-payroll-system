@@ -1,15 +1,5 @@
-#master-container md-list-item {
+#master-container md-list-item.is_unfinished {
   border-left: 6px solid #2196F3;
-  color: black;
-}
-
-#master-container md-list-item.is_finished {
-  border-left: 6px solid limegreen;
-}
-
-#master-container md-list-item {
-  border-left: 6px solid #2196F3;
-  color: black;
 }
 
 #master-container md-list-item.is_finished {

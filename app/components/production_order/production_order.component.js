@@ -64,7 +64,7 @@ angular.module('production-order')
                   model: ModelProvider.models.StockCode,
                   include: [ModelProvider.models.Operation]
                 },
-                ModelProvider.models.Color, ModelProvider.models.Size, ModelProvider.models.Employee,
+                ModelProvider.models.Color, ModelProvider.models.Size,
                 {
                   model: ModelProvider.models.ProductionLine,
                   include: [ModelProvider.models.Employee]
@@ -72,70 +72,49 @@ angular.module('production-order')
               where: {}
             });
 
-            /*
+            
             // Add filters
-            if (this.query.employee_type !== 0)
-              Object.assign(selectionOptions.where, {
-                employee_type: this.query.employee_type
-              });
-
-            if (this.query.position_id !== 0)
-              Object.assign(selectionOptions.where, {
-                position_id: this.query.position_id
-              });
-
-            if (this.query.is_active !== 0)
+            let employeeSelector = ModelProvider.models.Employee;
+            if (this.query.employee_name)
             {
-              const isActive = {
-                date_hired: {
-                  $lte: ModelProvider.Sequelize.fn('CURDATE')
-                },
-                date_released: {
+              employeeSelector = {
+                model: ModelProvider.models.Employee,
+                where: {
                   $or: {
-                    $gte: ModelProvider.Sequelize.fn('CURDATE'),
-                    $eq: null
+                    first_name: {
+                      $like: '%' + this.query.employee_name + '%'
+                    },
+                    middle_name: {
+                      $like: '%' + this.query.employee_name + '%'
+                    },
+                    last_name: {
+                      $like: '%' + this.query.employee_name + '%'
+                    }
                   }
                 }
               };
-
-              const where = this.query.is_active ? isActive : {
-                $not: isActive
-              };
-
-              selectionOptions.include.push({
-                model: ModelProvider.models.Employment,
-                where: where
-              });
             }
-
-            if (this.query.has_user_access !== 0)
-            {
-              const hasNoUserAccess = {
-                user_id: null
-              };
-
-              const where = this.query.has_user_access ? {
-                $not: hasNoUserAccess
-              } : hasNoUserAccess;
-
-              Object.assign(selectionOptions.where, where);
-            }
-
-            if (this.query.name && this.query.name.length > 0)
+            selectionOptions.include.push(employeeSelector);
+            
+            if (this.query.stock_code_id !== 0)
               Object.assign(selectionOptions.where, {
-                $or: {
-                  first_name: {
-                    $like: '%' + this.query.name + '%'
-                  },
-                  middle_name: {
-                    $like: '%' + this.query.name + '%'
-                  },
-                  last_name: {
-                    $like: '%' + this.query.name + '%'
-                  }
-                }
+                stock_code_id: this.query.stock_code_id
               });
-            */
+            
+            if (this.query.color_id !== 0)
+              Object.assign(selectionOptions.where, {
+                color_id: this.query.color_id
+              });
+
+            if (this.query.size_id !== 0)
+              Object.assign(selectionOptions.where, {
+                size_id: this.query.size_id
+              });
+
+            if (this.query.is_finished !== 0)
+              Object.assign(selectionOptions.where, {
+                is_finished: this.query.is_finished
+              });
 
             this.data.show_progress_bar = true;
             // Execute the query.

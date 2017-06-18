@@ -82,7 +82,7 @@
         <md-content flex ng-hide="$ctrl.load_error">
             <md-progress-linear md-mode="indeterminate" ng-show="$ctrl.data.show_progress_bar"></md-progress-linear>
             <md-list flex>
-                <md-list-item ng-class="productionOrder.is_finished ? 'is_finished' : ''"
+                <md-list-item ng-class="productionOrder.is_finished ? 'is_finished' : 'is_unfinished'"
                               ng-repeat="productionOrder in $ctrl.data.selected"
                               ng-click="$ctrl.commands.selectMasterItem(productionOrder)">
                     <table style="width: 100%; table-layout: fixed;">
