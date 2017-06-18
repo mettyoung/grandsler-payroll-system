@@ -144,7 +144,7 @@
             <form name="$ctrl.Form">
                 <fieldset ng-disabled="$ctrl.selected_item.is_finished">
                     <md-list flex>
-                        <md-list-item ng-repeat="(operation_index, operation) in $ctrl.selected_item.detail">
+                        <md-list-item ng-repeat="(operation_index, operation) in $ctrl.selected_item.detail" ng-show="$ctrl.query.operation_number == 0 || $ctrl.query.operation_number == operation_index + 1">
                             <div layout="column" flex>
                                 <header flex>
                                     <h3>Operation {{operation_index + 1}}: {{operation.name}}</h3>
