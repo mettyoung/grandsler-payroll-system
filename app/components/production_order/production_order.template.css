@@ -44,8 +44,11 @@
 
 .md-table-pagination {
   padding: 0px;
-  -webkit-justify-content: space-around;
-  justify-content: space-around;
+  display: -webkit-box;
+}
+
+.md-table-pagination md-select {
+  min-width: 30px;
 }
 
 .md-table-pagination>.buttons:not(:first-child), .md-table-pagination>.limit-select:not(:first-child) {

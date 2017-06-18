@@ -62,7 +62,8 @@
             </div>
             <md-table-pagination md-limit="$ctrl.query.limit" md-limit-options="$ctrl.preset.limitOptions"
                                  md-page="$ctrl.query.page" md-total="{{$ctrl.data.total_count}}"
-                                 md-on-paginate="$ctrl.commands.load" md-page-select>
+                                 md-on-paginate="$ctrl.commands.load" md-page-select
+                                 layout-align="center center" layout="row">
             </md-table-pagination>
         </md-toolbar>
         <md-content flex ng-hide="$ctrl.load_error">
