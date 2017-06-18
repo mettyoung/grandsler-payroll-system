@@ -299,7 +299,19 @@ angular.module('production-order')
         /**
          * Bootstraps this controller with CrudHandler that handles the basic CRUD controller routines.
          */
-        CrudHandler.bootstrap(this, $scope);
+        CrudHandler.bootstrap(this, $scope).then(() =>
+        {
+          /**
+           * If environment is production or dev, then auto-load.
+           */
+          if (process.env.NODE_ENV !== 'test')
+            this.commands.load();
+        });
+
+        /**
+         * Initialize selected_item to null.
+         */
+        this.selected_item = null;
 
         /**
          * Override createMasterItem.
@@ -317,17 +329,6 @@ angular.module('production-order')
             bindToController: true
           });
         };
-
-        /**
-         * Initialize selected_item to null.
-         */
-        this.selected_item = null;
-
-        /**
-         * If environment is production or dev, then auto-load.
-         */
-        if (process.env.NODE_ENV !== 'test')
-          this.commands.load();
 
         /**
          * Create new production line.
