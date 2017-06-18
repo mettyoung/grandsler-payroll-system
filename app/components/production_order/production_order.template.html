@@ -104,6 +104,10 @@
         <md-toolbar ng-hide="$ctrl.detail_load_error || !$ctrl.selected_item">
             <div class="md-toolbar-tools" flex>
                 <h2 flex>Batch: {{$ctrl.selected_item.id}}</h2>
+                <md-button class="md-icon-button"
+                           ng-click="$ctrl.commands.markFinished($ctrl.selected_item)">
+                    <md-icon md-svg-icon="action:ic_done_24px"></md-icon>
+                </md-button>
                 <md-button class="md-icon-button" type='submit'
                            ng-hide="$ctrl.detail_load_error"
                            ng-disabled="!$ctrl.Form.$valid"

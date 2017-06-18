@@ -372,6 +372,29 @@ angular.module('production-order')
         };
 
         /**
+         * Mark finished the production order.
+         * @param productionOrder
+         * @returns {*}
+         */
+        this.commands.markFinished = productionOrder =>
+        {
+          const message = `You won't be able modify the production order lines anymore. Are you sure you want to proceed?`;
+
+          if (this._isWriteIdle)
+          {
+            this._isWriteIdle = false;
+            return CrudHandler._confirmation(message).then(() =>
+            {
+              productionOrder.is_finished = true;
+              return productionOrder.save()
+                .catch(error => this.write_error = error)
+                .then(() => $scope.$apply())
+            }, () => (0))
+              .then(() => this._isWriteIdle = true);
+          }
+        };
+
+        /**
          * Autocomplete queries.
          */
         this.commands.autocomplete = {
