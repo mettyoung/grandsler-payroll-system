@@ -233,12 +233,15 @@ class CrudHandler {
        */
       saveSelectedMasterItem(transaction)
       {
-        return self._write(controller, transaction, 'save').then(() =>
-        {
-          // If save is successful, set the selected item to null.
-          if (!controller.write_error)
-            controller[options.selectedMasterItemProperty] = null;
-        });
+        const promise = self._write(controller, transaction, 'save');
+        if (promise)
+          promise.then(() =>
+          {
+            // If save is successful, set the selected item to null.
+            if (!controller.write_error)
+              controller[options.selectedMasterItemProperty] = null;
+          });
+        return promise;
       },
 
       /**
