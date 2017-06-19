@@ -212,9 +212,10 @@ class CrudHandler {
                 controller.detail_load_error = error;
                 controller.is_delete_disabled = true;
               })
+              .then(() => controller._lifeCycles.onAfterSelectMasterItem && controller._lifeCycles.onAfterSelectMasterItem(masterItem, transaction))
               .then(() => controller._$scope.$apply()));
 
-        return promise.then(() => controller._lifeCycles.onAfterSelectMasterItem && controller._lifeCycles.onAfterSelectMasterItem(masterItem, transaction));
+        return promise;
       },
 
       /**

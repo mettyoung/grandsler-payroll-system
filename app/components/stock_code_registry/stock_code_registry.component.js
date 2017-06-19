@@ -57,15 +57,19 @@ angular.module('stock-code-registry')
               ).then(() =>
               {
                 let promise = Promise.resolve();
-                for (let operation of this.selectedStockCode.Operations)
+                for (let i = 0; i < this.selectedStockCode.Operations.length; i++)
+                {
+                  const operation = this.selectedStockCode.Operations[i];
                   promise = promise.then(() => ModelProvider.models.StockCodeOperation.create({
                     stock_code_id: selectedStockCode.id,
                     pipeline_id: this.selectedStockCode.pipeline_id,
                     operation_id: operation.id,
+                    order: i,
                     price: operation.StockCodeOperation.price
                   }, {
                     transaction: transaction
                   }));
+                }
                 return promise;
               }).then(() =>
               {
@@ -125,6 +129,8 @@ angular.module('stock-code-registry')
               };
             });
           });
+
+          CrudHandler.onAfterSelectMasterItem(this, selectedItem => selectedItem.Operations = selectedItem.Operations.sort((a, b) => (a.StockCodeOperation.order - b.StockCodeOperation.order) < 0? -1: 1));
         }
 
         /**
@@ -178,7 +184,7 @@ angular.module('stock-code-registry')
             where: {
               id: pipeline_id
             }
-          }).then(pipeline => this.selectedStockCode.Operations = pipeline.Operations);
+          }).then(pipeline => this.selectedStockCode.Operations = pipeline.Operations.sort((a, b) => (a.PipelineOperation.order - b.PipelineOperation.order) < 0? -1: 1));
         }
       }]
   });

@@ -21,11 +21,15 @@ module.exports = {
         type: Sequelize.INTEGER,
         primaryKey: 'composite'
       },
+      order: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
       price: {
         allowNull: false,
         type: Sequelize.DECIMAL(10,2)
       }
-    });
+    }).then(() => queryInterface.addIndex('stock_codes_operations', ['order']));
   },
   down: function(queryInterface, Sequelize) {
     return queryInterface.dropTable('stock_codes_operations');
