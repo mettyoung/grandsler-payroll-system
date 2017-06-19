@@ -83,7 +83,7 @@ angular.module('user-account')
         /**
          * All modules.
          */
-        this.modules = extractModulesFromDependencyTree(DEPENDENCY_TREE).reduce(function (accumulator, module, index)
+        let modulesDictionary = extractModulesFromDependencyTree(DEPENDENCY_TREE).reduce(function (accumulator, module, index)
           {
             accumulator[module.name] = Object.assign({
               is_checked: false,
@@ -238,28 +238,27 @@ angular.module('user-account')
 
                   // Load the user permissions.
                   if (employee.User.UserPermissions)
-                    this.modules = employee.User.UserPermissions
+                    modulesDictionary = employee.User.UserPermissions
                       .reduce(function (accumulator, instance)
                       {
                         accumulator[instance.module_name].is_checked = true;
                         return accumulator;
-                      }, this.modules);
+                      }, modulesDictionary);
 
                   // Disables the dependents of the module if module is unchecked.
-                  for (let key in this.modules)
+                  for (let key in modulesDictionary)
                   {
-                    const module = this.modules[key];
+                    const module = modulesDictionary[key];
                     if (module.is_checked === false)
                       for (let dependent of module.dependents)
-                        this.modules[dependent].is_disabled = true;
+                        modulesDictionary[dependent].is_disabled = true;
                   }
                 }
 
-
                 // Properly format the view model.
-                this.modules = Object.keys(this.modules).map(key =>
+                this.modules = Object.keys(modulesDictionary).map(key =>
                 {
-                  return this.modules[key];
+                  return modulesDictionary[key];
                 });
               });
             });
@@ -279,6 +278,20 @@ angular.module('user-account')
           this.commands.close = () =>
           {
             return $mdDialog.hide().then(() => this.onDialogClosed());
+          };
+
+          /**
+           * Disables and unsets the permission of the module's dependents.
+           * @param module
+           */
+          this.commands.onUserPermissionChanged = module =>
+          {
+            for (let dependent of module.dependents)
+            {
+              this.modules[modulesDictionary[dependent].index].is_disabled = !module.is_checked;
+              if (!module.is_checked)
+                this.modules[modulesDictionary[dependent].index].is_checked = false;
+            }
           };
         }
         ;
