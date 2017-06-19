@@ -8,12 +8,54 @@ angular.module('user-account')
     controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', 'CrudHandler',
       function ($scope, $mdDialog, Notifier, ModelProvider, CrudHandler)
       {
+        const DEPENDENCY_TREE = [
+          'Salary Criteria Registry',
+          {
+            name: 'Employee Management',
+            dependents: ['Position Registry', 'Time-shift Registry']
+          },
+          {
+            name: 'Production Order',
+            dependents: [
+              {
+                name: 'Stock Code Registry',
+                dependents: [
+                  {
+                    name: 'Pipeline Registry',
+                    dependents: ['Operation Registry']
+                  }
+                ]
+              },
+              'Color Registry', 'Size Registry'
+            ]
+          }
+        ];
+
+        /**
+         * Extracts the module name in an array.
+         * @param dependencyTree
+         */
+        function extractModulesFromDependencyTree(dependencyTree)
+        {
+          let modules = [];
+          for (let module of dependencyTree)
+          {
+            if (typeof module !== 'string')
+            {
+              modules.push(module.name);
+              modules = [...modules, ...extractModulesFromDependencyTree(module.dependents)]
+            }
+
+            else
+              modules.push(module);
+          }
+          return modules;
+        }
+
         /**
          * All modules.
          */
-        this.modules = ['Salary Criteria Registry', 'Position Registry', 'Time-shift Registry', 'Employee Management',
-          'Stock Code Registry', 'Pipeline Registry', 'Operation Registry', 'Color Registry', 'Size Registry', 'Production Order']
-          .reduce(function (accumulator, module_name)
+        this.modules = extractModulesFromDependencyTree(DEPENDENCY_TREE).reduce(function (accumulator, module_name)
           {
             accumulator[module_name] = false;
             return accumulator;
