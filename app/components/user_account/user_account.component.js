@@ -32,8 +32,9 @@ angular.module('user-account')
         ];
 
         /**
-         * Extracts the module name in an array.
+         * Extracts module names with flatted dependencies from dependency tree.
          * @param dependencyTree
+         * @returns {Array}
          */
         function extractModulesFromDependencyTree(dependencyTree)
         {
@@ -42,8 +43,35 @@ angular.module('user-account')
           {
             if (typeof module !== 'string')
             {
-              modules.push(module.name);
+              modules.push({
+                name: module.name,
+                dependents: extractModuleNamesFromDependencyTree(module.dependents)
+              });
               modules = [...modules, ...extractModulesFromDependencyTree(module.dependents)]
+            }
+            else
+              modules.push({
+                name: module,
+                dependents: []
+              });
+          }
+          return modules;
+        }
+
+
+        /**
+         * Extracts the module name in an array.
+         * @param dependencyTree
+         */
+        function extractModuleNamesFromDependencyTree(dependencyTree)
+        {
+          let modules = [];
+          for (let module of dependencyTree)
+          {
+            if (typeof module !== 'string')
+            {
+              modules.push(module.name);
+              modules = [...modules, ...extractModuleNamesFromDependencyTree(module.dependents)]
             }
 
             else
@@ -55,9 +83,13 @@ angular.module('user-account')
         /**
          * All modules.
          */
-        this.modules = extractModulesFromDependencyTree(DEPENDENCY_TREE).reduce(function (accumulator, module_name)
+        this.modules = extractModulesFromDependencyTree(DEPENDENCY_TREE).reduce(function (accumulator, module, index)
           {
-            accumulator[module_name] = false;
+            accumulator[module.name] = Object.assign({
+              is_checked: false,
+              is_disabled: false,
+              index: index
+            }, module);
             return accumulator;
           }, {});
 
@@ -209,18 +241,25 @@ angular.module('user-account')
                     this.modules = employee.User.UserPermissions
                       .reduce(function (accumulator, instance)
                       {
-                        accumulator[instance.module_name] = true;
+                        accumulator[instance.module_name].is_checked = true;
                         return accumulator;
                       }, this.modules);
+
+                  // Disables the dependents of the module if module is unchecked.
+                  for (let key in this.modules)
+                  {
+                    const module = this.modules[key];
+                    if (module.is_checked === false)
+                      for (let dependent of module.dependents)
+                        this.modules[dependent].is_disabled = true;
+                  }
                 }
+
 
                 // Properly format the view model.
                 this.modules = Object.keys(this.modules).map(key =>
                 {
-                  return {
-                    name: key,
-                    is_checked: this.modules[key]
-                  };
+                  return this.modules[key];
                 });
               });
             });

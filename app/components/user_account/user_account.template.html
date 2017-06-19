@@ -63,7 +63,7 @@
                 <md-content flex>
                     <md-list flex>
                         <md-list-item ng-repeat="module in $ctrl.modules">
-                            <md-checkbox ng-model="module.is_checked"></md-checkbox>
+                            <md-checkbox ng-model="module.is_checked" ng-disabled="module.is_disabled"></md-checkbox>
                             {{module.name}}
                             <md-divider ng-if="!$last"></md-divider>
                         </md-list-item>
