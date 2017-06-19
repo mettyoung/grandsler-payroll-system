@@ -5,8 +5,8 @@ angular.module('production-order')
       flex: '@'
     },
     templateUrl: './components/production_order/production_order.template.html',
-    controller: ['$scope', '$mdDialog', 'Notifier', 'CrudHandler', 'ModelProvider',
-      function ($scope, $mdDialog, Notifier, CrudHandler, ModelProvider)
+    controller: ['$scope', '$mdDialog', 'Notifier', 'CrudHandler', 'ModelProvider', 'hotkeys',
+      function ($scope, $mdDialog, Notifier, CrudHandler, ModelProvider, hotkeys)
       {
         /**
          * This is used for the Notifier module.
@@ -475,5 +475,58 @@ angular.module('production-order')
             nextOperation.lines.push(newLine);
           }
         }
+
+        /**
+         * Add hotkeys
+         */
+        const hotkeysDictionary = hotkeys.bindTo($scope)
+          .add({
+            combo: 'ctrl+c',
+            description: 'Creates a new production order.',
+            callback: (event, hotkey) =>
+            {
+              this.commands.createMasterItem();
+            }
+          })
+          .add({
+            combo: `ctrl+0`,
+            description: `Show all operations.`,
+            callback: (event, hotkey) => this.query.operation_number = 0
+          });
+
+        const addOperationHotkeys = hotkeysDictionary =>
+        {
+          for (let i = 1; i <= 5; i++)
+            hotkeysDictionary = hotkeysDictionary.add({
+              combo: `ctrl+${i}`,
+              description: `Only show operation #${i}`,
+              callback: (event, hotkey) =>
+              {
+                if (this.data.operation_numbers && this.data.operation_numbers.length >= i)
+                  this.query.operation_number = i;
+              }
+            });
+
+          return hotkeysDictionary;
+        };
+
+        const addSelectionHotkeys = hotkeysDictionary =>
+        {
+          for (let i = 0; i < 5; i++)
+            hotkeysDictionary = hotkeysDictionary.add({
+              combo: `f${i+1}`,
+              description: `Selects production order #${i+1}`,
+              callback: (event, hotkey) =>
+              {
+                if (this.data.selected && this.data.selected.length > i)
+                  this.commands.selectMasterItem(this.data.selected[i]);
+              }
+            });
+
+          return hotkeysDictionary;
+        };
+
+        addOperationHotkeys(hotkeysDictionary);
+        addSelectionHotkeys(hotkeysDictionary);
       }]
   });

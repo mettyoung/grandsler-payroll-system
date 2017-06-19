@@ -9,4 +9,4 @@ require('../../components/production_order_dialog/production_order_dialog.module
 require('../../components/production_order_dialog/production_order_dialog.component');
 require('../../components/production_order_dialog/production_order_dialog.config');
 angular.module('production-order', ['md.data.table', 'front-end-validations',
-  'notifier', 'crud-handler', 'model-provider', 'production-order-dialog']);
+  'notifier', 'crud-handler', 'model-provider', 'production-order-dialog', 'cfp.hotkeys']);
