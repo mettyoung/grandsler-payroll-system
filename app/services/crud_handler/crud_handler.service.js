@@ -214,7 +214,7 @@ class CrudHandler {
               })
               .then(() => controller._$scope.$apply()));
 
-        return promise.then(() => controller._lifeCycles.onAfterSelectMasterItem && controller._lifeCycles.onAfterSelectMasterItem());
+        return promise.then(() => controller._lifeCycles.onAfterSelectMasterItem && controller._lifeCycles.onAfterSelectMasterItem(masterItem, transaction));
       },
 
       /**
@@ -276,9 +276,12 @@ class CrudHandler {
         if (typeof message === 'string')
           promise = self._confirmation(message);
 
-        return promise.then(() => controller[options.selectedMasterItemProperty][options.detailProperty]
-            .splice(controller[options.selectedMasterItemProperty][options.detailProperty].indexOf(detailItem), 1),
-          () => (0));
+        return promise.then(() =>
+          {
+            controller[options.selectedMasterItemProperty][options.detailProperty]
+              .splice(controller[options.selectedMasterItemProperty][options.detailProperty].indexOf(detailItem), 1);
+            controller._lifeCycles.onAfterDeleteDetailItem && controller._lifeCycles.onAfterDeleteDetailItem(detailItem);
+          }, () => (0));
       },
 
       /**
@@ -359,6 +362,13 @@ class CrudHandler {
     if (!controller._lifeCycles)
       controller._lifeCycles = {};
     controller._lifeCycles.onDeleteSelectedMasterItem = onDeleteSelectedMasterItem;
+  }
+
+  onAfterDeleteDetailItem(controller, onAfterDeleteDetailItem)
+  {
+    if (!controller._lifeCycles)
+      controller._lifeCycles = {};
+    controller._lifeCycles.onAfterDeleteDetailItem = onAfterDeleteDetailItem;
   }
 
   onLoad(controller, onLoad)

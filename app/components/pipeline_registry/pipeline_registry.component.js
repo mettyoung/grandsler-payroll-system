@@ -46,33 +46,45 @@ angular.module('pipeline-registry')
                 transaction: transaction
               }).then(pipeline =>
                 {
+                  // Save the details.
                   selectedPipeline = pipeline;
-                  return ModelProvider.models.PipelineOperation.destroy({
-                    transaction: transaction,
-                    where: {
-                      pipeline_id: selectedPipeline.id
-                    }
-                  });
+
+                  let promise = Promise.resolve();
+                  // Delete to be deleted instances.
+                  for (let instance of this.selectedPipeline.toBeDeleted)
+                    if (instance.constructor !== Object)
+                      promise = promise.then(() => ModelProvider.models.PipelineOperation.destroy({
+                        where: {
+                          pipeline_id: selectedPipeline.id,
+                          operation_id: instance.id
+                        },
+                        transaction: transaction
+                      }));
+
+                  // Save all details.
+                  for (let operation of this.selectedPipeline.Operations)
+                  {
+                    let instance = operation;
+                    if (operation.constructor === Object)
+                      instance = ModelProvider.models.PipelineOperation.build({
+                        pipeline_id: selectedPipeline.id,
+                        operation_id: operation.id
+                      });
+
+                    promise = promise.then(() => instance.save({
+                      transaction: transaction
+                    }));
+                  }
+                  return promise;
                 }
-              ).then(() =>
-              {
-                let promise = Promise.resolve();
-                for (let operation of this.selectedPipeline.Operations)
-                  promise = promise.then(() => ModelProvider.models.PipelineOperation.create({
-                    pipeline_id: selectedPipeline.id,
-                    operation_id: operation.id
-                  }, {
-                    transaction: transaction
-                  }));
-                return promise;
-              }).catch(error =>
+              ).catch(error =>
               {
                 if (error.name === 'SequelizeUniqueConstraintError')
                   return Promise.reject({
                     name: 'Duplicate Error',
                     message: 'You cannot have duplicated operation in different stages.'
                   });
-                if (error.name === 'SequelizeForeignConstraintError')
+                if (error.name === 'SequelizeForeignKeyConstraintError')
                   return Promise.reject({
                     name: 'Reference Error',
                     message: 'Pipeline is in used.'
@@ -135,6 +147,9 @@ angular.module('pipeline-registry')
               };
             });
           });
+
+          CrudHandler.onAfterSelectMasterItem(this, selectedItem => selectedItem.toBeDeleted = []);
+          CrudHandler.onAfterDeleteDetailItem(this, detailItem => this.selectedPipeline.toBeDeleted.push(detailItem));
         }
 
         /**
