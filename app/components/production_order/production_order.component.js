@@ -48,7 +48,7 @@ angular.module('production-order')
             .then(values =>
             {
               [this.data.stock_codes, this.data.colors, this.data.sizes] = values;
-              const numberOfOperations = values[3].get('total_count') || 0;
+              const numberOfOperations = values[3] && values[3].get('total_count') || 0;
 
               this.data.operation_numbers = [...new Array(numberOfOperations).keys()].map(value => value + 1);
             }));
