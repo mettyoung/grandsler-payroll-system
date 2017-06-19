@@ -300,8 +300,6 @@ class CrudHandler {
             {
               controller.data.selected = result.data;
               controller.data.total_count = result.total_count;
-              if (result.data.length > 0)
-                return controller.commands.selectMasterItem(result.data[0], transaction);
             })
             .catch(error => controller.load_error = error)
             .then(() => controller._$scope.$apply());
