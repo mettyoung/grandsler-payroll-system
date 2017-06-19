@@ -170,7 +170,7 @@ angular.module('pipeline-registry')
         this.commands.openOperationRegistry = () =>
         {
           $mdDialog.show({
-            template: '<md-dialog flex="40">' +
+            template: '<md-dialog flex="60">' +
             '<operation-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></operation-registry>' +
             '</md-dialog>',
             multiple: true,
