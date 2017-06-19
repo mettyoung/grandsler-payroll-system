@@ -35,11 +35,14 @@ angular.module('stock-code-registry')
           {
             let action = 'modified';
             let selectedStockCode = this.selectedStockCode;
+            let previousPipelineId;
             if (this.selectedStockCode.constructor === Object)
             {
               selectedStockCode = ModelProvider.models.StockCode.build(selectedStockCode);
               action = 'created';
             }
+            else
+              previousPipelineId = selectedStockCode.previous('pipeline_id');
 
             return Notifier.perform(() =>
               selectedStockCode.save({
@@ -47,12 +50,14 @@ angular.module('stock-code-registry')
               }).then(stockCode =>
                 {
                   selectedStockCode = stockCode;
-                  return ModelProvider.models.StockCodeOperation.destroy({
-                    transaction: transaction,
-                    where: {
-                      stock_code_id: selectedStockCode.id
-                    }
-                  });
+                  // Only delete if pipeline_id is changed, this will trigger the intrinsic checker if stock code is already used.
+                  if (this.selectedStockCode.constructor !== Object && this.selectedStockCode.pipeline_id !== previousPipelineId)
+                    return ModelProvider.models.StockCodeOperation.destroy({
+                      transaction: transaction,
+                      where: {
+                        stock_code_id: selectedStockCode.id
+                      }
+                    });
                 }
               ).then(() =>
               {
@@ -60,17 +65,34 @@ angular.module('stock-code-registry')
                 for (let i = 0; i < this.selectedStockCode.Operations.length; i++)
                 {
                   const operation = this.selectedStockCode.Operations[i];
-                  promise = promise.then(() => ModelProvider.models.StockCodeOperation.create({
-                    stock_code_id: selectedStockCode.id,
-                    pipeline_id: this.selectedStockCode.pipeline_id,
-                    operation_id: operation.id,
-                    order: i,
-                    price: operation.StockCodeOperation.price
-                  }, {
+                  let instance;
+                  if (operation.constructor === Object)
+                    instance = ModelProvider.models.StockCodeOperation.build({
+                      stock_code_id: selectedStockCode.id,
+                      pipeline_id: this.selectedStockCode.pipeline_id,
+                      operation_id: operation.id,
+                      order: i,
+                      price: operation.StockCodeOperation.price
+                    });
+                  else
+                  {
+                    instance = operation.StockCodeOperation;
+                    instance.order = i;
+                  }
+
+                  promise = promise.then(() => instance.save({
                     transaction: transaction
                   }));
                 }
                 return promise;
+              }).catch(error =>
+              {
+                if (error.name === 'SequelizeForeignKeyConstraintError')
+                  return Promise.reject({
+                    name: 'Reference Error',
+                    message: 'Stock Code is in used.'
+                  });
+                return Promise.reject(error);
               }).then(() =>
               {
                 this.commands.close();
