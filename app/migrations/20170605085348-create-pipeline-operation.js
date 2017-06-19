@@ -19,8 +19,12 @@ module.exports = {
           key: 'id'
         },
         primaryKey: 'composite'
+      },
+      order: {
+        allowNull: false,
+        type: Sequelize.INTEGER
       }
-    });
+    }).then(() => queryInterface.addIndex('pipelines_operations', ['order']));
   },
   down: function(queryInterface, Sequelize) {
     return queryInterface.dropTable('pipelines_operations');

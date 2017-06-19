@@ -2,7 +2,8 @@
 module.exports = function(sequelize, DataTypes) {
   var PipelineOperation = sequelize.define('PipelineOperation', {
     pipeline_id: DataTypes.INTEGER,
-    operation_id: DataTypes.INTEGER
+    operation_id: DataTypes.INTEGER,
+    order: DataTypes.INTEGER
   }, {
     classMethods: {
       associate: function(models) {

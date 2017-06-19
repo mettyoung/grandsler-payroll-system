@@ -178,14 +178,14 @@ class CrudHandler {
       createMasterItem()
       {
         controller.is_delete_disabled = true;
-        controller[options.selectedMasterItemProperty] = {
+        const masterItem = controller[options.selectedMasterItemProperty] = {
           [options.detailProperty]: []
         };
         controller.detail_load_error = controller.write_error = null;
 
         // Set it to untouched to reset validations.
         controller[options.formProperty] && controller[options.formProperty].$setUntouched();
-        controller._lifeCycles.onAfterCreateMasterItem && controller._lifeCycles.onAfterCreateMasterItem();
+        controller._lifeCycles.onAfterCreateMasterItem && controller._lifeCycles.onAfterCreateMasterItem(masterItem);
       },
 
       /**

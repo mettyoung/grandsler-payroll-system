@@ -62,14 +62,21 @@ angular.module('pipeline-registry')
                       }));
 
                   // Save all details.
-                  for (let operation of this.selectedPipeline.Operations)
+                  for (let i = 0; i < this.selectedPipeline.Operations.length; i++)
                   {
-                    let instance = operation;
+                    const operation = this.selectedPipeline.Operations[i];
+                    let instance;
                     if (operation.constructor === Object)
                       instance = ModelProvider.models.PipelineOperation.build({
                         pipeline_id: selectedPipeline.id,
-                        operation_id: operation.id
+                        operation_id: operation.id,
+                        order: i
                       });
+                    else
+                    {
+                      instance = operation.PipelineOperation;
+                      instance.order = i;
+                    }
 
                     promise = promise.then(() => instance.save({
                       transaction: transaction
@@ -148,7 +155,11 @@ angular.module('pipeline-registry')
             });
           });
 
-          CrudHandler.onAfterSelectMasterItem(this, selectedItem => selectedItem.toBeDeleted = []);
+          CrudHandler.onAfterSelectMasterItem(this, selectedItem => {
+            selectedItem.toBeDeleted = [];
+            selectedItem.Operations = selectedItem.Operations.sort((a, b) => (a.PipelineOperation.order - b.PipelineOperation.order) < 0? -1: 1);
+          });
+          CrudHandler.onAfterCreateMasterItem(this, selectedItem => selectedItem.toBeDeleted = []);
           CrudHandler.onAfterDeleteDetailItem(this, detailItem => this.selectedPipeline.toBeDeleted.push(detailItem));
         }
 
@@ -166,6 +177,7 @@ angular.module('pipeline-registry')
          */
         if (process.env.NODE_ENV !== 'test')
           this.commands.load();
+        this.commands.createMasterItem();
 
         /**
          * Additional command for dialog.
@@ -195,6 +207,5 @@ angular.module('pipeline-registry')
             bindToController: true
           });
         };
-
       }]
   });
