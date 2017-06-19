@@ -11,7 +11,8 @@ angular.module('user-account')
         /**
          * All modules.
          */
-        this.modules = ['Salary Criteria Registry', 'Position Registry', 'Time-shift Registry', 'Employee Management']
+        this.modules = ['Salary Criteria Registry', 'Position Registry', 'Time-shift Registry', 'Employee Management',
+          'Stock Code Registry', 'Pipeline Registry', 'Operation Registry', 'Color Registry', 'Size Registry', 'Production Order']
           .reduce(function (accumulator, module_name)
           {
             accumulator[module_name] = false;
