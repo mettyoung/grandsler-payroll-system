@@ -246,14 +246,14 @@ angular.module('production-order')
                         let newProductionLine = productionLine;
                         if (productionLine.constructor !== Object)
                           newProductionLine = productionLine.get({plain: true});
+                        newProductionLine.employee_id = productionLine.Employee.id;
 
                         newProductionLine = Object.assign({
                           parent_id: null,
                           production_id: productionOrder.id,
                           stock_code_id: productionOrder.StockCode.id,
                           pipeline_id: productionOrder.StockCode.pipeline_id,
-                          operation_id: operation.id,
-                          employee_id: productionLine.Employee.id
+                          operation_id: operation.id
                         }, newProductionLine);
 
                         newProductionLine = ModelProvider.models.ProductionLine.build(newProductionLine);
