@@ -84,7 +84,7 @@ angular.module('production-order')
             Object.assign(selectionOptions, {
               include: selectionAssociations,
               where: {},
-              group: ['ProductionLines.production_id'],
+              group: ['Production.id', 'ProductionLines.production_id'],
               order: ['id'],
               subQuery: false
             });
