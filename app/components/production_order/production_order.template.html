@@ -178,6 +178,7 @@
                                         <md-input-container flex>
                                             <label>Employee</label>
                                             <md-autocomplete
+                                                    ng-if="operation_index > 0"
                                                     required
                                                     md-require-match
                                                     md-input-name="employee_{{operation_index}}_{{line_index}}_{{$index}}"
@@ -193,6 +194,14 @@
                                                 <md-not-found>
                                                     <span>'{{$ctrl.search_employee}}' cannot be found.</span>
                                                 </md-not-found>
+                                            </md-autocomplete>
+                                            <md-autocomplete
+                                                    disabled
+                                                    ng-if="operation_index === 0"
+                                                    md-items="employee in $ctrl.commands.autocomplete.queryEmployee(production_line.search_employee)"
+                                                    md-item-text="employee.getFullName()"
+                                                    md-selected-item="production_line.Employee"
+                                                    ng-init="production_line.Employee = $ctrl.selected_item.Employee">
                                             </md-autocomplete>
                                             <div ng-messages="$ctrl.Form['employee_' + operation_index + '_' + line_index + '_' + $index].$error"
                                                  ng-show="$ctrl.Form['employee_' + operation_index + '_' + line_index + '_' + $index].$touched">
