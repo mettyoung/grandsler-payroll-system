@@ -55,52 +55,58 @@ angular.module('production-order')
 
           CrudHandler.onLoad(this, pageOptions =>
           {
-            const selectionOptions = {};
+            /**
+             * We have to separate two queries since it is impossible to eager load hasMany associations while 
+             * creating a selection based on other joined tables and paginating. Hence, there are two association objects.
+             * One to be used for the selection. The other is used for the projection.
+             */
+            const selectionAssociations = [
+              ModelProvider.models.Employee,
+              {
+                model: ModelProvider.models.ProductionLine,
+                include: [ModelProvider.models.Employee]
+              }];
 
-            // Add associations
+            const projectionAssociations = [
+              ModelProvider.models.Employee,
+              {
+                model: ModelProvider.models.StockCode,
+                include: [ModelProvider.models.Operation]
+              },
+              ModelProvider.models.Color, ModelProvider.models.Size,
+              {
+                model: ModelProvider.models.ProductionLine,
+                include: [ModelProvider.models.Employee]
+              }];
+
+            const selectionOptions = {};
+            // Add selection associations
             Object.assign(selectionOptions, {
-              include: [
-                {
-                  model: ModelProvider.models.StockCode,
-                  include: [ModelProvider.models.Operation]
-                },
-                ModelProvider.models.Color, ModelProvider.models.Size,
-                {
-                  model: ModelProvider.models.ProductionLine,
-                  include: [ModelProvider.models.Employee]
-                }],
-              where: {}
+              include: selectionAssociations,
+              where: {},
+              group: ['ProductionLines.production_id'],
+              order: ['id'],
+              subQuery: false
             });
 
-            
             // Add filters
-            let employeeSelector = ModelProvider.models.Employee;
-            if (this.query.employee_name)
-            {
-              employeeSelector = {
-                model: ModelProvider.models.Employee,
-                where: {
-                  $or: {
-                    first_name: {
-                      $like: '%' + this.query.employee_name + '%'
-                    },
-                    middle_name: {
-                      $like: '%' + this.query.employee_name + '%'
-                    },
-                    last_name: {
-                      $like: '%' + this.query.employee_name + '%'
-                    }
-                  }
-                }
-              };
-            }
-            selectionOptions.include.push(employeeSelector);
-            
+            if (this.query.employee_name && this.query.employee_name.length > 0)
+              Object.assign(selectionOptions.where, {
+                $or: [
+                  ModelProvider.Sequelize.literal(`\`Employee\`.first_name LIKE '%${this.query.employee_name}%'`),
+                  ModelProvider.Sequelize.literal(`\`Employee\`.middle_name LIKE '%${this.query.employee_name}%'`),
+                  ModelProvider.Sequelize.literal(`\`Employee\`.last_name LIKE '%${this.query.employee_name}%'`),
+                  ModelProvider.Sequelize.literal(`\`ProductionLines.Employee\`.first_name LIKE '%${this.query.employee_name}%'`),
+                  ModelProvider.Sequelize.literal(`\`ProductionLines.Employee\`.middle_name LIKE '%${this.query.employee_name}%'`),
+                  ModelProvider.Sequelize.literal(`\`ProductionLines.Employee\`.last_name LIKE '%${this.query.employee_name}%'`)
+                ]
+              });
+
             if (this.query.stock_code_id !== 0)
               Object.assign(selectionOptions.where, {
                 stock_code_id: this.query.stock_code_id
               });
-            
+
             if (this.query.color_id !== 0)
               Object.assign(selectionOptions.where, {
                 color_id: this.query.color_id
@@ -117,21 +123,27 @@ angular.module('production-order')
               });
 
             this.data.show_progress_bar = true;
+
             // Execute the query.
-            return Promise.all([
-              ModelProvider.models.Production.findAll(Object.assign(pageOptions, selectionOptions)),
-              ModelProvider.models.Production.findOne(Object.assign({
-                attributes: [[ModelProvider.models.sequelize.fn('COUNT', ModelProvider.models.sequelize.col('*')), 'total_count'],
-                  'stock_code_id', 'color_id', 'size_id', 'employee_id']
-              }, selectionOptions))
-            ]).then(values =>
-            {
-              this.data.show_progress_bar = false;
-              return {
-                data: values[0],
-                total_count: values[1].get('total_count')
-              };
-            });
+            return ModelProvider.models.Production.findAndCountAll(Object.assign(pageOptions, selectionOptions))
+              .then(result =>
+              {
+                const production_ids = result.rows.map(row => row.id);
+
+                return ModelProvider.models.Production.findAll({
+                  include: projectionAssociations,
+                  where: {
+                    id: production_ids
+                  }
+                }).then(productions =>
+                {
+                    this.data.show_progress_bar = false;
+                    return {
+                      data: productions,
+                      total_count: result.count.length
+                    };
+                })
+              });
           });
 
           /**
@@ -514,8 +526,8 @@ angular.module('production-order')
         {
           for (let i = 0; i < 5; i++)
             hotkeysDictionary = hotkeysDictionary.add({
-              combo: `f${i+1}`,
-              description: `Selects production order #${i+1}`,
+              combo: `f${i + 1}`,
+              description: `Selects production order #${i + 1}`,
               callback: (event, hotkey) =>
               {
                 if (this.data.selected && this.data.selected.length > i)
