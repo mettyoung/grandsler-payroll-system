@@ -31,6 +31,16 @@ angular.module('pipeline-registry')
          * Lifecycles
          */
         {
+          CrudHandler.onBeforeSaveSelectedMasterItem(this, masterItem =>
+          {
+            if (masterItem.Operations.length === 0)
+              return Promise.reject({
+                name: 'Validation Error',
+                message: 'Pipeline must have at least one operation.'
+              });
+            return Promise.resolve();
+          });
+
           CrudHandler.onSaveSelectedMasterItem(this, transaction =>
           {
             let action = 'modified';
