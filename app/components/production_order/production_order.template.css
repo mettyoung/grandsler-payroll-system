@@ -53,7 +53,7 @@ md-autocomplete md-autocomplete-wrap {
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
   box-shadow: none !important;
-  background: white;
+  background: transparent;
 }
 
 md-autocomplete button,
