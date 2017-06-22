@@ -277,54 +277,6 @@ angular.module('production-order')
         };
 
         /**
-         * Create new production line.
-         */
-        this.commands.createNewProductionLine = (operation_index, line_index) =>
-        {
-          // Select the production lines given operation_index and line_index.
-          const currentProductionLines = this.selected_item.detail[operation_index].lines[line_index].production_lines;
-
-          // Create new production line.
-          const newProductionLine = {
-            date_finished: new Date(),
-            Employee: null,
-            dozen_quantity: 0,
-            piece_quantity: 0
-          };
-
-          // Add the new production line to the current production lines.
-          currentProductionLines.push(newProductionLine);
-
-          // Add child line if there's a next operation.
-          addChildLine(this.selected_item.detail[operation_index + 1], newProductionLine);
-        };
-
-        /**
-         * Deletes the selected production line but first checks if it is used.
-         */
-        this.commands.deleteProductionLine = (operation_index, line_index, productionLine, message) =>
-        {
-          // Select the production lines given operation_index and line_index.
-          const currentProductionLines = this.selected_item.detail[operation_index].lines[line_index].production_lines;
-
-          if (productionLine.childLine && productionLine.childLine.production_lines.length > 0)
-            return CrudHandler._alert('Restriction', 'You cannot delete a production line in used.');
-          else
-            return CrudHandler._confirmation(message).then(() =>
-            {
-              // Deletes the productionLine in the currentProductionLines.
-              currentProductionLines.splice(currentProductionLines.indexOf(productionLine), 1);
-
-              // Deletes the line in the next operation if there's any and recompute quantity remaining.
-              if (this.selected_item.detail[operation_index + 1])
-                this.selected_item.detail[operation_index + 1].lines.splice(this.selected_item.detail[operation_index + 1].lines.indexOf(productionLine.childLine), 1);
-
-              // Recompute quantity remaining on delete.
-              this.commands.computeQuantityRemaining();
-            }, () => (0));
-        };
-
-        /**
          * Mark finished the production order.
          * @param productionOrder
          * @returns {*}
@@ -392,28 +344,6 @@ angular.module('production-order')
         };
 
         /**
-         * Add child line to the productionLine if there is a next operation.
-         */
-        function addChildLine(nextOperation, productionLine)
-        {
-          // If there is a next operation, create a new line and save the previous production line reference to the productionLine:
-          if (nextOperation)
-          {
-            // Create a new line for the next operation and add a reference of the created production line.
-            const newLine = {
-              previous_production_line: productionLine,
-              production_lines: []
-            };
-
-            // Store a reference of newLine to the productionLine.
-            productionLine.childLine = newLine;
-
-            // Add the new line to the lines of the next operation.
-            nextOperation.lines.push(newLine);
-          }
-        }
-
-        /**
          * Add hotkeys
          */
         const hotkeysDictionary = hotkeys.bindTo($scope)
@@ -424,28 +354,7 @@ angular.module('production-order')
             {
               this.commands.createMasterItem();
             }
-          })
-          .add({
-            combo: `ctrl+0`,
-            description: `Show all operations.`,
-            callback: (event, hotkey) => this.query.operation_number = 0
           });
-
-        const addOperationHotkeys = hotkeysDictionary =>
-        {
-          for (let i = 1; i <= 5; i++)
-            hotkeysDictionary = hotkeysDictionary.add({
-              combo: `ctrl+${i}`,
-              description: `Only show operation #${i}`,
-              callback: (event, hotkey) =>
-              {
-                if (this.data.operation_numbers && this.data.operation_numbers.length >= i)
-                  this.query.operation_number = i;
-              }
-            });
-
-          return hotkeysDictionary;
-        };
 
         const addSelectionHotkeys = hotkeysDictionary =>
         {
@@ -463,7 +372,6 @@ angular.module('production-order')
           return hotkeysDictionary;
         };
 
-        addOperationHotkeys(hotkeysDictionary);
         addSelectionHotkeys(hotkeysDictionary);
       }]
   });
