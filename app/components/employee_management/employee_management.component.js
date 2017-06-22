@@ -326,7 +326,7 @@ angular.module('employee-management')
          * @returns {*|employees.picture|{type}}
          */
         this.commands.getImage = () => {
-          return this.selected_item.picture || base64.fromByteArray(fs.readFileSync('./app/assets/employee_placeholder.jpg'));
+          return this.selected_item && this.selected_item.picture || base64.fromByteArray(fs.readFileSync('./app/assets/employee_placeholder.jpg'));
         };
       }]
   });
