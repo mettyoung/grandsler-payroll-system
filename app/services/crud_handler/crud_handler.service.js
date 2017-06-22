@@ -184,6 +184,7 @@ class CrudHandler {
         controller.detail_load_error = controller.write_error = null;
 
         // Set it to untouched to reset validations.
+        controller[options.formProperty] && controller[options.formProperty].$setPristine();
         controller[options.formProperty] && controller[options.formProperty].$setUntouched();
         controller._lifeCycles.onAfterCreateMasterItem && controller._lifeCycles.onAfterCreateMasterItem(masterItem);
       },
