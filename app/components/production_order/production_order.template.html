@@ -61,9 +61,10 @@
                             <md-option ng-value="false">Unfinished</md-option>
                         </md-select>
                     </md-input-container>
-                    <!-- Discrepancy in percentage -->
+                    <!-- TODO: Discrepancy in percentage -->
+                    <!-- TODO: Make Operation filter work. -->
                     <md-input-container>
-                        <label>Show Operation Number</label>
+                        <label>Operation Number</label>
                         <md-select ng-model="$ctrl.query.operation_number">
                             <md-option ng-value="0" selected>All</md-option>
                             <md-option ng-value="operation_number" ng-repeat="operation_number in $ctrl.data.operation_numbers">
@@ -82,27 +83,31 @@
         <md-content flex ng-hide="$ctrl.load_error">
             <md-progress-linear md-mode="indeterminate" ng-show="$ctrl.data.show_progress_bar"></md-progress-linear>
             <md-list flex>
-                <md-list-item ng-class="productionOrder.is_finished ? 'is_finished' : 'is_unfinished'"
-                              ng-repeat="productionOrder in $ctrl.data.selected"
-                              ng-click="$ctrl.commands.selectMasterItem(productionOrder)">
-                    <table style="width: 100%; table-layout: fixed;">
-                        <tr>
-                            <td><strong>Batch:&nbsp;</strong>{{productionOrder.id}}</td>
-                            <td><strong>Stock Code:&nbsp;</strong>{{productionOrder.StockCode.name}}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Color:&nbsp;</strong>{{productionOrder.Color.name}}</td>
-                            <td><strong>Employee:&nbsp;</strong>{{productionOrder.Employee.getFullName()}}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Size:&nbsp;</strong>{{productionOrder.Size.name}}</td>
-                            <td><strong>Quantity In:&nbsp;</strong>{{productionOrder.dozen_quantity}}x12,{{productionOrder.piece_quantity}}
-                            </td>
-                        </tr>
-                        <tr>
-                        </tr>
-                    </table>
-                    <md-divider ng-if="!$last"></md-divider>
+                <md-list-item ng-repeat="productionLine in $ctrl.data.selected"
+                              ng-class="productionLine.Production.is_finished ? 'is_finished' : 'is_unfinished'"
+                              ng-click="$ctrl.commands.selectMasterItem(productionLine)">
+                    <div layout="column" flex>
+                        <table style="width: 100%; table-layout: fixed;">
+                            <tr>
+                                <td><strong>Batch:&nbsp;</strong>{{productionLine.Production.id}}</td>
+                                <td><strong>Stock Code:&nbsp;</strong>{{productionLine.Production.StockCode.name}}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Operation:&nbsp;</strong>{{productionLine.operation_number}}</td>
+                                <td><strong>Article:&nbsp;</strong>{{productionLine.Production.Color.name}}&nbsp;({{productionLine.Production.Size.name}})</td>
+                            </tr>
+                        </table>
+                        <div class="sub-banner" ng-if="productionLine.operation_number > 1"><strong>Previous Employee:&nbsp;</strong>{{productionLine.ParentProductionLine.Employee.getFullName()}}</div>
+                        <div class="sub-banner" ng-if="productionLine.operation_number === 1"><strong>Starting Employee:&nbsp;</strong>{{productionLine.Employee.getFullName()}}</div>
+                        <table style="width: 100%; table-layout: fixed;">
+                            <tr>
+                                <td ng-if="productionLine.operation_number > 1"><strong>Date Started:&nbsp;</strong>{{productionLine.ParentProductionLine.date_finished | date:'MM/dd/yyyy'}}</td>
+                                <td ng-if="productionLine.operation_number > 1"><strong>Quantity In:&nbsp;</strong>{{productionLine.ParentProductionLine.dozen_quantity}}x12,{{productionLine.ParentProductionLine.piece_quantity}}</td>
+                                <td ng-if="productionLine.operation_number === 1"><strong>Date Finished:&nbsp;</strong>{{productionLine.date_finished | date:'MM/dd/yyyy'}}</td>
+                                <td ng-if="productionLine.operation_number === 1"><strong>Quantity Out:&nbsp;</strong>{{productionLine.dozen_quantity}}x12,{{productionLine.piece_quantity}}</td>
+                        </table>
+                        <md-divider ng-if="!$last"></md-divider>
+                    </div>
                 </md-list-item>
             </md-list>
         </md-content>

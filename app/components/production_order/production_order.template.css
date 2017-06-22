@@ -64,3 +64,11 @@ md-autocomplete md-icon {
 .query-parameters {
   height: 150px;
 }
+
+.sub-banner {
+  background-color: #ddffff;
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
