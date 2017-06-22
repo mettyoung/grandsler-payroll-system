@@ -132,11 +132,11 @@ angular.module('production-order')
                   }
                 }).then(productionLines =>
                 {
-                    this.data.show_progress_bar = false;
-                    return {
-                      data: productionLines,
-                      total_count: result.count.length
-                    };
+                  this.data.show_progress_bar = false;
+                  return {
+                    data: productionLines,
+                    total_count: result.count.length
+                  };
                 });
               });
           });
@@ -227,11 +227,12 @@ angular.module('production-order')
             }, transaction);
           });
 
-          CrudHandler.onAfterSelectMasterItem(this, selectedItem => {
+          CrudHandler.onAfterSelectMasterItem(this, selectedItem =>
+          {
             selectedItem.toBeDeleted = [];
             this.commands.computeQuantityRemaining();
             selectedItem.Production.StockCode.Operations =
-              selectedItem.Production.StockCode.Operations.sort((a, b) => (a.StockCodeOperation.order - b.StockCodeOperation.order) < 0? -1: 1);
+              selectedItem.Production.StockCode.Operations.sort((a, b) => (a.StockCodeOperation.order - b.StockCodeOperation.order) < 0 ? -1 : 1);
           });
           CrudHandler.onAfterDeleteDetailItem(this, detailItem => this.selected_item.toBeDeleted.push(detailItem) && this.commands.computeQuantityRemaining());
         }
@@ -329,17 +330,17 @@ angular.module('production-order')
          */
         this.commands.computeQuantityRemaining = () =>
         {
-            const totalQuantityIn = this.selected_item.dozen_quantity * 12 + this.selected_item.piece_quantity;
-            const totalQuantityOut = this.selected_item.ChildrenProductionLines.reduce(
-              (accumulator, production_line) => accumulator + production_line.dozen_quantity * 12 + production_line.piece_quantity, 0);
-            const totalQuantityRemaining = totalQuantityIn - totalQuantityOut;
+          const totalQuantityIn = this.selected_item.dozen_quantity * 12 + this.selected_item.piece_quantity;
+          const totalQuantityOut = this.selected_item.ChildrenProductionLines.reduce(
+            (accumulator, production_line) => accumulator + production_line.dozen_quantity * 12 + production_line.piece_quantity, 0);
+          const totalQuantityRemaining = totalQuantityIn - totalQuantityOut;
 
-            if (!isNaN(totalQuantityRemaining))
-            {
-              this.selected_item.dozen_quantity_remaining = Math.floor(totalQuantityRemaining / 12);
-              this.selected_item.piece_quantity_remaining = Math.abs(totalQuantityRemaining % 12);
-              this.selected_item.progress = totalQuantityOut / totalQuantityIn * 100;
-            }
+          if (!isNaN(totalQuantityRemaining))
+          {
+            this.selected_item.dozen_quantity_remaining = Math.floor(totalQuantityRemaining / 12);
+            this.selected_item.piece_quantity_remaining = Math.abs(totalQuantityRemaining % 12);
+            this.selected_item.progress = totalQuantityOut / totalQuantityIn * 100;
+          }
         };
 
         /**
