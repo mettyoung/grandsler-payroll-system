@@ -93,18 +93,18 @@
                                 <td><strong>Stock Code:&nbsp;</strong>{{productionLine.Production.StockCode.name}}</td>
                             </tr>
                             <tr>
-                                <td><strong>Operation:&nbsp;</strong>{{productionLine.operation_number}}</td>
+                                <td><strong>From Operation:&nbsp;</strong>{{productionLine.operation_number}}</td>
                                 <td><strong>Article:&nbsp;</strong>{{productionLine.Production.Color.name}}&nbsp;({{productionLine.Production.Size.name}})</td>
                             </tr>
                         </table>
-                        <div class="sub-banner" ng-if="productionLine.operation_number > 1"><strong>Previous Employee:&nbsp;</strong>{{productionLine.ParentProductionLine.Employee.getFullName()}}</div>
-                        <div class="sub-banner" ng-if="productionLine.operation_number === 1"><strong>Starting Employee:&nbsp;</strong>{{productionLine.Employee.getFullName()}}</div>
+                        <div class="sub-banner"><strong>Previous Employee:&nbsp;</strong>{{productionLine.Employee.getFullName()}}</div>
                         <table style="width: 100%; table-layout: fixed;">
                             <tr>
-                                <td ng-if="productionLine.operation_number > 1"><strong>Date Started:&nbsp;</strong>{{productionLine.ParentProductionLine.date_finished | date:'MM/dd/yyyy'}}</td>
-                                <td ng-if="productionLine.operation_number > 1"><strong>Quantity In:&nbsp;</strong>{{productionLine.ParentProductionLine.dozen_quantity}}x12,{{productionLine.ParentProductionLine.piece_quantity}}</td>
-                                <td ng-if="productionLine.operation_number === 1"><strong>Date Finished:&nbsp;</strong>{{productionLine.date_finished | date:'MM/dd/yyyy'}}</td>
-                                <td ng-if="productionLine.operation_number === 1"><strong>Quantity Out:&nbsp;</strong>{{productionLine.dozen_quantity}}x12,{{productionLine.piece_quantity}}</td>
+                                <td><strong>Date Started:&nbsp;</strong>{{productionLine.date_finished | date:'MM/dd/yyyy'}}
+                                </td>
+                                <td><strong>Quantity In:&nbsp;</strong>{{productionLine.dozen_quantity}}x12,{{productionLine.piece_quantity}}
+                                </td>
+                            </tr>
                         </table>
                         <md-divider ng-if="!$last"></md-divider>
                     </div>
