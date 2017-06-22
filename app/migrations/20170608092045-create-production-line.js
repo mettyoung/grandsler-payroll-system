@@ -35,6 +35,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
+      operation_number: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
       employee_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
