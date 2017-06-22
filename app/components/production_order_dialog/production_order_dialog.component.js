@@ -21,6 +21,20 @@ angular.module('production-order-dialog')
          * Life cycles
          */
         {
+          CrudHandler.onPreload(this, transaction => Promise.all([
+            ModelProvider.models.StockCode.findAll({
+              transaction: transaction
+            }),
+            ModelProvider.models.Color.findAll({
+              transaction: transaction
+            }),
+            ModelProvider.models.Size.findAll({
+              transaction: transaction
+            })]).then(values =>
+            {
+              [this.data.stock_codes, this.data.colors, this.data.sizes] = values;
+            }));
+
           CrudHandler.onSaveSelectedMasterItem(this, transaction =>
           {
             let selectedItem = this.selected_item;
