@@ -10,7 +10,9 @@ module.exports = function(sequelize, DataTypes) {
     employee_id: DataTypes.INTEGER,
     date_finished: DataTypes.DATE,
     dozen_quantity: DataTypes.INTEGER,
-    piece_quantity: DataTypes.INTEGER
+    piece_quantity: DataTypes.INTEGER,
+    created_by: DataTypes.INTEGER,
+    updated_by: DataTypes.INTEGER
   }, {
     classMethods: {
       associate: function(models) {
@@ -34,9 +36,7 @@ module.exports = function(sequelize, DataTypes) {
         });
       }
     },
-    tableName: 'production_lines',
-    createdAt: false,
-    updatedAt: false
+    tableName: 'production_lines'
   });
   return ProductionLine;
 };
