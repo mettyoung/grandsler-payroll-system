@@ -420,7 +420,8 @@ angular.module('production-order')
                   last_name: {
                     $like: '%' + query + '%'
                   }
-                }
+                },
+                employee_type: 'Output-based'
               }
             });
           }

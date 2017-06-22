@@ -178,7 +178,8 @@ angular.module('production-order-dialog')
                   last_name: {
                     $like: '%' + query + '%'
                   }
-                }
+                },
+                employee_type: 'Output-based'
               }
             });
           }
