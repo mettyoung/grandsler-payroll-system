@@ -64,23 +64,19 @@ angular.module('stock-code-registry')
                 let promise = Promise.resolve();
                 for (let i = 0; i < this.selectedStockCode.Operations.length; i++)
                 {
-                  const operation = this.selectedStockCode.Operations[i];
-                  let instance;
-                  if (operation.constructor === Object)
-                    instance = ModelProvider.models.StockCodeOperation.build({
+                  let stockCodeOperation = this.selectedStockCode.Operations[i].StockCodeOperation;
+                  if (stockCodeOperation.constructor === Object)
+                    stockCodeOperation = ModelProvider.models.StockCodeOperation.build({
                       stock_code_id: selectedStockCode.id,
                       pipeline_id: this.selectedStockCode.pipeline_id,
-                      operation_id: operation.id,
+                      operation_id: this.selectedStockCode.Operations[i].id,
                       order: i,
-                      price: operation.StockCodeOperation.price
+                      price: stockCodeOperation.price
                     });
                   else
-                  {
-                    instance = operation.StockCodeOperation;
-                    instance.order = i;
-                  }
+                    stockCodeOperation.order = i;
 
-                  promise = promise.then(() => instance.save({
+                  promise = promise.then(() => stockCodeOperation.save({
                     transaction: transaction
                   }));
                 }
