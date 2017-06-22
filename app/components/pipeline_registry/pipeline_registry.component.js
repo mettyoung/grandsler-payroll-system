@@ -1,8 +1,5 @@
 angular.module('pipeline-registry')
   .component('pipelineRegistry', {
-    bindings: {
-      onDialogClosed: '&'
-    },
     templateUrl: './components/pipeline_registry/pipeline_registry.template.html',
     controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', 'CustomValidator', 'CrudHandler',
       function ($scope, $mdDialog, Notifier, ModelProvider, CustomValidator, CrudHandler)
@@ -198,7 +195,7 @@ angular.module('pipeline-registry')
          */
         this.commands.close = () =>
         {
-          return $mdDialog.hide().then(() => this.onDialogClosed());
+          return $mdDialog.hide();
         };
 
         /**
@@ -208,13 +205,14 @@ angular.module('pipeline-registry')
         {
           $mdDialog.show({
             template: '<md-dialog flex="60">' +
-            '<operation-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></operation-registry>' +
+            '<operation-registry layout="column"></operation-registry>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},
             controller: angular.noop,
             controllerAs: '$ctrl',
-            bindToController: true
+            bindToController: true,
+            onRemoving: (event, removePromise) => removePromise.then(() => this.commands.preload())
           });
         };
       }]

@@ -1,8 +1,5 @@
 angular.module('size-registry')
   .component('sizeRegistry', {
-    bindings: {
-      onDialogClosed: '&'
-    },
     templateUrl: './components/size_registry/size_registry.template.html',
     controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', 'CrudHandler',
       function ($scope, $mdDialog, Notifier, ModelProvider, CrudHandler)
@@ -107,7 +104,7 @@ angular.module('size-registry')
          */
         this.commands.close = () =>
         {
-          return $mdDialog.hide().then(() => this.onDialogClosed());
+          return $mdDialog.hide();
         };
       }]
   });

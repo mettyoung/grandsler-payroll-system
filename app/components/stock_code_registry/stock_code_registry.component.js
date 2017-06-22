@@ -1,8 +1,5 @@
 angular.module('stock-code-registry')
   .component('stockCodeRegistry', {
-    bindings: {
-      onDialogClosed: '&'
-    },
     templateUrl: './components/stock_code_registry/stock_code_registry.template.html',
     controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', 'CustomValidator', 'CrudHandler',
       function ($scope, $mdDialog, Notifier, ModelProvider, CustomValidator, CrudHandler)
@@ -175,7 +172,7 @@ angular.module('stock-code-registry')
          */
         this.commands.close = () => 
         {
-          return $mdDialog.hide().then(() => this.onDialogClosed());
+          return $mdDialog.hide();
         };
 
         /**
@@ -185,13 +182,14 @@ angular.module('stock-code-registry')
         {
           $mdDialog.show({
             template: '<md-dialog flex="60">' +
-            '<pipeline-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></pipeline-registry>' +
+            '<pipeline-registry layout="column"></pipeline-registry>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},
             controller: angular.noop,
             controllerAs: '$ctrl',
-            bindToController: true
+            bindToController: true,
+            onRemoving: (event, removePromise) => removePromise.then(() => this.commands.preload())
           });
         };
 

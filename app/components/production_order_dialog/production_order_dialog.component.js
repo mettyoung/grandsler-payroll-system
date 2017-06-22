@@ -1,7 +1,6 @@
 angular.module('production-order-dialog')
   .component('productionOrderDialog', {
     bindings: {
-      onDialogClosed: '&',
       layout: '@',
       flex: '@'
     },
@@ -67,7 +66,7 @@ angular.module('production-order-dialog')
          */
         this.commands.close = () =>
         {
-          return $mdDialog.hide().then(() => this.onDialogClosed());
+          return $mdDialog.hide();
         };
 
         /**
@@ -77,13 +76,14 @@ angular.module('production-order-dialog')
         {
           $mdDialog.show({
             template: '<md-dialog flex="60">' +
-            '<stock-code-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></stock-code-registry>' +
+            '<stock-code-registry layout="column"></stock-code-registry>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},
             controller: angular.noop,
             controllerAs: '$ctrl',
-            bindToController: true
+            bindToController: true,
+            onRemoving: (event, removePromise) => removePromise.then(() => this.commands.preload())
           });
         };
 
@@ -94,13 +94,14 @@ angular.module('production-order-dialog')
         {
           $mdDialog.show({
             template: '<md-dialog flex="60">' +
-            '<color-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></color-registry>' +
+            '<color-registry layout="column"></color-registry>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},
             controller: angular.noop,
             controllerAs: '$ctrl',
-            bindToController: true
+            bindToController: true,
+            onRemoving: (event, removePromise) => removePromise.then(() => this.commands.preload())
           });
         };
 
@@ -111,13 +112,14 @@ angular.module('production-order-dialog')
         {
           $mdDialog.show({
             template: '<md-dialog flex="60">' +
-            '<size-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></size-registry>' +
+            '<size-registry layout="column"></size-registry>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},
             controller: angular.noop,
             controllerAs: '$ctrl',
-            bindToController: true
+            bindToController: true,
+            onRemoving: (event, removePromise) => removePromise.then(() => this.commands.preload())
           });
         };
 

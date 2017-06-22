@@ -1,8 +1,5 @@
 angular.module('operation-registry')
   .component('operationRegistry', {
-    bindings: {
-      onDialogClosed: '&'
-    },
     templateUrl: './components/operation_registry/operation_registry.template.html',
     controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', 'CrudHandler',
       function ($scope, $mdDialog, Notifier, ModelProvider, CrudHandler)
@@ -107,7 +104,7 @@ angular.module('operation-registry')
          */
         this.commands.close = () =>
         {
-          return $mdDialog.hide().then(() => this.onDialogClosed());
+          return $mdDialog.hide();
         };
       }]
   });

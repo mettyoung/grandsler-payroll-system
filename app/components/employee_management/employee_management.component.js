@@ -234,13 +234,14 @@ angular.module('employee-management')
         {
           $mdDialog.show({
             template: '<md-dialog flex="40">' +
-            '<position-registry on-dialog-closed="$ctrl.parent.commands.preload()" layout="column"></position-registry>' +
+            '<position-registry layout="column"></position-registry>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},
             controller: angular.noop,
             controllerAs: '$ctrl',
-            bindToController: true
+            bindToController: true,
+            onRemoving: (event, removePromise) => removePromise.then(() => this.commands.preload())
           });
         };
 
@@ -252,13 +253,14 @@ angular.module('employee-management')
 
           $mdDialog.show({
             template: '<md-dialog flex="70">' +
-            '<time-shift-registry on-dialog-closed="$ctrl.parent.commands.preload()"></time-shift-registry>' +
+            '<time-shift-registry></time-shift-registry>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},
             controller: angular.noop,
             controllerAs: '$ctrl',
-            bindToController: true
+            bindToController: true,
+            onRemoving: (event, removePromise) => removePromise.then(() => this.commands.preload())
           });
         };
 
@@ -301,7 +303,7 @@ angular.module('employee-management')
         {
           $mdDialog.show({
             template: '<md-dialog flex="60">' +
-            '<user-account on-dialog-closed="$ctrl.parent.commands.load()" selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></user-account>' +
+            '<user-account selected_employee="$ctrl.selected_employee" layout="column" style="height: 400px;"></user-account>' +
             '</md-dialog>',
             locals: {
               parent: this,
@@ -309,7 +311,8 @@ angular.module('employee-management')
             },
             controller: angular.noop,
             controllerAs: '$ctrl',
-            bindToController: true
+            bindToController: true,
+            onRemoving: (event, removePromise) => removePromise.then(() => this.commands.load())
           });
         };
 

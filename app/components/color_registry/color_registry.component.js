@@ -1,8 +1,5 @@
 angular.module('color-registry')
   .component('colorRegistry', {
-    bindings: {
-      onDialogClosed: '&'
-    },
     templateUrl: './components/color_registry/color_registry.template.html',
     controller: ['$scope', '$mdDialog', 'Notifier', 'ModelProvider', 'CrudHandler',
       function ($scope, $mdDialog, Notifier, ModelProvider, CrudHandler)
@@ -107,7 +104,7 @@ angular.module('color-registry')
          */
         this.commands.close = () =>
         {
-          return $mdDialog.hide().then(() => this.onDialogClosed());
+          return $mdDialog.hide();
         };
       }]
   });

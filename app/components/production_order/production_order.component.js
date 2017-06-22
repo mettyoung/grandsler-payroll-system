@@ -331,13 +331,14 @@ angular.module('production-order')
         {
           $mdDialog.show({
             template: '<md-dialog flex="60">' +
-            '<production-order-dialog on-dialog-closed="$ctrl.parent.commands.preload() && $ctrl.parent.commands.load()" layout="column"></production-order-dialog>' +
+            '<production-order-dialog layout="column"></production-order-dialog>' +
             '</md-dialog>',
             multiple: true,
             locals: {parent: this},
             controller: angular.noop,
             controllerAs: '$ctrl',
-            bindToController: true
+            bindToController: true,
+            onRemoving: (event, removePromise) => removePromise.then(() => this.commands.preload() && this.commands.load())
           });
         };
 
