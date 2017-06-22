@@ -23,15 +23,24 @@ angular.module('production-order-dialog')
         {
           CrudHandler.onSaveSelectedMasterItem(this, transaction =>
           {
-            let selectedItem = this.selected_item;
-            selectedItem.stock_code_id = selectedItem.StockCode.id;
-            selectedItem.color_id = selectedItem.Color.id;
-            selectedItem.size_id = selectedItem.Size.id;
-            selectedItem.employee_id = selectedItem.Employee.id;
-            selectedItem = ModelProvider.models.Production.build(selectedItem);
+            this.selected_item.stock_code_id = this.selected_item.StockCode.id;
+            this.selected_item.color_id = this.selected_item.Color.id;
+            this.selected_item.size_id = this.selected_item.Size.id;
+
+            this.selected_item.ProductionLines = [
+              Object.assign(this.selected_item.first_production_line, {
+                stock_code_id: this.selected_item.StockCode.id,
+                pipeline_id: this.selected_item.StockCode.pipeline_id,
+                operation_id: this.selected_item.StockCode.StockCodeOperations[0].operation_id,
+                operation_number: 1,
+                employee_id: this.selected_item.first_production_line.Employee.id
+              })
+            ];
 
             return Notifier.perform(() =>
-              selectedItem.save({
+              ModelProvider.models.Production.create(this.selected_item, {
+                include: [ModelProvider.models.ProductionLine]
+              }, {
                 transaction: transaction
               }).then(() =>
               {
@@ -124,7 +133,13 @@ angular.module('production-order-dialog')
                 name: {
                   $like: '%' + query + '%'
                 }
-              }
+              },
+              include: [{
+                model: ModelProvider.models.StockCodeOperation,
+                where: {
+                  order: 0
+                }
+              }]
             });
           },
           queryColor: query =>

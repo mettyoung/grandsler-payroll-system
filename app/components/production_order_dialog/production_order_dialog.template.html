@@ -6,7 +6,7 @@
         <!-- Title bar -->
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h3 flex>New production order</h3>
+                <h3 flex>New Production Order</h3>
                 <!-- Action buttons -->
                 <md-button class="md-icon-button"
                            type='submit'
@@ -136,7 +136,7 @@
                             md-min-length="0"
                             md-items="employee in $ctrl.commands.autocomplete.queryEmployee($ctrl.search_employee)"
                             md-item-text="employee.getFullName()"
-                            md-selected-item="$ctrl.selected_item.Employee"
+                            md-selected-item="$ctrl.selected_item.first_production_line.Employee"
                             md-search-text="$ctrl.search_employee">
                         <md-item-template>
                             <span md-highlight-text="$ctrl.search_employee" md-highlight-flags="^i">{{employee.getFullName()}}</span>
@@ -154,10 +154,23 @@
             </div>
             <div layout="row">
                 <md-input-container flex>
-                    <label>Dozen quantity</label>
-                    <input required name="dozen_quantity" type="number"
+                    <label>Date Finished</label>
+                    <md-datepicker required
+                                   name="date_finished"
+                                   ng-model="$ctrl.selected_item.first_production_line.date_finished"
+                                   md-placeholder="Date finished"
+                                   md-open-on-focus></md-datepicker>
+                    <div ng-messages="$ctrl.Form.date_finished.$error">
+                        <div ng-message="required">This is required.</div>
+                    </div>
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Dozen Quantity</label>
+                    <input required
+                           name="dozen_quantity"
+                           type="number"
                            min="0"
-                           ng-model="$ctrl.selected_item.dozen_quantity">
+                           ng-model="$ctrl.selected_item.first_production_line.dozen_quantity">
                     </input>
                     <div ng-messages="$ctrl.Form.dozen_quantity.$error"
                          ng-show="$ctrl.Form.dozen_quantity.$touched">
@@ -165,11 +178,13 @@
                     </div>
                 </md-input-container>
                 <md-input-container flex>
-                    <label>Piece quantity</label>
-                    <input required name="piece_quantity" type="number"
+                    <label>Piece Quantity</label>
+                    <input required
+                           name="piece_quantity"
+                           type="number"
                            min="0"
                            max="11"
-                           ng-model="$ctrl.selected_item.piece_quantity">
+                           ng-model="$ctrl.selected_item.first_production_line.piece_quantity">
                     </input>
                     <div ng-messages="$ctrl.Form.piece_quantity.$error"
                          ng-show="$ctrl.Form.piece_quantity.$touched">
