@@ -358,7 +358,7 @@ angular.module('production-order')
 
         const addSelectionHotkeys = hotkeysDictionary =>
         {
-          for (let i = 0; i < 5; i++)
+          for (let i = 0; i < 10; i++)
             hotkeysDictionary = hotkeysDictionary.add({
               combo: `f${i + 1}`,
               description: `Selects production order #${i + 1}`,
