@@ -32,24 +32,6 @@ module.exports = {
           key: 'id'
         }
       },
-      employee_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'employees',
-          key: 'id'
-        }
-      },
-      dozen_quantity: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        defaultValue: 0
-      },
-      piece_quantity: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        defaultValue: 0
-      },
       is_finished: {
         allowNull: false,
         type: Sequelize.BOOLEAN,

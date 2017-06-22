@@ -4,9 +4,6 @@ module.exports = function(sequelize, DataTypes) {
     stock_code_id: DataTypes.INTEGER,
     color_id: DataTypes.INTEGER,
     size_id: DataTypes.INTEGER,
-    employee_id: DataTypes.INTEGER,
-    dozen_quantity: DataTypes.INTEGER,
-    piece_quantity: DataTypes.INTEGER,
     is_finished: DataTypes.BOOLEAN,
     created_by: DataTypes.INTEGER,
     updated_by: DataTypes.INTEGER
@@ -33,12 +30,6 @@ module.exports = function(sequelize, DataTypes) {
 
         Production.belongsTo(models.Size, {
           foreignKey: "size_id",
-          onDelete: 'RESTRICT',
-          onUpdate: 'RESTRICT'
-        });
-
-        Production.belongsTo(models.Employee, {
-          foreignKey: "employee_id",
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });
