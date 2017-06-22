@@ -149,7 +149,7 @@ angular.module('production-order')
                     this.data.show_progress_bar = false;
                     return {
                       data: productionLines,
-                      total_count: result.count.length
+                      total_count: result.count
                     };
                 });
               });
