@@ -331,7 +331,7 @@ angular.module('production-order')
          */
         this.commands.markFinished = productionOrder =>
         {
-          const message = `You won't be able modify the production order lines anymore. Are you sure you want to proceed?`;
+          const message = `You won't be able modify all production order lines that belongs to the batch ${productionOrder.id} anymore. Are you sure you want to proceed?`;
 
           if (this._isWriteIdle)
           {
