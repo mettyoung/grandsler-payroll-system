@@ -80,13 +80,8 @@ angular.module('production-order')
               },
               {
                 model: ModelProvider.models.ProductionLine,
-                as: "ParentProductionLine",
-                include: [ModelProvider.models.Employee,
-                  {
-                    model: ModelProvider.models.ProductionLine,
-                    as: "ChildrenProductionLines"
-                  }
-                ]
+                as: "ChildrenProductionLines",
+                include: [ModelProvider.models.Employee]
               },
               ModelProvider.models.Employee
             ];
@@ -95,7 +90,10 @@ angular.module('production-order')
             // Add selection associations
             Object.assign(selectionOptions, {
               include: selectionAssociations,
-              where: {}
+              where: {},
+              group: ['ChildrenProductionLines.parent_id'],
+              order: ['id'],
+              subQuery: false
             });
 
             // Add filters
@@ -149,7 +147,7 @@ angular.module('production-order')
                     this.data.show_progress_bar = false;
                     return {
                       data: productionLines,
-                      total_count: result.count
+                      total_count: result.count.length
                     };
                 });
               });
