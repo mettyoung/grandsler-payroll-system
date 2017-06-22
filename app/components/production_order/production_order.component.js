@@ -60,32 +60,42 @@ angular.module('production-order')
              * One to be used for the selection. The other is used for the projection.
              */
             const selectionAssociations = [
-              ModelProvider.models.Employee,
               {
-                model: ModelProvider.models.ProductionLine,
-                include: [ModelProvider.models.Employee]
-              }];
-
-            const projectionAssociations = [
-              ModelProvider.models.Employee,
-              {
-                model: ModelProvider.models.StockCode,
-                include: [ModelProvider.models.Operation]
+                model: ModelProvider.models.Production,
+                include: [ModelProvider.models.StockCode, ModelProvider.models.Color, ModelProvider.models.Size]
               },
-              ModelProvider.models.Color, ModelProvider.models.Size,
               {
                 model: ModelProvider.models.ProductionLine,
+                as: "ParentProductionLine",
                 include: [ModelProvider.models.Employee]
-              }];
+              },
+              ModelProvider.models.Employee
+            ];
+
+            // Difference is the addition of has many association to the ParentProductionLine.
+            const projectionAssociations = [
+              {
+                model: ModelProvider.models.Production,
+                include: [ModelProvider.models.StockCode, ModelProvider.models.Color, ModelProvider.models.Size]
+              },
+              {
+                model: ModelProvider.models.ProductionLine,
+                as: "ParentProductionLine",
+                include: [ModelProvider.models.Employee,
+                  {
+                    model: ModelProvider.models.ProductionLine,
+                    as: "ChildrenProductionLines"
+                  }
+                ]
+              },
+              ModelProvider.models.Employee
+            ];
 
             const selectionOptions = {};
             // Add selection associations
             Object.assign(selectionOptions, {
               include: selectionAssociations,
-              where: {},
-              group: ['Production.id', 'ProductionLines.production_id'],
-              order: ['id'],
-              subQuery: false
+              where: {}
             });
 
             // Add filters
@@ -95,53 +105,53 @@ angular.module('production-order')
                   ModelProvider.Sequelize.literal(`\`Employee\`.first_name LIKE '%${this.query.employee_name}%'`),
                   ModelProvider.Sequelize.literal(`\`Employee\`.middle_name LIKE '%${this.query.employee_name}%'`),
                   ModelProvider.Sequelize.literal(`\`Employee\`.last_name LIKE '%${this.query.employee_name}%'`),
-                  ModelProvider.Sequelize.literal(`\`ProductionLines.Employee\`.first_name LIKE '%${this.query.employee_name}%'`),
-                  ModelProvider.Sequelize.literal(`\`ProductionLines.Employee\`.middle_name LIKE '%${this.query.employee_name}%'`),
-                  ModelProvider.Sequelize.literal(`\`ProductionLines.Employee\`.last_name LIKE '%${this.query.employee_name}%'`)
+                  ModelProvider.Sequelize.literal(`\`ParentProductionLine.Employee\`.first_name LIKE '%${this.query.employee_name}%'`),
+                  ModelProvider.Sequelize.literal(`\`ParentProductionLine.Employee\`.middle_name LIKE '%${this.query.employee_name}%'`),
+                  ModelProvider.Sequelize.literal(`\`ParentProductionLine.Employee\`.last_name LIKE '%${this.query.employee_name}%'`)
                 ]
               });
 
             if (this.query.stock_code_id !== 0)
               Object.assign(selectionOptions.where, {
-                stock_code_id: this.query.stock_code_id
+                $and: [ModelProvider.Sequelize.literal(`\`Production\`.stock_code_id = ${this.query.stock_code_id}`)]
               });
 
             if (this.query.color_id !== 0)
               Object.assign(selectionOptions.where, {
-                color_id: this.query.color_id
+                $and: [ModelProvider.Sequelize.literal(`\`Production\`.color_id = ${this.query.color_id}`)]
               });
 
             if (this.query.size_id !== 0)
               Object.assign(selectionOptions.where, {
-                size_id: this.query.size_id
+                $and: [ModelProvider.Sequelize.literal(`\`Production\`.size_id = ${this.query.size_id}`)]
               });
 
             if (this.query.is_finished !== 0)
               Object.assign(selectionOptions.where, {
-                is_finished: this.query.is_finished
+                $and: [ModelProvider.Sequelize.literal(`\`Production\`.is_finished = ${this.query.is_finished}`)]
               });
 
             this.data.show_progress_bar = true;
 
             // Execute the query.
-            return ModelProvider.models.Production.findAndCountAll(Object.assign(pageOptions, selectionOptions))
+            return ModelProvider.models.ProductionLine.findAndCountAll(Object.assign(pageOptions, selectionOptions))
               .then(result =>
               {
-                const production_ids = result.rows.map(row => row.id);
+                const production_line_ids = result.rows.map(row => row.id);
 
-                return ModelProvider.models.Production.findAll({
+                return ModelProvider.models.ProductionLine.findAll({
                   include: projectionAssociations,
                   where: {
-                    id: production_ids
+                    id: production_line_ids
                   }
-                }).then(productions =>
+                }).then(productionLines =>
                 {
                     this.data.show_progress_bar = false;
                     return {
-                      data: productions,
+                      data: productionLines,
                       total_count: result.count.length
                     };
-                })
+                });
               });
           });
 

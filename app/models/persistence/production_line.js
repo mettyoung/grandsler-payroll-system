@@ -14,7 +14,14 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
+        ProductionLine.belongsTo(models.Production, {
+          foreignKey: "production_id",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
+        
         ProductionLine.belongsTo(models.ProductionLine, {
+          as: "ParentProductionLine",
           foreignKey: "parent_id",
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
@@ -22,6 +29,13 @@ module.exports = function(sequelize, DataTypes) {
         
         ProductionLine.belongsTo(models.Employee, {
           foreignKey: "employee_id",
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
+
+        ProductionLine.hasMany(models.ProductionLine, {
+          as: "ChildrenProductionLines",
+          foreignKey: "parent_id",
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });
