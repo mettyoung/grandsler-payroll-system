@@ -142,70 +142,8 @@ angular.module('production-order')
            */
           CrudHandler.onAfterSelectMasterItem(this, () =>
           {
-            // Initialize the empty detail view model.
-            this.selected_item.detail = this.selected_item.StockCode.Operations.map(operation =>
-            {
-              return {
-                id: operation.id,
-                name: operation.name,
-                lines: []
-              };
-            });
-
-            // Create operation indexer.
-            const operation_indexer = {};
-            for (let i = 0; i < this.selected_item.detail.length; i++)
-              operation_indexer[this.selected_item.detail[i].id] = i;
-
-            if (this.selected_item.detail.length > 0)
-            {
-              // Initialize operation 1 header.
-              Object.assign(this.selected_item.detail[0], {
-                dozen_quantity_remaining: this.selected_item.dozen_quantity,
-                piece_quantity_remaining: this.selected_item.piece_quantity,
-                lines: [
-                  {
-                    previous_production_line: {
-                      id: null,
-                      date_finished: null,
-                      dozen_quantity: this.selected_item.dozen_quantity,
-                      piece_quantity: this.selected_item.piece_quantity,
-                      Employee: this.selected_item.Employee
-                    },
-                    production_lines: []
-                  }
-                ]
-              });
-
-              // Load detail from database.
-              for (let productionLine of this.selected_item.ProductionLines)
-              {
-                // Find the selected lines given operation_id.
-                const selectedLines = this.selected_item.detail[operation_indexer[productionLine.operation_id]].lines;
-
-                // Find the selected line by matching productionLine's previous production line.
-                let existingLine;
-                for (let line of selectedLines)
-                  if (line.previous_production_line.id === productionLine.parent_id)
-                    existingLine = line;
-
-                if (existingLine)
-                  existingLine.production_lines.push(productionLine);
-                else
-                // Store a reference of the UI-exposed production line to previous_production_line.
-                  selectedLines.push({
-                    previous_production_line: this.selected_item.ProductionLines.filter(element => element.id === productionLine.parent_id)[0],
-                    production_lines: [productionLine]
-                  });
-
-                // Add child line if there's a next operation.
-                addChildLine(this.selected_item.detail[operation_indexer[productionLine.operation_id] + 1], productionLine);
-              }
-
-              // Compute quantity remaining on load.
-              this.commands.computeQuantityRemaining();
-            }
-            $scope.$apply();
+            // Compute quantity remaining on reload.
+            this.commands.computeQuantityRemaining();
           });
 
           /**
@@ -440,27 +378,17 @@ angular.module('production-order')
          */
         this.commands.computeQuantityRemaining = () =>
         {
-          for (let operation of this.selected_item.detail)
-          {
-            const totalQuantity = operation.lines.reduce(
-              (accumulator, line) => accumulator + line.previous_production_line.dozen_quantity * 12 + line.previous_production_line.piece_quantity - line.production_lines.reduce(
-                (accumulator, production_line) => accumulator + production_line.dozen_quantity * 12 + production_line.piece_quantity, 0)
-              , 0);
+            const totalQuantityIn = this.selected_item.dozen_quantity * 12 + this.selected_item.piece_quantity;
+            const totalQuantityOut = this.selected_item.ChildrenProductionLines.reduce(
+              (accumulator, production_line) => accumulator + production_line.dozen_quantity * 12 + production_line.piece_quantity, 0);
+            const totalQuantityRemaining = totalQuantityIn - totalQuantityOut;
 
-            if (!isNaN(totalQuantity))
+            if (!isNaN(totalQuantityRemaining))
             {
-              operation.dozen_quantity_remaining = Math.floor(totalQuantity / 12);
-              operation.piece_quantity_remaining = Math.abs(totalQuantity % 12);
-
-              for (let line of operation.lines)
-              {
-                const expected = line.previous_production_line.dozen_quantity * 12 + line.previous_production_line.piece_quantity;
-                const actual = line.production_lines.reduce(
-                  (accumulator, production_line) => accumulator + production_line.dozen_quantity * 12 + production_line.piece_quantity, 0);
-                line.progress = actual / expected * 100;
-              }
+              this.selected_item.dozen_quantity_remaining = Math.floor(totalQuantityRemaining / 12);
+              this.selected_item.piece_quantity_remaining = Math.abs(totalQuantityRemaining % 12);
+              this.selected_item.progress = totalQuantityOut / totalQuantityIn * 100;
             }
-          }
         };
 
         /**
