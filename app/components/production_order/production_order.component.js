@@ -55,13 +55,17 @@ angular.module('production-order')
           CrudHandler.onLoad(this, pageOptions =>
           {
             /**
-             * We have to separate two queries since it is impossible to eager load hasMany associations while 
+             * We have to separate two queries since it is impossible to eager load hasMany associations while
              * creating a selection based on other joined tables and paginating.
              */
             const associations = [
               {
                 model: ModelProvider.models.Production,
-                include: [ModelProvider.models.StockCode, ModelProvider.models.Color, ModelProvider.models.Size]
+                include: [ModelProvider.models.Color, ModelProvider.models.Size,
+                  {
+                    model: ModelProvider.models.StockCode,
+                    include: [ModelProvider.models.Operation]
+                  }]
               },
               {
                 model: ModelProvider.models.ProductionLine,
@@ -75,7 +79,7 @@ angular.module('production-order')
             const selectionOptions = {
               include: associations,
               where: {},
-              group: ['ChildrenProductionLines.parent_id'],
+              group: ['ProductionLine.id', 'ChildrenProductionLines.parent_id'],
               order: ['id'],
               subQuery: false
             };
@@ -138,15 +142,6 @@ angular.module('production-order')
           });
 
           /**
-           * Construct the detail view model.
-           */
-          CrudHandler.onAfterSelectMasterItem(this, () =>
-          {
-            // Compute quantity remaining on reload.
-            this.commands.computeQuantityRemaining();
-          });
-
-          /**
            * Validation logic before saving.
            */
           CrudHandler.onBeforeSaveSelectedMasterItem(this, masterItem =>
@@ -165,51 +160,47 @@ angular.module('production-order')
             return Promise.resolve();
           });
 
+          /**
+           * Save logic.
+           */
           CrudHandler.onSaveSelectedMasterItem(this, transaction =>
           {
             return Notifier.perform(() =>
               this.selected_item.save({
                 transaction: transaction
-              }).then(productionOrder =>
-              {
-                let promise = ModelProvider.sequelize.query('DELETE FROM production_lines WHERE production_id = ? ORDER BY id DESC', {
-                  replacements: [productionOrder.id],
-                  type: ModelProvider.sequelize.QueryTypes.DELETE,
-                  transaction: transaction
-                });
+              }).then(productionOrderLine =>
+                {
+                  let promise = Promise.resolve();
+                  // Delete to be deleted instances.
+                  for (let instance of this.selected_item.toBeDeleted)
+                    if (instance.constructor !== Object)
+                      promise = promise.then(() => instance.destroy({
+                        transaction: transaction
+                      }));
 
-                for (let operation of this.selected_item.detail)
-                  for (let line of operation.lines)
-                    for (let productionLine of line.production_lines)
-                    {
-                      promise = promise.then(() =>
-                      {
-                        let newProductionLine = productionLine;
-                        if (productionLine.constructor !== Object)
-                          newProductionLine = productionLine.get({plain: true});
-                        newProductionLine.employee_id = productionLine.Employee.id;
+                  // Save all details.
+                  for (let childLine of this.selected_item.ChildrenProductionLines)
+                  {
+                    let instance;
+                    if (childLine.constructor === Object)
+                      instance = ModelProvider.models.ProductionLine.build(Object.assign({
+                        parent_id: productionOrderLine.id,
+                        production_id: this.selected_item.Production.id,
+                        stock_code_id: this.selected_item.Production.stock_code_id,
+                        pipeline_id: this.selected_item.Production.StockCode.pipeline_id,
+                        operation_id: this.selected_item.Production.StockCode.Operations[this.selected_item.operation_number].id,
+                        operation_number: this.selected_item.operation_number + 1
+                      }, childLine));
 
-                        newProductionLine = Object.assign({
-                          parent_id: null,
-                          production_id: productionOrder.id,
-                          stock_code_id: productionOrder.StockCode.id,
-                          pipeline_id: productionOrder.StockCode.pipeline_id,
-                          operation_id: operation.id
-                        }, newProductionLine);
+                    instance.employee_id = childLine.Employee.id;
 
-                        newProductionLine = ModelProvider.models.ProductionLine.build(newProductionLine);
-
-                        return newProductionLine.save({transaction: transaction})
-                          .then(parentProductionLine =>
-                          {
-                            if (productionLine.childLine)
-                              for (let childProductionLine of productionLine.childLine.production_lines)
-                                childProductionLine.parent_id = parentProductionLine.id;
-                          })
-                      });
-                    }
-                return promise;
-              }).then(() => MESSAGE.modified), transaction);
+                    promise = promise.then(() => instance.save({
+                      transaction: transaction
+                    }));
+                  }
+                  return promise;
+                }
+              ).then(() => MESSAGE.modified), transaction);
           });
 
           CrudHandler.onDeleteSelectedMasterItem(this, transaction =>
@@ -235,6 +226,14 @@ angular.module('production-order')
                 }).then(() => MESSAGE.deleted);
             }, transaction);
           });
+
+          CrudHandler.onAfterSelectMasterItem(this, selectedItem => {
+            selectedItem.toBeDeleted = [];
+            this.commands.computeQuantityRemaining();
+            selectedItem.Production.StockCode.Operations =
+              selectedItem.Production.StockCode.Operations.sort((a, b) => (a.StockCodeOperation.order - b.StockCodeOperation.order) < 0? -1: 1);
+          });
+          CrudHandler.onAfterDeleteDetailItem(this, detailItem => this.selected_item.toBeDeleted.push(detailItem) && this.commands.computeQuantityRemaining());
         }
 
         /**
