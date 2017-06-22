@@ -20,13 +20,6 @@ module.exports = function(sequelize, DataTypes) {
           onUpdate: 'RESTRICT'
         });
         
-        ProductionLine.belongsTo(models.ProductionLine, {
-          as: "ParentProductionLine",
-          foreignKey: "parent_id",
-          onDelete: 'RESTRICT',
-          onUpdate: 'RESTRICT'
-        });
-        
         ProductionLine.belongsTo(models.Employee, {
           foreignKey: "employee_id",
           onDelete: 'RESTRICT',
