@@ -302,7 +302,11 @@ angular.module('production-order')
         /**
          * Bootstraps this controller with CrudHandler that handles the basic CRUD controller routines.
          */
-        CrudHandler.bootstrap(this, $scope).then(() =>
+        const options = {
+          detailProperty: 'ChildrenProductionLines'
+        };
+
+        CrudHandler.bootstrap(this, $scope, options).then(() =>
         {
           /**
            * If environment is production or dev, then auto-load.
