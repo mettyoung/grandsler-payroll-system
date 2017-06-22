@@ -108,7 +108,7 @@
                                         </md-input-container>
                                         <md-input-container class="md-block" flex>
                                             <label>Piece rate</label>
-                                            <input required name="piece_rate" ng-model="operation.StockCodeOperation.price">
+                                            <input type="number" required name="piece_rate" ng-model="operation.StockCodeOperation.price">
                                             <!-- ng-show @touched has no test. -->
                                             <div ng-messages="$ctrl.Form.piece_rate.$error"
                                                  ng-show="$ctrl.Form.piece_rate.$touched">
