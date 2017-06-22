@@ -30,10 +30,11 @@ angular.module('production-order-dialog')
             }),
             ModelProvider.models.Size.findAll({
               transaction: transaction
-            })]).then(values =>
-            {
-              [this.data.stock_codes, this.data.colors, this.data.sizes] = values;
-            }));
+            })
+          ]).then(values =>
+          {
+            [this.data.stock_codes, this.data.colors, this.data.sizes] = values;
+          }));
 
           CrudHandler.onSaveSelectedMasterItem(this, transaction =>
           {

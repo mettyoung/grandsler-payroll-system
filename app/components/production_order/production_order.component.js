@@ -28,18 +28,29 @@ angular.module('production-order')
          * Life cycles
          */
         {
-          CrudHandler.onPreload(this, transaction =>
-            ModelProvider.models.PipelineOperation.findOne({
+          CrudHandler.onPreload(this, transaction => Promise.all([
+              ModelProvider.models.StockCode.findAll({
+                transaction: transaction
+              }),
+              ModelProvider.models.Color.findAll({
+                transaction: transaction
+              }),
+              ModelProvider.models.Size.findAll({
+                transaction: transaction
+              }),
+              ModelProvider.models.PipelineOperation.findOne({
                 transaction: transaction,
                 group: ['pipeline_id'],
                 attributes: [[ModelProvider.sequelize.fn('COUNT', ModelProvider.sequelize.col('*')), 'total_count']],
                 order: [[ModelProvider.sequelize.col('total_count'), 'DESC']]
-              }
-            ).then(instance =>
+              })
+            ]).then(values =>
             {
-              const numberOfOperations = instance && instance.get('total_count') || 0;
+              [this.data.stock_codes, this.data.colors, this.data.sizes] = values;
+              const numberOfOperations = values[3] && values[3].get('total_count') || 0;
               this.data.operation_numbers = [...new Array(numberOfOperations).keys()].map(value => value + 1);
-            }));
+            })
+          );
 
           CrudHandler.onLoad(this, pageOptions =>
           {
