@@ -122,9 +122,9 @@
         <!-- Hides these two if detail_load_error occurred. -->
         <md-toolbar ng-hide="$ctrl.detail_load_error || !$ctrl.selected_item">
             <div class="md-toolbar-tools" flex>
-                <h2 flex>Batch: {{$ctrl.selected_item.id}}</h2>
+                <h2 flex>Batch: {{$ctrl.selected_item.Production.id}}</h2>
                 <md-button class="md-icon-button" type='submit'
-                           ng-hide="$ctrl.detail_load_error || $ctrl.selected_item.is_finished"
+                           ng-hide="$ctrl.detail_load_error || $ctrl.selected_item.Production.is_finished"
                            ng-disabled="!$ctrl.Form.$valid"
                            ng-click="$ctrl.commands.saveSelectedMasterItem()">
                     <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
@@ -135,8 +135,8 @@
                     <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
                 </md-button>
                 <md-button class="md-icon-button"
-                           ng-hide="$ctrl.selected_item.is_finished"
-                           ng-click="$ctrl.commands.markFinished($ctrl.selected_item)">
+                           ng-hide="$ctrl.selected_item.Production.is_finished"
+                           ng-click="$ctrl.commands.markFinished($ctrl.selected_item.Production)">
                     <md-icon md-svg-icon="action:ic_done_24px"></md-icon>
                 </md-button>
             </div>
@@ -147,124 +147,104 @@
         </div>
         <md-content ng-hide="$ctrl.detail_load_error || !$ctrl.selected_item" layout="column" flex>
             <form name="$ctrl.Form">
-                <fieldset ng-disabled="$ctrl.selected_item.is_finished">
-                    <md-list flex>
-                        <md-list-item ng-repeat="(operation_index, operation) in $ctrl.selected_item.detail" ng-show="$ctrl.query.operation_number == 0 || $ctrl.query.operation_number == operation_index + 1">
-                            <div layout="column" flex>
-                                <header flex>
-                                    <h3>Operation {{operation_index + 1}}: {{operation.name}}</h3>
-                                    <span>Quantity Remaining: {{operation.dozen_quantity_remaining}}x12,{{operation.piece_quantity_remaining}}</span>
-                                </header>
-                                <div layout="column" ng-repeat="(line_index, line) in operation.lines" flex>
-                                    <header class="line-header" flex>
-                                        <h5 ng-if="line.previous_production_line.date_finished">
-                                            <strong>Date Started: </strong>{{line.previous_production_line.date_finished
-                                            | date:'MM/dd/yyyy'}}
-                                        </h5>
-                                        <h6><strong>Previous Employee: </strong>{{line.previous_production_line.Employee.getFullName()}}
-                                        </h6>
-                                        <h6><strong>Initial Quantity: </strong>{{line.previous_production_line.dozen_quantity}}x12,{{line.previous_production_line.piece_quantity}}
-                                        </h6>
-                                        <md-progress-linear md-mode="determinate"
-                                                            value="{{line.progress}}"></md-progress-linear>
-                                    </header>
-                                    <div layout="row" ng-repeat="production_line in line.production_lines" flex>
-                                        <md-input-container flex>
-                                            <label>Date Finished</label>
-                                            <md-datepicker required
-                                                           name="date_finished_{{operation_index}}_{{line_index}}_{{$index}}"
-                                                           ng-model="production_line.date_finished"
-                                                           md-placeholder="Date finished"
-                                                           md-open-on-focus></md-datepicker>
-                                            <div ng-messages="$ctrl.Form['date_finished_' + operation_index + '_' + line_index + '_' + $index].$error">
-                                                <div ng-message="required">This is required.</div>
-                                            </div>
-                                        </md-input-container>
-                                        <md-input-container flex>
-                                            <label>Employee</label>
-                                            <md-autocomplete
-                                                    ng-if="operation_index > 0"
-                                                    required
-                                                    md-require-match
-                                                    md-input-name="employee_{{operation_index}}_{{line_index}}_{{$index}}"
-                                                    md-min-length="0"
-                                                    md-items="employee in $ctrl.commands.autocomplete.queryEmployee(production_line.search_employee)"
-                                                    md-item-text="employee.getFullName()"
-                                                    md-selected-item="production_line.Employee"
-                                                    md-search-text="production_line.search_employee">
-                                                <md-item-template>
-                                                <span md-highlight-text="$ctrl.search_employee"
-                                                      md-highlight-flags="^i">{{employee.getFullName()}}</span>
-                                                </md-item-template>
-                                                <md-not-found>
-                                                    <span>'{{$ctrl.search_employee}}' cannot be found.</span>
-                                                </md-not-found>
-                                            </md-autocomplete>
-                                            <md-autocomplete
-                                                    disabled
-                                                    ng-if="operation_index === 0"
-                                                    md-items="employee in $ctrl.commands.autocomplete.queryEmployee(production_line.search_employee)"
-                                                    md-item-text="employee.getFullName()"
-                                                    md-selected-item="production_line.Employee"
-                                                    ng-init="production_line.Employee = $ctrl.selected_item.Employee">
-                                            </md-autocomplete>
-                                            <div ng-messages="$ctrl.Form['employee_' + operation_index + '_' + line_index + '_' + $index].$error"
-                                                 ng-show="$ctrl.Form['employee_' + operation_index + '_' + line_index + '_' + $index].$touched">
-                                                <div ng-message="required">This is required.</div>
-                                                <div ng-message="md-require-match">This is required.</div>
-                                            </div>
-                                        </md-input-container>
-                                        <div flex="30" layout="row">
-                                            <md-input-container>
-                                                <label>Dozen Qty.</label>
-                                                <input required
-                                                       name="dozen_quantity_{{operation_index}}_{{line_index}}_{{$index}}"
-                                                       type="number"
-                                                       min="0"
-                                                       ng-model="production_line.dozen_quantity"
-                                                       ng-change="$ctrl.commands.computeQuantityRemaining()">
-                                                </input>
-                                                <div ng-messages="$ctrl.Form['dozen_quantity_' + operation_index + '_' + line_index + '_' + $index].$error"
-                                                     ng-show="$ctrl.Form['dozen_quantity_' + operation_index + '_' + line_index + '_' + $index].$touched">
-                                                    <div ng-message="required">This is required.</div>
-                                                </div>
-                                            </md-input-container>
-                                            <md-input-container>
-                                                <label>Piece Qty.</label>
-                                                <input required
-                                                       name="piece_quantity_{{operation_index}}_{{line_index}}_{{$index}}"
-                                                       type="number"
-                                                       min="0"
-                                                       max="11"
-                                                       ng-model="production_line.piece_quantity"
-                                                       ng-change="$ctrl.commands.computeQuantityRemaining()">
-                                                </input>
-                                                <div ng-messages="$ctrl.Form['piece_quantity_' + operation_index + '_' + line_index + '_' + $index].$error"
-                                                     ng-show="$ctrl.Form['piece_quantity_' + operation_index + '_' + line_index + '_' + $index].$touched">
-                                                    <div ng-message="required">This is required.</div>
-                                                </div>
-                                            </md-input-container>
-                                        </div>
-                                        <div layout="column" layout-align="center end">
-                                            <md-button class="md-icon-button"
-                                                       ng-hide="$ctrl.selected_item.is_finished"
-                                                       ng-click="$ctrl.commands.deleteProductionLine(operation_index, line_index, production_line, 'Are you sure you want to delete this production line?')">
-                                                <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
-                                            </md-button>
-                                        </div>
-                                    </div>
-                                    <div layout="row" layout-margin flex layout-align="center center"
-                                         ng-hide="$ctrl.selected_item.is_finished">
-                                        <md-button class="md-primary"
-                                                   ng-click="$ctrl.commands.createNewProductionLine(operation_index, line_index)">
-                                            Add production line
-                                        </md-button>
-                                    </div>
+                <fieldset ng-disabled="$ctrl.selected_item.Production.is_finished">
+                    <div layout="column" flex>
+                        <header class="line-header" flex>
+                            <h2>Operation: {{$ctrl.selected_item.operation_number + 1}}</h2>
+                            <h5><strong>Date Started: </strong>{{$ctrl.selected_item.date_finished | date:'MM/dd/yyyy'}}</h5>
+                            <h6><strong>Previous Employee: </strong>{{$ctrl.selected_item.Employee.getFullName()}}
+                            </h6>
+                            <h6><strong>Initial Quantity: </strong>{{$ctrl.selected_item.dozen_quantity}}x12,{{$ctrl.selected_item.piece_quantity}}
+                            </h6>
+                            <h6><strong>Quantity Remaining: </strong>{{$ctrl.selected_item.dozen_quantity_remaining}}x12,{{$ctrl.selected_item.piece_quantity_remaining}}</h6>
+                            <md-progress-linear md-mode="determinate"
+                                                value="{{$ctrl.selected_item.progress}}"></md-progress-linear>
+                        </header>
+                        <div layout="row" ng-repeat="production_line in $ctrl.selected_item.ChildrenProductionLines" flex>
+                            <md-input-container flex>
+                                <label>Date Finished</label>
+                                <md-datepicker required
+                                               name="date_finished_{{$index}}"
+                                               ng-model="production_line.date_finished"
+                                               md-placeholder="Date finished"
+                                               md-open-on-focus></md-datepicker>
+                                <div ng-messages="$ctrl.Form['date_finished_' + $index].$error">
+                                    <div ng-message="required">This is required.</div>
                                 </div>
+                            </md-input-container>
+                            <md-input-container flex>
+                                <label>Employee</label>
+                                <md-autocomplete
+                                        required
+                                        md-no-cache
+                                        md-require-match
+                                        md-input-name="employee_{{$index}}"
+                                        md-min-length="0"
+                                        md-items="employee in $ctrl.commands.autocomplete.queryEmployee(production_line.search_employee)"
+                                        md-item-text="employee.getFullName()"
+                                        md-selected-item="production_line.Employee"
+                                        md-search-text="production_line.search_employee">
+                                    <md-item-template>
+                                            <span md-highlight-text="$ctrl.search_employee"
+                                                  md-highlight-flags="^i">{{employee.getFullName()}}</span>
+                                    </md-item-template>
+                                    <md-not-found>
+                                        <span>'{{$ctrl.search_employee}}' cannot be found.</span>
+                                    </md-not-found>
+                                </md-autocomplete>
+                                <div ng-messages="$ctrl.Form['employee_' + $index].$error"
+                                     ng-show="$ctrl.Form['employee_' + $index].$touched">
+                                    <div ng-message="required">This is required.</div>
+                                    <div ng-message="md-require-match">This is required.</div>
+                                </div>
+                            </md-input-container>
+                            <div flex="30" layout="row">
+                                <md-input-container>
+                                    <label>Dozen Qty.</label>
+                                    <input required
+                                           name="dozen_quantity_{{$index}}"
+                                           type="number"
+                                           min="0"
+                                           ng-model="production_line.dozen_quantity"
+                                           ng-change="$ctrl.commands.computeQuantityRemaining()">
+                                    </input>
+                                    <div ng-messages="$ctrl.Form['dozen_quantity_' + $index].$error"
+                                         ng-show="$ctrl.Form['dozen_quantity_' + $index].$touched">
+                                        <div ng-message="required">This is required.</div>
+                                    </div>
+                                </md-input-container>
+                                <md-input-container>
+                                    <label>Piece Qty.</label>
+                                    <input required
+                                           name="piece_quantity_{{$index}}"
+                                           type="number"
+                                           min="0"
+                                           max="11"
+                                           ng-model="production_line.piece_quantity"
+                                           ng-change="$ctrl.commands.computeQuantityRemaining()">
+                                    </input>
+                                    <div ng-messages="$ctrl.Form['piece_quantity_' + $index].$error"
+                                         ng-show="$ctrl.Form['piece_quantity_' + $index].$touched">
+                                        <div ng-message="required">This is required.</div>
+                                    </div>
+                                </md-input-container>
                             </div>
-                            <md-divider ng-if="!$last"></md-divider>
-                        </md-list-item>
-                    </md-list>
+                            <div layout="column" layout-align="center end">
+                                <md-button class="md-icon-button"
+                                           ng-hide="$ctrl.selected_item.Production.is_finished"
+                                           ng-click="$ctrl.commands.deleteDetailItem(production_line, 'Are you sure you want to delete this production line?')"
+                                    <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
+                                </md-button>
+                            </div>
+                        </div>
+                        <div layout="row" layout-margin flex layout-align="center center"
+                             ng-hide="$ctrl.selected_item.Production.is_finished">
+                            <md-button class="md-primary"
+                                       ng-click="$ctrl.commands.createDetailItem()">
+                                Add production line
+                            </md-button>
+                        </div>
+                    </div>
                 </fieldset>
                 <input hidden type="submit" ng-click="$ctrl.commands.saveSelectedMasterItem()">
             </form>
