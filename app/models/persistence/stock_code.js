@@ -15,6 +15,12 @@ module.exports = function(sequelize, DataTypes) {
           onDelete: 'RESTRICT',
           onUpdate: 'RESTRICT'
         });
+
+        StockCode.hasMany(models.StockCodeOperation, {
+          foreignKey: 'stock_code_id',
+          onDelete: 'RESTRICT',
+          onUpdate: 'RESTRICT'
+        });
       }
     },
     tableName: 'stock_codes'
