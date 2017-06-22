@@ -56,24 +56,9 @@ angular.module('production-order')
           {
             /**
              * We have to separate two queries since it is impossible to eager load hasMany associations while 
-             * creating a selection based on other joined tables and paginating. Hence, there are two association objects.
-             * One to be used for the selection. The other is used for the projection.
+             * creating a selection based on other joined tables and paginating.
              */
-            const selectionAssociations = [
-              {
-                model: ModelProvider.models.Production,
-                include: [ModelProvider.models.StockCode, ModelProvider.models.Color, ModelProvider.models.Size]
-              },
-              {
-                model: ModelProvider.models.ProductionLine,
-                as: "ParentProductionLine",
-                include: [ModelProvider.models.Employee]
-              },
-              ModelProvider.models.Employee
-            ];
-
-            // Difference is the addition of has many association to the ParentProductionLine.
-            const projectionAssociations = [
+            const associations = [
               {
                 model: ModelProvider.models.Production,
                 include: [ModelProvider.models.StockCode, ModelProvider.models.Color, ModelProvider.models.Size]
@@ -86,15 +71,14 @@ angular.module('production-order')
               ModelProvider.models.Employee
             ];
 
-            const selectionOptions = {};
-            // Add selection associations
-            Object.assign(selectionOptions, {
-              include: selectionAssociations,
+            // Create selection options with associations.
+            const selectionOptions = {
+              include: associations,
               where: {},
               group: ['ChildrenProductionLines.parent_id'],
               order: ['id'],
               subQuery: false
-            });
+            };
 
             // Add filters
             if (this.query.employee_name && this.query.employee_name.length > 0)
@@ -103,9 +87,9 @@ angular.module('production-order')
                   ModelProvider.Sequelize.literal(`\`Employee\`.first_name LIKE '%${this.query.employee_name}%'`),
                   ModelProvider.Sequelize.literal(`\`Employee\`.middle_name LIKE '%${this.query.employee_name}%'`),
                   ModelProvider.Sequelize.literal(`\`Employee\`.last_name LIKE '%${this.query.employee_name}%'`),
-                  ModelProvider.Sequelize.literal(`\`ParentProductionLine.Employee\`.first_name LIKE '%${this.query.employee_name}%'`),
-                  ModelProvider.Sequelize.literal(`\`ParentProductionLine.Employee\`.middle_name LIKE '%${this.query.employee_name}%'`),
-                  ModelProvider.Sequelize.literal(`\`ParentProductionLine.Employee\`.last_name LIKE '%${this.query.employee_name}%'`)
+                  ModelProvider.Sequelize.literal(`\`ChildrenProductionLines.Employee\`.first_name LIKE '%${this.query.employee_name}%'`),
+                  ModelProvider.Sequelize.literal(`\`ChildrenProductionLines.Employee\`.middle_name LIKE '%${this.query.employee_name}%'`),
+                  ModelProvider.Sequelize.literal(`\`ChildrenProductionLines.Employee\`.last_name LIKE '%${this.query.employee_name}%'`)
                 ]
               });
 
@@ -138,7 +122,7 @@ angular.module('production-order')
                 const production_line_ids = result.rows.map(row => row.id);
 
                 return ModelProvider.models.ProductionLine.findAll({
-                  include: projectionAssociations,
+                  include: associations,
                   where: {
                     id: production_line_ids
                   }
