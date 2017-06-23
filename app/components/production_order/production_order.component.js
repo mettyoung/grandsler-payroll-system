@@ -203,30 +203,6 @@ angular.module('production-order')
               ).then(() => MESSAGE.modified), transaction);
           });
 
-          CrudHandler.onDeleteSelectedMasterItem(this, transaction =>
-          {
-            if (this.selected_item.constructor === Object)
-              return Promise.reject('Cannot delete a new record.');
-
-            return Notifier.perform(() =>
-            {
-              return ModelProvider.sequelize.query('DELETE FROM production_lines WHERE production_id = ? ORDER BY id DESC', {
-                replacements: [this.selected_item.id],
-                type: ModelProvider.sequelize.QueryTypes.DELETE,
-                transaction: transaction
-              }).then(() => this.selected_item.destroy({transaction: transaction}))
-                .catch(error =>
-                {
-                  if (error.name === 'SequelizeForeignKeyConstraintError')
-                    return Promise.reject({
-                      name: 'Reference Error',
-                      message: 'Production Order is in used.'
-                    });
-                  return Promise.reject(error);
-                }).then(() => MESSAGE.deleted);
-            }, transaction);
-          });
-
           CrudHandler.onAfterSelectMasterItem(this, selectedItem =>
           {
             selectedItem.toBeDeleted = [];
