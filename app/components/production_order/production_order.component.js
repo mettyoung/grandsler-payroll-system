@@ -244,7 +244,6 @@ angular.module('production-order')
             '<production-order-dialog layout="column"></production-order-dialog>' +
             '</md-dialog>',
             multiple: true,
-            locals: {parent: this},
             controller: angular.noop,
             controllerAs: '$ctrl',
             bindToController: true,
@@ -252,6 +251,25 @@ angular.module('production-order')
           });
         };
 
+        /**
+         * Edits the first operation's production order line.
+         * @param productionOrderLine
+         */
+        this.commands.editProductionOrder = productionOrderLine =>
+        {
+          $mdDialog.show({
+            template: '<md-dialog flex="60">' +
+            '<production-order-dialog production-order-line="$ctrl.productionOrderLine" layout="column"></production-order-dialog>' +
+            '</md-dialog>',
+            multiple: true,
+            locals: {productionOrderLine},
+            controller: angular.noop,
+            controllerAs: '$ctrl',
+            bindToController: true,
+            onRemoving: (event, removePromise) => removePromise.then(() => this.commands.preload() && this.commands.load())
+          });
+        };
+        
         /**
          * Mark finished the production order.
          * @param productionOrder

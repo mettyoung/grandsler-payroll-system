@@ -129,6 +129,10 @@
                            ng-click="$ctrl.commands.saveSelectedMasterItem()">
                     <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
                 </md-button>
+                <md-button ng-show="$ctrl.selected_item.operation_number === 1"
+                           class="md-icon-button" ng-click="$ctrl.commands.editProductionOrder($ctrl.selected_item)">
+                    <md-icon md-svg-icon="image:ic_edit_24px"></md-icon>
+                </md-button>
                 <md-button class="md-icon-button"
                            ng-hide="$ctrl.selected_item.Production.is_finished"
                            ng-click="$ctrl.commands.markFinished($ctrl.selected_item.Production)">
