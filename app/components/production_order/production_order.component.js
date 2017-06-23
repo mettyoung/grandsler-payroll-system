@@ -75,81 +75,82 @@ angular.module('production-order')
               ModelProvider.models.Employee
             ];
 
-            // Create selection options with associations.
-            const selectionOptions = {
-              attributes: {
-                include: [ModelProvider.Sequelize.literal(`COUNT(DISTINCT \`Production.StockCode.Operations\`.id) AS 'numberOfOperations'`)]
-              },
-              include: associations,
-              where: {},
-              having: {
-                operation_number: {
-                  $lt: ModelProvider.Sequelize.col('numberOfOperations')
-                }
-              },
-              group: ['ProductionLine.id'],
-              order: ['id'],
-              subQuery: false
-            };
-
             // Add filters
+            const selections = ['PL.operation_number < numberOfOperations'];
+
             if (this.query.employee_name && this.query.employee_name.length > 0)
-              Object.assign(selectionOptions.where, {
-                $or: [
-                  ModelProvider.Sequelize.literal(`\`Employee\`.first_name LIKE '%${this.query.employee_name}%'`),
-                  ModelProvider.Sequelize.literal(`\`Employee\`.middle_name LIKE '%${this.query.employee_name}%'`),
-                  ModelProvider.Sequelize.literal(`\`Employee\`.last_name LIKE '%${this.query.employee_name}%'`),
-                  ModelProvider.Sequelize.literal(`\`ChildrenProductionLines.Employee\`.first_name LIKE '%${this.query.employee_name}%'`),
-                  ModelProvider.Sequelize.literal(`\`ChildrenProductionLines.Employee\`.middle_name LIKE '%${this.query.employee_name}%'`),
-                  ModelProvider.Sequelize.literal(`\`ChildrenProductionLines.Employee\`.last_name LIKE '%${this.query.employee_name}%'`)
-                ]
-              });
+              selections.push(`(
+                E.first_name LIKE '%${this.query.employee_name}%' OR 
+                E.middle_name LIKE '%${this.query.employee_name}%' OR 
+                E.last_name LIKE '%${this.query.employee_name}%' OR 
+                CPLE.first_name LIKE '%${this.query.employee_name}%' OR 
+                CPLE.middle_name LIKE '%${this.query.employee_name}%' OR 
+                CPLE.last_name LIKE '%${this.query.employee_name}%')`);
 
             if (this.query.stock_code_id !== 0)
-              Object.assign(selectionOptions.where, {
-                $and: [ModelProvider.Sequelize.literal(`\`Production\`.stock_code_id = ${this.query.stock_code_id}`)]
-              });
+              selections.push(`P.stock_code_id = ${this.query.stock_code_id}`);
 
             if (this.query.color_id !== 0)
-              Object.assign(selectionOptions.where, {
-                $and: [ModelProvider.Sequelize.literal(`\`Production\`.color_id = ${this.query.color_id}`)]
-              });
+              selections.push(`P.color_id = ${this.query.color_id}`);
 
             if (this.query.size_id !== 0)
-              Object.assign(selectionOptions.where, {
-                $and: [ModelProvider.Sequelize.literal(`\`Production\`.size_id = ${this.query.size_id}`)]
-              });
+              selections.push(`P.size_id = ${this.query.size_id}`);
 
             if (this.query.is_finished !== 0)
-              Object.assign(selectionOptions.where, {
-                $and: [ModelProvider.Sequelize.literal(`\`Production\`.is_finished = ${this.query.is_finished}`)]
-              });
+              selections.push(`P.is_finished = ${this.query.is_finished}`);
+
+            const limitPredicate = ` LIMIT ${pageOptions.offset}, ${pageOptions.limit}`;
+            const query = `
+              SELECT 
+                PL.id
+              FROM
+                production_lines PL
+              LEFT JOIN production_lines CPL 
+                ON CPL.parent_id = PL.id
+              LEFT JOIN productions P
+                ON P.id = PL.production_id
+              LEFT JOIN 
+                  (SELECT 
+                      stock_codes.id, COUNT(stock_codes_operations.operation_id) AS 'numberOfOperations'
+                  FROM
+                      stock_codes
+                  LEFT JOIN stock_codes_operations ON stock_codes_operations.stock_code_id = stock_codes.id
+                  GROUP BY stock_codes.id) SummaryStockCode 
+                ON SummaryStockCode.id = P.stock_code_id
+              LEFT JOIN employees E
+                ON E.id = PL.employee_id
+              LEFT JOIN employees CPLE 
+                ON CPLE.id = CPL.employee_id
+              WHERE 
+                 ${selections.join(' AND ')}
+              GROUP BY 
+                PL.id`;
+
+            const countQuery = `SELECT COUNT(id) AS 'count' FROM (${query}) A`;
 
             this.data.show_progress_bar = true;
             // Execute the query.
             return Promise.all([
-              ModelProvider.models.ProductionLine.findAll(Object.assign(pageOptions, selectionOptions)),
-              ModelProvider.models.ProductionLine.findAll(Object.assign({
-                attributes: [ModelProvider.Sequelize.literal(`COUNT(DISTINCT \`Production.StockCode.Operations\`.id) AS 'numberOfOperations'`)],
-              }, selectionOptions))])
-              .then(values =>
-              {
-                const production_line_ids = values[0].map(row => row.id);
+              ModelProvider.sequelize.query(query + limitPredicate, {type: ModelProvider.sequelize.QueryTypes.SELECT}),
+              ModelProvider.sequelize.query(countQuery, {type: ModelProvider.sequelize.QueryTypes.SELECT})
+            ]).then(values =>
+            {
+              const production_line_ids = values[0].map(row => row.id);
 
-                return ModelProvider.models.ProductionLine.findAll({
-                  include: associations,
-                  where: {
-                    id: production_line_ids
-                  }
-                }).then(productionLines =>
-                {
-                  this.data.show_progress_bar = false;
-                  return {
-                    data: productionLines,
-                    total_count: values[1].length
-                  };
-                });
+              return ModelProvider.models.ProductionLine.findAll({
+                include: associations,
+                where: {
+                  id: production_line_ids
+                }
+              }).then(productionLines =>
+              {
+                this.data.show_progress_bar = false;
+                return {
+                  data: productionLines,
+                  total_count: values[1][0].count
+                };
               });
+            });
           });
 
           /**
