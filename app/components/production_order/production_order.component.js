@@ -77,8 +77,16 @@ angular.module('production-order')
 
             // Create selection options with associations.
             const selectionOptions = {
+              attributes: {
+                include: [ModelProvider.Sequelize.literal(`COUNT(DISTINCT \`Production.StockCode.Operations\`.id) AS 'numberOfOperations'`)]
+              },
               include: associations,
               where: {},
+              having: {
+                operation_number: {
+                  $lt: ModelProvider.Sequelize.col('numberOfOperations')
+                }
+              },
               group: ['ProductionLine.id'],
               order: ['id'],
               subQuery: false
@@ -118,12 +126,15 @@ angular.module('production-order')
               });
 
             this.data.show_progress_bar = true;
-
             // Execute the query.
-            return ModelProvider.models.ProductionLine.findAndCountAll(Object.assign(pageOptions, selectionOptions))
-              .then(result =>
+            return Promise.all([
+              ModelProvider.models.ProductionLine.findAll(Object.assign(pageOptions, selectionOptions)),
+              ModelProvider.models.ProductionLine.findAll(Object.assign({
+                attributes: [ModelProvider.Sequelize.literal(`COUNT(DISTINCT \`Production.StockCode.Operations\`.id) AS 'numberOfOperations'`)],
+              }, selectionOptions))])
+              .then(values =>
               {
-                const production_line_ids = result.rows.map(row => row.id);
+                const production_line_ids = values[0].map(row => row.id);
 
                 return ModelProvider.models.ProductionLine.findAll({
                   include: associations,
@@ -135,7 +146,7 @@ angular.module('production-order')
                   this.data.show_progress_bar = false;
                   return {
                     data: productionLines,
-                    total_count: result.count.length
+                    total_count: values[1].length
                   };
                 });
               });
