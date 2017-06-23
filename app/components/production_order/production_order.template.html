@@ -70,7 +70,11 @@
                             <md-option ng-value="false">Unfinished</md-option>
                         </md-select>
                     </md-input-container>
-                    <!-- TODO: Discrepancy in percentage -->
+                    <md-input-container>
+                        <label>>= Progress (%)</label>
+                        <input type="number" min="0" max="100" ng-init="$ctrl.query.progress = 0"
+                               ng-model="$ctrl.query.progress">
+                    </md-input-container>
                 </md-content>
             </div>
             <md-table-pagination md-limit="$ctrl.query.limit" md-limit-options="$ctrl.preset.limitOptions"

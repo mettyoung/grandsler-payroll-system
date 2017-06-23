@@ -79,6 +79,7 @@ angular.module('production-order')
 
             // Add filters
             const selections = ['PL.operation_number < numberOfOperations'];
+            let postSelection = '';
 
             if (this.query.employee_name && this.query.employee_name.length > 0)
               selections.push(`(
@@ -104,10 +105,14 @@ angular.module('production-order')
             if (this.query.is_finished !== 0)
               selections.push(`P.is_finished = ${this.query.is_finished}`);
 
+            if (this.query.progress)
+              postSelection = `HAVING progress >= ${this.query.progress}`;
+
             const limitPredicate = ` LIMIT ${pageOptions.offset}, ${pageOptions.limit}`;
             const query = `
               SELECT 
-                PL.id
+                PL.id,
+               (SUM(CPL.dozen_quantity * 12 + CPL.piece_quantity) / (PL.dozen_quantity * 12 + PL.piece_quantity)) * 100 AS 'progress'
               FROM
                 production_lines PL
               LEFT JOIN production_lines CPL 
@@ -129,7 +134,8 @@ angular.module('production-order')
               WHERE 
                  ${selections.join(' AND ')}
               GROUP BY 
-                PL.id`;
+                PL.id
+              ${postSelection}`;
 
             const countQuery = `SELECT COUNT(id) AS 'count' FROM (${query}) A`;
 
