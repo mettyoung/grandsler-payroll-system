@@ -36,30 +36,42 @@ angular.module('production-order-dialog')
           {
             CrudHandler.onSaveSelectedMasterItem(this, transaction =>
             {
-              this.selected_item.stock_code_id = this.selected_item.StockCode.id;
-              this.selected_item.color_id = this.selected_item.Color.id;
-              this.selected_item.size_id = this.selected_item.Size.id;
+              let action = 'modified';
+              let selectedItem = this.selected_item;
+              selectedItem.stock_code_id = selectedItem.StockCode.id;
+              selectedItem.color_id = selectedItem.Color.id;
+              selectedItem.size_id = selectedItem.Size.id;
 
-              this.selected_item.ProductionLines = [
-                Object.assign(this.selected_item.first_production_line, {
-                  stock_code_id: this.selected_item.StockCode.id,
-                  pipeline_id: this.selected_item.StockCode.pipeline_id,
-                  operation_id: this.selected_item.StockCode.StockCodeOperations[0].operation_id,
-                  operation_number: 1,
-                  employee_id: this.selected_item.first_production_line.Employee.id
-                })
-              ];
+              if (selectedItem.constructor === Object)
+              {
+                selectedItem.ProductionLines = [
+                  Object.assign(selectedItem.first_production_line, {
+                    stock_code_id: selectedItem.StockCode.id,
+                    pipeline_id: selectedItem.StockCode.pipeline_id,
+                    operation_id: selectedItem.StockCode.StockCodeOperations[0].operation_id,
+                    operation_number: 1,
+                    employee_id: selectedItem.first_production_line.Employee.id
+                  })
+                ];
+
+                selectedItem = ModelProvider.models.Production.build(selectedItem, {
+                  include: [ModelProvider.models.ProductionLine]
+                });
+                action = 'created';
+              }
+
+              const options = {
+                transaction: transaction
+              };
 
               return Notifier.perform(() =>
-                ModelProvider.models.Production.create(this.selected_item, {
-                  include: [ModelProvider.models.ProductionLine]
-                }, {
-                  transaction: transaction
-                }).then(() =>
-                {
-                  this.commands.close();
-                  return MESSAGE;
-                }), transaction);
+                selectedItem.save(options)
+                  .then(() => this.productionOrderLine && this.productionOrderLine.save(options))
+                  .then(() =>
+                  {
+                    this.commands.close();
+                    return MESSAGE[action];
+                  }), transaction);
             });
           }
 
@@ -76,7 +88,8 @@ angular.module('production-order-dialog')
                   transaction: transaction
                 }));
 
-              return promise.catch(error => {
+              return promise.catch(error =>
+              {
                 if (error.name === 'SequelizeForeignKeyConstraintError')
                   return Promise.reject({
                     name: 'Reference Error',
@@ -101,7 +114,9 @@ angular.module('production-order-dialog')
            * @type {string|*|null}
            */
           if (this.productionOrderLine)
-            this.selected_item = Object.assign({first_production_line: this.productionOrderLine}, this.productionOrderLine.Production);
+            this.selected_item = Object.assign(this.productionOrderLine.Production, {
+              first_production_line: this.productionOrderLine
+            });
 
           /**
            * Hides the dialog.
