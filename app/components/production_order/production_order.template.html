@@ -93,21 +93,20 @@
                     <div layout="column" flex>
                         <table style="width: 100%; table-layout: fixed;">
                             <tr>
-                                <td><strong>Batch:&nbsp;</strong>{{productionLine.Production.id}}</td>
+                                <td><strong>Batch:&nbsp;</strong>{{productionLine.Production.id}}-{{productionLine.operation_number+1}}</td>
                                 <td><strong>Stock Code:&nbsp;</strong>{{productionLine.Production.StockCode.name}}</td>
                             </tr>
                             <tr>
-                                <td><strong>Operation:&nbsp;</strong>{{productionLine.operation_number+1}}</td>
                                 <td><strong>Article:&nbsp;</strong>{{productionLine.Production.Color.name}}&nbsp;({{productionLine.Production.Size.name}})</td>
+                                <td><strong>Previous:&nbsp;</strong>{{productionLine.Employee.getFullName()}}</td>
                             </tr>
-                        </table>
-                        <div class="sub-banner"><strong>Previous Employee:&nbsp;</strong>{{productionLine.Employee.getFullName()}}</div>
-                        <table style="width: 100%; table-layout: fixed;">
                             <tr>
-                                <td><strong>Date Started:&nbsp;</strong>{{productionLine.date_finished | date:'MM/dd/yyyy'}}
-                                </td>
-                                <td><strong>Quantity In:&nbsp;</strong>{{productionLine.dozen_quantity}}x12,{{productionLine.piece_quantity}}
-                                </td>
+                                <td><strong>Date Started:&nbsp;</strong>{{productionLine.date_finished | date:'MM/dd/yyyy'}}</td>
+                                <td><strong>Quantity In:&nbsp;</strong>{{productionLine.dozen_quantity}}x12,{{productionLine.piece_quantity}}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Progress:&nbsp;</strong>{{productionLine.getProgress() | number:0}}%</td>
+                                <td><strong>Quantity Out:&nbsp;</strong>{{productionLine.getFormattedQuantityOut()}}</td>
                             </tr>
                         </table>
                         <md-divider ng-if="!$last"></md-divider>
