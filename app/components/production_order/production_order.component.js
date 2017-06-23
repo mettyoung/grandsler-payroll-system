@@ -200,7 +200,14 @@ angular.module('production-order')
                   }
                   return promise;
                 }
-              ).then(() => MESSAGE.modified), transaction);
+              ).catch(error => {
+                if (error.name === 'SequelizeForeignKeyConstraintError')
+                  return Promise.reject({
+                    name: 'Reference Error',
+                    message: 'You cannot delete a used production line in the succeeding operations.'
+                  });
+                return Promise.reject(error);
+              }).then(() => MESSAGE.modified), transaction);
           });
 
           CrudHandler.onAfterSelectMasterItem(this, selectedItem =>
