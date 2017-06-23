@@ -49,6 +49,8 @@ angular.module('production-order')
               [this.data.stock_codes, this.data.colors, this.data.sizes] = values;
               const numberOfOperations = values[3] && values[3].get('total_count') || 0;
               this.data.operation_numbers = [...new Array(numberOfOperations).keys()].map(value => value + 1);
+              // Remove operation 1 from filter.
+              this.data.operation_numbers.shift();
             })
           );
 
@@ -86,6 +88,9 @@ angular.module('production-order')
                 CPLE.first_name LIKE '%${this.query.employee_name}%' OR 
                 CPLE.middle_name LIKE '%${this.query.employee_name}%' OR 
                 CPLE.last_name LIKE '%${this.query.employee_name}%')`);
+
+            if (this.query.operation_number !== 0)
+              selections.push(`PL.operation_number = ${this.query.operation_number - 1}`);
 
             if (this.query.stock_code_id !== 0)
               selections.push(`P.stock_code_id = ${this.query.stock_code_id}`);

@@ -27,6 +27,15 @@
             <div class="query-parameters" layout="column" ng-show="$ctrl.showFilter">
                 <md-content layout="column">
                     <md-input-container>
+                        <label>Operation Number</label>
+                        <md-select ng-model="$ctrl.query.operation_number">
+                            <md-option ng-value="0" selected>All</md-option>
+                            <md-option ng-value="operation_number" ng-repeat="operation_number in $ctrl.data.operation_numbers">
+                                {{operation_number}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container>
                         <label>Stock Code</label>
                         <md-select ng-model="$ctrl.query.stock_code_id">
                             <md-option ng-value="0" selected>All</md-option>
@@ -62,16 +71,6 @@
                         </md-select>
                     </md-input-container>
                     <!-- TODO: Discrepancy in percentage -->
-                    <!-- TODO: Make Operation filter work. -->
-                    <md-input-container>
-                        <label>Operation Number</label>
-                        <md-select ng-model="$ctrl.query.operation_number">
-                            <md-option ng-value="0" selected>All</md-option>
-                            <md-option ng-value="operation_number" ng-repeat="operation_number in $ctrl.data.operation_numbers">
-                                {{operation_number}}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
                 </md-content>
             </div>
             <md-table-pagination md-limit="$ctrl.query.limit" md-limit-options="$ctrl.preset.limitOptions"
