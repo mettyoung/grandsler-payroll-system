@@ -181,7 +181,7 @@ angular.module('production-order')
                   // Save all details.
                   for (let childLine of this.selected_item.ChildrenProductionLines)
                   {
-                    let instance;
+                    let instance = childLine;
                     if (childLine.constructor === Object)
                       instance = ModelProvider.models.ProductionLine.build(Object.assign({
                         parent_id: productionOrderLine.id,
