@@ -6,13 +6,19 @@
         <!-- Title bar -->
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h3 flex>New Production Order</h3>
+                <h3 ng-hide="$ctrl.productionOrderLine" flex>New Production Order</h3>
+                <h3 ng-show="$ctrl.productionOrderLine" flex>Production Order</h3>
                 <!-- Action buttons -->
                 <md-button class="md-icon-button"
                            type='submit'
                            ng-disabled="!$ctrl.Form.$valid"
                            ng-click="$ctrl.commands.saveSelectedMasterItem()">
                     <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
+                </md-button>
+                <md-button class="md-icon-button"
+                           ng-click="$ctrl.commands.deleteSelectedMasterItem('Are you sure you want to delete the entire batch?')"
+                           ng-show="$ctrl.productionOrderLine">
+                    <md-icon md-svg-icon="action:ic_delete_24px"></md-icon>
                 </md-button>
                 <md-button id='close-button' ng-click="$ctrl.commands.close()" class="md-icon-button">
                     <md-icon md-svg-icon="content:ic_clear_24px"></md-icon>

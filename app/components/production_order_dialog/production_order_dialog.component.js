@@ -22,7 +22,7 @@ angular.module('production-order-dialog')
             deleted: {
               module: 'Production Order',
               description: 'Deleted a production order successfully!',
-              toast: 'Deleted a time-shift!'
+              toast: 'Deleted a production order!'
             },
             modified: {
               module: 'Production Order',
@@ -79,28 +79,28 @@ angular.module('production-order-dialog')
           {
             return Notifier.perform(() =>
             {
-              let promise = Promise.resolve();
-              for (let timeFrame of this.selectedTimeShift.TimeFrames)
-                promise = promise.then(() => timeFrame.destroy({transaction: transaction}));
-
-              promise = promise.then(() =>
-                this.selectedTimeShift.destroy({
-                  transaction: transaction
-                }));
-
-              return promise.catch(error =>
-              {
-                if (error.name === 'SequelizeForeignKeyConstraintError')
-                  return Promise.reject({
-                    name: 'Reference Error',
-                    message: 'Time-shift is in used.'
-                  });
-                return Promise.reject(error);
-              }).then(() =>
-              {
-                this.close();
-                return MESSAGE.deleted;
-              });
+              const options = {
+                transaction: transaction
+              };
+              return ModelProvider.models.ProductionLine.destroy(Object.assign({
+                  where: {
+                    production_id: this.selected_item.id
+                  }
+                }, options)
+              ).then(() => this.selected_item.destroy(options))
+                .catch(error =>
+                {
+                  if (error.name === 'SequelizeForeignKeyConstraintError')
+                    return Promise.reject({
+                      name: 'Reference Error',
+                      message: 'This batch already has production lines beyond the first operation.'
+                    });
+                  return Promise.reject(error);
+                }).then(() =>
+                {
+                  this.commands.close();
+                  return MESSAGE.deleted;
+                });
             }, transaction);
           });
 
