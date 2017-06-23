@@ -16,3 +16,7 @@ md-autocomplete button,
 md-autocomplete md-icon {
   display: none;
 }
+
+md-autocomplete.md-default-theme[disabled]:not([md-floating-label]), md-autocomplete[disabled]:not([md-floating-label]) {
+  background-color: inherit;
+}
