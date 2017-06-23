@@ -79,7 +79,7 @@ angular.module('production-order')
             const selectionOptions = {
               include: associations,
               where: {},
-              group: ['ProductionLine.id', 'ChildrenProductionLines.parent_id'],
+              group: ['ProductionLine.id'],
               order: ['id'],
               subQuery: false
             };
