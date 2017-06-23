@@ -8,9 +8,9 @@
 <div id="main-content" layout="row" flex>
     <!-- Column: Query parameters and master list. -->
     <div id="master-container" layout="column" flex="40" md-whiteframe="4">
-        <md-toolbar class="md-table-toolbar md-default">
-            <div class="md-toolbar-tools" flex>
-                <form layout="row" flex>
+        <form>
+            <md-toolbar class="md-table-toolbar md-default">
+                <div layout="row" class="md-toolbar-tools" flex>
                     <input flex type="text" ng-model="$ctrl.query.employee_name" md-auto-focus="true"
                            placeholder="Search Employee">
                     <md-button class="md-icon-button" ng-click="$ctrl.showFilter = !$ctrl.showFilter">
@@ -22,67 +22,68 @@
                     <md-button class="md-icon-button" ng-click="$ctrl.commands.createMasterItem()">
                         <md-icon md-svg-icon="content:ic_add_24px"></md-icon>
                     </md-button>
-                </form>
-            </div>
-            <div class="query-parameters" layout="column" ng-show="$ctrl.showFilter">
-                <md-content layout="column">
-                    <md-input-container>
-                        <label>Operation Number</label>
-                        <md-select ng-model="$ctrl.query.operation_number">
-                            <md-option ng-value="0" selected>All</md-option>
-                            <md-option ng-value="operation_number" ng-repeat="operation_number in $ctrl.data.operation_numbers">
-                                {{operation_number}}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>Stock Code</label>
-                        <md-select ng-model="$ctrl.query.stock_code_id">
-                            <md-option ng-value="0" selected>All</md-option>
-                            <md-option ng-value="stock_code.id" ng-repeat="stock_code in $ctrl.data.stock_codes">
-                                {{stock_code.name}}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>Color</label>
-                        <md-select ng-model="$ctrl.query.color_id">
-                            <md-option ng-value="0" selected>All</md-option>
-                            <md-option ng-value="color.id" ng-repeat="color in $ctrl.data.colors">
-                                {{color.name}}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>Size</label>
-                        <md-select ng-model="$ctrl.query.size_id">
-                            <md-option ng-value="0" selected>All</md-option>
-                            <md-option ng-value="size.id" ng-repeat="size in $ctrl.data.sizes">
-                                {{size.name}}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>Status</label>
-                        <md-select ng-model="$ctrl.query.is_finished">
-                            <md-option ng-value="0" selected>All</md-option>
-                            <md-option ng-value="true">Finished</md-option>
-                            <md-option ng-value="false">Unfinished</md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>>= Progress (%)</label>
-                        <input type="number" min="0" max="100" ng-init="$ctrl.query.progress = 0"
-                               ng-model="$ctrl.query.progress">
-                    </md-input-container>
-                </md-content>
-            </div>
-            <md-table-pagination md-limit="$ctrl.query.limit" md-limit-options="$ctrl.preset.limitOptions"
-                                 md-page="$ctrl.query.page" md-total="{{$ctrl.data.total_count}}"
-                                 md-on-paginate="$ctrl.commands.load" md-page-select
-                                 layout-align="center center" layout="row">
-            </md-table-pagination>
-        </md-toolbar>
+                </div>
+                <div class="query-parameters" layout="column" ng-show="$ctrl.showFilter">
+                    <md-content layout="column">
+                        <md-input-container>
+                            <label>Operation Number</label>
+                            <md-select ng-model="$ctrl.query.operation_number">
+                                <md-option ng-value="0" selected>All</md-option>
+                                <md-option ng-value="operation_number"
+                                           ng-repeat="operation_number in $ctrl.data.operation_numbers">
+                                    {{operation_number}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container>
+                            <label>Stock Code</label>
+                            <md-select ng-model="$ctrl.query.stock_code_id">
+                                <md-option ng-value="0" selected>All</md-option>
+                                <md-option ng-value="stock_code.id" ng-repeat="stock_code in $ctrl.data.stock_codes">
+                                    {{stock_code.name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container>
+                            <label>Color</label>
+                            <md-select ng-model="$ctrl.query.color_id">
+                                <md-option ng-value="0" selected>All</md-option>
+                                <md-option ng-value="color.id" ng-repeat="color in $ctrl.data.colors">
+                                    {{color.name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container>
+                            <label>Size</label>
+                            <md-select ng-model="$ctrl.query.size_id">
+                                <md-option ng-value="0" selected>All</md-option>
+                                <md-option ng-value="size.id" ng-repeat="size in $ctrl.data.sizes">
+                                    {{size.name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container>
+                            <label>Status</label>
+                            <md-select ng-model="$ctrl.query.is_finished">
+                                <md-option ng-value="0" selected>All</md-option>
+                                <md-option ng-value="true">Finished</md-option>
+                                <md-option ng-value="false">Unfinished</md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container>
+                            <label>>= Progress (%)</label>
+                            <input type="number" min="0" max="100" ng-init="$ctrl.query.progress = 0"
+                                   ng-model="$ctrl.query.progress">
+                        </md-input-container>
+                    </md-content>
+                </div>
+                <md-table-pagination md-limit="$ctrl.query.limit" md-limit-options="$ctrl.preset.limitOptions"
+                                     md-page="$ctrl.query.page" md-total="{{$ctrl.data.total_count}}"
+                                     md-on-paginate="$ctrl.commands.load" md-page-select
+                                     layout-align="center center" layout="row">
+                </md-table-pagination>
+            </md-toolbar>
+        </form>
         <md-content flex ng-hide="$ctrl.load_error">
             <md-progress-linear md-mode="indeterminate" ng-show="$ctrl.data.show_progress_bar"></md-progress-linear>
             <md-list flex>
