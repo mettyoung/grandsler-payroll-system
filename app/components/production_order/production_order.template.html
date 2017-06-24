@@ -1,9 +1,4 @@
 <link rel="stylesheet" href="./components/production_order/production_order.template.css">
-<!-- Load error message; hides the content and saveSelectedMasterItem button if loading error occurs. -->
-<div id="load-error-message" class="alert alert-danger" ng-hide="!$ctrl.load_error">
-    <strong>{{$ctrl.load_error.name}}:</strong> {{$ctrl.load_error.message}}
-</div>
-
 <!-- Row: Master and detail. -->
 <div id="main-content" layout="row" flex>
     <!-- Column: Query parameters and master list. -->
@@ -84,9 +79,12 @@
                 </md-table-pagination>
             </md-toolbar>
         </form>
-        <md-content flex ng-hide="$ctrl.load_error">
+        <md-content flex>
             <md-progress-linear md-mode="indeterminate" ng-show="$ctrl.data.show_progress_bar"></md-progress-linear>
-            <md-list flex>
+            <div id="load-error-message" class="alert alert-danger" ng-hide="!$ctrl.load_error">
+                <strong>{{$ctrl.load_error.name}}:</strong> {{$ctrl.load_error.message}}
+            </div>
+            <md-list flex ng-hide="$ctrl.load_error">
                 <md-list-item ng-repeat="productionLine in $ctrl.data.selected"
                               ng-class="productionLine.Production.is_finished ? 'is_finished' : 'is_unfinished'"
                               ng-click="$ctrl.commands.selectMasterItem(productionLine)">
