@@ -1,0 +1,43 @@
+<!-- Accept enter key -->
+<form name="$ctrl.Form" flex ng-cloak>
+    <!-- 1st sibling: Contains the content of the dialog -->
+    <md-dialog-content>
+        <!-- Title bar -->
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h3><span>Settings</span></h3>
+            </div>
+        </md-toolbar>
+        <!-- Preload error message; hides the content and save button if pre-loading error occurs. -->
+        <div id="preload-error-message" class="alert alert-danger" ng-hide="!$ctrl.load_error">
+            <strong>{{$ctrl.load_error.name}}:</strong> {{$ctrl.load_error.message}}
+        </div>
+        <!-- Main Content; hides if load_error occurs. -->
+        <md-content id="main-content" ng-hide="$ctrl.load_error" layout-padding>
+            <!-- This error occurs on saving -->
+            <div id="save-error-message" class="alert alert-danger" ng-hide="!$ctrl.write_error">
+                <strong>{{$ctrl.write_error.name}}:</strong> {{$ctrl.write_error.message}}
+            </div>
+            <md-input-container class="md-block">
+                <label>Tolerable Threshold (%)</label>
+                <input required type="number" name="tolerable_threshold" ng-model="$ctrl.tolerable_threshold"
+                       md-auto-focus="true">
+                <div ng-messages="$ctrl.Form.tolerable_threshold.$error">
+                    <div ng-message="required">This is required.</div>
+                </div>
+            </md-input-container>
+        </md-content>
+    </md-dialog-content>
+    <!-- Actions -->
+    <md-dialog-actions>
+        <!-- Save button is hidden if preloading error occurs. -->
+        <!-- Save button is disabled if there are any input errors. -->
+        <md-button id='save-button' class="md-primary" type='submit'
+                   ng-hide="$ctrl.load_error"
+                   ng-disabled="!$ctrl.Form.$valid"
+                   ng-click="$ctrl.commands.saveSelectedMasterItem()">
+            Save
+        </md-button>
+        <md-button id='cancel-button' ng-click="$ctrl.commands.close()">Cancel</md-button>
+    </md-dialog-actions>
+</form>
