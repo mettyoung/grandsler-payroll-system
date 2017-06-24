@@ -22,6 +22,13 @@ angular.module('action-bar')
           template: '<md-dialog aria-label="Salary criteria registry dialog." flex="60"><salary-criteria-registry></salary-criteria-registry></md-dialog>'
         });
       };
+
+      this.openSettingsDialog = function ()
+      {
+        $mdDialog.show({
+          template: '<md-dialog aria-label="Settings dialog." flex="60"><settings></settings></md-dialog>'
+        });
+      };
       
       this.logOut = function() 
       {
