@@ -82,8 +82,8 @@
                                         <md-input-container class="md-block" flex>
                                             <label>Stage {{$index + 1}}</label>
                                             <md-select required name="operation_{{$index}}"
-                                                       ng-model="operation.id">
-                                                <md-option ng-repeat="operation in $ctrl.operations"
+                                                       ng-model="operation._id">
+                                                <md-option ng-repeat="operation in $ctrl.data.operations"
                                                            ng-value="operation.id">
                                                     {{operation.name}}
                                                 </md-option>
