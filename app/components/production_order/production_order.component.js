@@ -43,6 +43,12 @@ angular.module('production-order')
                 group: ['pipeline_id'],
                 attributes: [[ModelProvider.sequelize.fn('COUNT', ModelProvider.sequelize.col('*')), 'total_count']],
                 order: [[ModelProvider.sequelize.col('total_count'), 'DESC']]
+              }),
+              ModelProvider.models.Meta.findOne({
+                transaction: transaction,
+                where: {
+                  particular: 'tolerable_threshold'
+                }
               })
             ]).then(values =>
             {
@@ -51,6 +57,8 @@ angular.module('production-order')
               this.data.operation_numbers = [...new Array(numberOfOperations).keys()].map(value => value + 1);
               // Remove operation 1 from filter.
               this.data.operation_numbers.shift();
+              // Load the tolerable_threshold.
+              this.data.tolerable_threshold = Number(values[4].value);
             })
           );
 
@@ -169,17 +177,11 @@ angular.module('production-order')
            */
           CrudHandler.onBeforeSaveSelectedMasterItem(this, masterItem =>
           {
-            let operationCounter = 1;
-            for (let operation of masterItem.detail)
-            {
-              if (operation.dozen_quantity_remaining * operation.piece_quantity_remaining < 0)
-                return Promise.reject({
-                  name: 'Validation Error',
-                  message: `Quantity remaining of Operation ${operationCounter}: "${operation.name}" must not be negative.`
-                });
-              operationCounter++;
-            }
-
+            if (masterItem.getProgress() - 100 > this.data.tolerable_threshold)
+              return Promise.reject({
+                name: 'Validation Error',
+                message: `The total quantity out must only have ${this.data.tolerable_threshold}% error tolerance.`
+              });
             return Promise.resolve();
           });
 
@@ -223,7 +225,8 @@ angular.module('production-order')
                   }
                   return promise;
                 }
-              ).catch(error => {
+              ).catch(error =>
+              {
                 if (error.name === 'SequelizeForeignKeyConstraintError')
                   return Promise.reject({
                     name: 'Reference Error',
@@ -299,7 +302,7 @@ angular.module('production-order')
             onRemoving: (event, removePromise) => removePromise.then(() => this.commands.preload() && this.commands.load())
           });
         };
-        
+
         /**
          * Mark finished the production order.
          * @param productionOrder
