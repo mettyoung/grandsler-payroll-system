@@ -9,6 +9,7 @@ angular.module('user-account')
       {
         const DEPENDENCY_TREE = [
           'Salary Criteria Registry',
+          'Settings',
           {
             name: 'Employee Management',
             dependents: ['Position Registry', 'Time-shift Registry']
