@@ -120,7 +120,6 @@
         <div id="detail-load-error-message" class="alert alert-danger" ng-hide="!$ctrl.detail_load_error">
             <strong>{{$ctrl.detail_load_error.name}}:</strong> {{$ctrl.detail_load_error.message}}
         </div>
-        <!-- Hides these two if detail_load_error occurred. -->
         <md-toolbar ng-hide="$ctrl.detail_load_error || !$ctrl.selected_item">
             <div class="md-toolbar-tools" flex>
                 <h2 flex>Batch: {{$ctrl.selected_item.Production.id}}</h2>
@@ -130,7 +129,7 @@
                            ng-click="$ctrl.commands.saveSelectedMasterItem()">
                     <md-icon md-svg-icon="content:ic_save_24px"></md-icon>
                 </md-button>
-                <md-button ng-show="$ctrl.selected_item.operation_number === 1"
+                <md-button ng-show="$ctrl.selected_item.operation_number === 1 && !$ctrl.selected_item.Production.is_finished"
                            class="md-icon-button" ng-click="$ctrl.commands.editProductionOrder($ctrl.selected_item)">
                     <md-icon md-svg-icon="image:ic_edit_24px"></md-icon>
                 </md-button>
