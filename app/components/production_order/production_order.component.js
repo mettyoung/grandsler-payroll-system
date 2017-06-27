@@ -322,7 +322,12 @@ angular.module('production-order')
                 .catch(error => this.write_error = error)
                 .then(() => $scope.$apply())
             }, () => (0))
-              .then(() => this._isWriteIdle = true);
+              .then(() => {
+                this._isWriteIdle = true;
+                if (!this.write_error)
+                  this.selected_item = null;
+                return this.commands.load();
+              });
           }
         };
 
