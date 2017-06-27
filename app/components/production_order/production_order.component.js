@@ -362,9 +362,8 @@ angular.module('production-order')
          */
         this.commands.computeQuantityRemaining = () =>
         {
-          const totalQuantityIn = this.selected_item.dozen_quantity * 12 + this.selected_item.piece_quantity;
-          const totalQuantityOut = this.selected_item.ChildrenProductionLines.reduce(
-            (accumulator, production_line) => accumulator + production_line.dozen_quantity * 12 + production_line.piece_quantity, 0);
+          const totalQuantityIn = this.selected_item.getQuantityIn();
+          const totalQuantityOut = this.selected_item.getQuantityOut();
           const totalQuantityRemaining = totalQuantityIn - totalQuantityOut;
 
           if (!isNaN(totalQuantityRemaining))
